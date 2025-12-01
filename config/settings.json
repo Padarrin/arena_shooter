@@ -15,7 +15,8 @@
             ],
             "dependents": [
                 "AudioApp",
-                "Testing"
+                "Testing",
+                "Gameplay"
             ],
             "guid": "350F391D-4BFF-5BAA-2368-38E07F916E9D",
             "lib": true,
@@ -55,7 +56,8 @@
                 "Audio",
                 "AudioApp",
                 "Inputs",
-                "InputsApp"
+                "InputsApp",
+                "Gameplay"
             ],
             "guid": "3DB4233D-2C57-5DD7-351C-357205B03623",
             "lib": true,
@@ -97,6 +99,26 @@
             ],
             "dependents": [],
             "guid": "2CE94E0C-781D-756F-5F13-40C935736904",
+            "lib": false,
+            "pch": false,
+            "preprocessorDefinitions": [],
+            "vcpkg": false,
+            "window": true
+        },
+        "Gameplay": {
+            "additionalDependencies": [
+                "winmm.lib"
+            ],
+            "additionalIncludeDirectories": [],
+            "additionalLibraryDirectories": [],
+            "dependencies": [
+                "Engine",
+                "Audio",
+                "Core",
+                "Render"
+            ],
+            "dependents": [],
+            "guid": "36766BC7-1C55-4AD9-29B2-0D2665420E3A",
             "lib": false,
             "pch": false,
             "preprocessorDefinitions": [],
@@ -147,7 +169,8 @@
                 "Engine",
                 "RenderApp",
                 "EngineApp",
-                "Testing"
+                "Testing",
+                "Gameplay"
             ],
             "guid": "606C2531-5AD3-1D47-1E4E-2AC35CB96F06",
             "lib": true,
@@ -217,6 +240,6 @@
     },
     "solution_guid": "2C2F74D8-6E8C-0796-6679-5679007174CA",
     "solution_name": "GCEngine",
-    "startup_project": "RenderApp",
+    "startup_project": "Gameplay",
     "version": "1.17.4"
 }
