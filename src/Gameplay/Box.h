@@ -1,5 +1,7 @@
 #pragma once
-class Box
+#include "Furniture.h"
+
+class Box : public Furniture
 {
 };
 

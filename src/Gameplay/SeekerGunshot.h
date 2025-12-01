@@ -1,5 +1,7 @@
 #pragma once
-class SeekerGunshot
+#include "Shootable.h"
+
+class SeekerGunshot : public Shootable
 {
 };
 

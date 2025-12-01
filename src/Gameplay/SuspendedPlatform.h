@@ -1,5 +1,7 @@
 #pragma once
-class SuspendedPlatform
+#include "Furniture.h"
+
+class SuspendedPlatform : public Furniture
 {
 };
 

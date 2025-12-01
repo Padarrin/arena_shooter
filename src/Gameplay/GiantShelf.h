@@ -1,5 +1,7 @@
 #pragma once
-class GiantShelf
+#include "Furniture.h"
+
+class GiantShelf : public Furniture
 {
 };
 

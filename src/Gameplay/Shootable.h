@@ -1,5 +1,7 @@
 #pragma once
-class Shootable
+#include "Object.h"
+
+class Shootable : public Object
 {
 };
 

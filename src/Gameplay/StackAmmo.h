@@ -1,5 +1,7 @@
 #pragma once
-class StackAmmo
+#include "Item.h"
+
+class StackAmmo : public Item
 {
 };
 

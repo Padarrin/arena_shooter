@@ -1,5 +1,7 @@
 #pragma once
-class Object
+#include "Entity.h"
+
+class Object : public Entity
 {
 };
 

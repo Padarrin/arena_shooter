@@ -1,5 +1,7 @@
 #pragma once
-class SpareParts
+#include "Item.h"
+
+class SpareParts : public Item
 {
 };
 

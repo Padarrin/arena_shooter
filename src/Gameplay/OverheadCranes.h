@@ -1,5 +1,7 @@
 #pragma once
-class OverheadCranes
+#include "Furniture.h"
+
+class OverheadCranes : public Furniture
 {
 };
 
