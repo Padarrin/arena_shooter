@@ -1,6 +1,7 @@
 #pragma once
+#include "GameManager.h"
 
-class Entity
+class Entity : public
 {
 };
 
