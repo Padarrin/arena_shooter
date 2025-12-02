@@ -2,5 +2,5 @@
 
 void Translate(gce::Vector3f32 position)
 {
-	transform.WorldTranslate(position);
+	//gce::GameObject::transform
 }
