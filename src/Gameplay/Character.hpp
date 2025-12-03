@@ -17,7 +17,7 @@ DECLARE_SCRIPT(ScriptCharacter, ScriptFlag::Start | ScriptFlag::Update | ScriptF
 		virtual void CollisionStay() {}
 		virtual void CollisionExit() {}
 
-		void Move(gce::Vector3f32 position) { m_pOwner->transform.WorldTranslate(position); }
+		//void GoToPosition
 
 		void SetLife(int life) { mLife = life; }
 		void SetSpeed(float speed) { mSpeed = speed; }
