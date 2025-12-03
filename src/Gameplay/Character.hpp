@@ -3,9 +3,7 @@
 DECLARE_SCRIPT(ScriptCharacter, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
 protected:
-
-	//GoToPosition
-	struct Target
+	struct Target //GoToPosition
 	{
 		gce::Vector3f32 position;
 		float distance;

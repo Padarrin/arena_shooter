@@ -3,6 +3,9 @@
 
 DECLARE_SCRIPT(ScriptEntity, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
+protected:
+
+public:
 	virtual void Start() 
 	{ 
 		SetWorldPosition(gce::Vector3f32(0.f, 0.f, 0.f));

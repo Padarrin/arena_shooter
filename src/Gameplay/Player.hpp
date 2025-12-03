@@ -4,17 +4,17 @@
 DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
 	private:
-		gce::Vector3f32 mPosition = { 5,5,5 };
+		gce::Vector3f32 mPosition;/////////////////////////////////////////
 
 		gce::GameObject* mObjectCamera;
-		gce::Window* mWindow = nullptr;
+		gce::Window* mWindow;
 
 		float32 mDeltaTime;
 
-		uint32 mWidth = 0;
-		uint32 mHeight = 0;
+		uint32 mWidth;
+		uint32 mHeight;
 
-		float degree = 0;
+		float degree;
 
 	public:
 		ScriptCharacter*  mCharacter;
@@ -23,21 +23,26 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		{ 
 			mCharacter = m_pOwner->AddScript<ScriptCharacter>();
 			mWindow = gce::GameManager::GetWindow();
+			mWidth = 0;
+			mHeight = 0;
+			degree = 0;
+			mPosition = { 5,5,5 };/////////////////////////////////////////
 		}
+
 		void Update() 
 		{ 
 			mDeltaTime = gce::GameManager::DeltaTime();
 
 			if (mWindow != nullptr)
 			{
-				mWidth = mWindow->GetWidth();
-				mHeight = mWindow->GetHeight();
+				mWidth = mWindow->GetWidth();///////////////////////////////////
+				mHeight = mWindow->GetHeight();/////////////////////////////////
 
-				degree = 360 / ((gce::Sqrt(mWidth * mWidth + mHeight * mHeight)*100));
+				degree = 360 / ((gce::Sqrt(mWidth * mWidth + mHeight * mHeight)*100));//////////////////////////////
 			}
 
 			InputMove();
-			Camera();
+			TurnCamera();
 		}
 
 		void Destroy() {}
@@ -49,17 +54,17 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		void InputMove()
 		{
 			if (gce::GetKey(gce::Keyboard::Key::Z))
-				mCharacter->mEntity->WorldTranslate({ 0, 0, mPosition.z * mDeltaTime });
+				WorldTranslate({ 0, 0, mPosition.z * mDeltaTime });
 			else if (gce::GetKey(gce::Keyboard::Key::S))
-				mCharacter->mEntity->WorldTranslate({ 0, 0, -mPosition.z * mDeltaTime });
+				WorldTranslate({ 0, 0, -mPosition.z * mDeltaTime });
 
 			if (gce::GetKey(gce::Keyboard::Key::D))
-				mCharacter->mEntity->WorldTranslate({ mPosition.x * mDeltaTime, 0, 0 });
+				WorldTranslate({ mPosition.x * mDeltaTime, 0, 0 });
 			else if (gce::GetKey(gce::Keyboard::Key::Q))
-				mCharacter->mEntity->WorldTranslate({ -mPosition.x * mDeltaTime, 0, 0 });
+				WorldTranslate({ -mPosition.x * mDeltaTime, 0, 0 });
 		}
 
-		void Camera()
+		void TurnCamera()
 		{
 			if (mObjectCamera == nullptr)
 				return;
@@ -69,6 +74,21 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		void SetCamera(gce::GameObject& cameraObject)
 		{
 			mObjectCamera = &cameraObject;
+		}
+
+		void SetWorldPosition(gce::Vector3f32 position)
+		{
+			mCharacter->mEntity->SetWorldPosition(position);
+		}
+		
+		gce::Vector3f32 GetWorldPosition()
+		{
+			return mCharacter->mEntity->GetWorldPosition();
+		}
+
+		void WorldTranslate(gce::Vector3f32 position)
+		{
+			mCharacter->mEntity->WorldTranslate(position);
 		}
 
 END_SCRIPT
