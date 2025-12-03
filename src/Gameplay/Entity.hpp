@@ -1,5 +1,5 @@
 #pragma once
-#include "../Engine/GameObject.h"
+#include <GameObject.h>
 
 DECLARE_SCRIPT(ScriptEntity, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 

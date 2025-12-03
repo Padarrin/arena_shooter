@@ -33,9 +33,7 @@ BEGIN_TEST( Game )
 	camera.perspective.up = { 0.0f, 1.0f, 0.0f };
 
 	GameObject& testObject = GameObject::Create(scene);
-
 	testObject.AddScript< ScriptEntity>();
-
 	MeshRenderer& meshRenderer = *testObject.AddComponent<MeshRenderer>();
 	meshRenderer.pGeometry = SHAPES.CUBE;
 	meshRenderer.pPso = &defaultPso;
