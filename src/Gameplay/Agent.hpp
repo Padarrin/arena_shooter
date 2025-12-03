@@ -2,7 +2,7 @@
 #include "Character.hpp"
 #include "Queue.hpp"
 #include "compare.h"
-#include "PathFinding.hpp"
+#include "PathFinding.h"
 #include "Grid.h"
 #include "Functions.h"
 
@@ -14,7 +14,7 @@ protected:
 public:
 	ScriptCharacter* mCharacter;
 
-	virtual void Start() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); }
+	virtual void Start() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Start(); }
 	virtual void Update() {}
 	virtual void Destroy() {}
 

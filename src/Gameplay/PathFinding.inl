@@ -1,4 +1,4 @@
-#include "PathFinding.hpp"
+#include "PathFinding.h"
 #include "Queue.hpp"
 #include "Compare.h"
 #include "Grid.h"

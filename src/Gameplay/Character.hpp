@@ -5,7 +5,7 @@ DECLARE_SCRIPT(ScriptCharacter, ScriptFlag::Start | ScriptFlag::Update | ScriptF
 
 ScriptEntity* mEntity;
 
-virtual void Start() { mEntity = m_pOwner->AddScript<ScriptEntity>(); }
+virtual void Start() { mEntity = m_pOwner->AddScript<ScriptEntity>(); mEntity->Start(); }
 virtual void Update() {}
 virtual void Destroy() {}
 
