@@ -18,6 +18,8 @@ virtual void CollisionEnter() {}
 virtual void CollisionStay() {}
 virtual void CollisionExit() {}
 
+
+
 END_SCRIPT
 
 #endif
