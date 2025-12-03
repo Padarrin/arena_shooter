@@ -1,6 +1,4 @@
 #pragma once
-#ifndef TEST_Agent_HPP_INCLUDED
-#define TEST_Agent_HPP_INCLUDED
 #include "Agent.hpp"
 
 DECLARE_SCRIPT(ScriptEnemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)

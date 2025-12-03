@@ -25,6 +25,19 @@ template<typename A>
 std::vector<std::vector<A*>>* EraseTab(std::vector<std::vector<A*>>* all);
 
 template<typename T>
+T* CreateGameObject(gce::Scene& scene);
+template<typename T>
+T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry);
+template<typename T>
+T* CreateGameObject(gce::Scene& scene, gce::Texture* texture);
+template<typename T>
+T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture);
+
+bool Normalize(gce::Vector3f32& vector);
+
+float GetDistance(int x1, int y1, int z1, int x2, int y2, int z2);
+
+template<typename T>
 T* GetCell(gce::Vector3f32 pos, Grid* grid);
 
 template<typename T>

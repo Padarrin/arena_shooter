@@ -1,6 +1,30 @@
 #include "pch.h"
 #include "Functions.h"
 
+bool Normalize(gce::Vector3f32& vector)
+{
+    float magnitude = std::sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
+
+    if (magnitude != 0)
+    {
+        vector.x /= magnitude;
+        vector.y /= magnitude;
+        vector.z /= magnitude;
+        return true;
+    }
+
+    return false;
+}
+
+float GetDistance(int x1, int y1, int z1, int x2, int y2, int z2)
+{
+    int x = x2 - x1;
+    int y = y2 - y1;
+    int z = z2 - z1;
+
+    return std::sqrt(x * x + y * y + z * z);
+}
+
 Entity* GetNearestEntity(gce::Vector3f32 pos)
 {
     /*for (Entity* e : GameManager::Get()->GetEntities())

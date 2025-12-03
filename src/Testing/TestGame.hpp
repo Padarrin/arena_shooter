@@ -32,14 +32,12 @@ BEGIN_TEST( Game )
 	camera.perspective.aspectRatio = 600.0f / 400.0f;
 	camera.perspective.up = { 0.0f, 1.0f, 0.0f };
 
-	gce::GameObject& testObject = gce::GameObject::Create(scene);
-	testObject.AddScript<ScriptEnemy>();
-	gce::MeshRenderer& meshRenderer = *testObject.AddComponent<gce::MeshRenderer>();
-	meshRenderer.pGeometry = gce::SHAPES.CUBE;
-	meshRenderer.pPso = &defaultPso;
+	ScriptEnemy* enemy = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 
-	//gce::GameObject& gameManager = gce::GameObject::Create(scene);
-	//gameManager.AddScript<ActiveStateTestManager>()->testObject = &testObject;
+	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
+	//geometry = 
+	//texture = 
+	//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
 
 	gce::WindowParam windowParam;
 	gce::GameManager::Run(windowParam);

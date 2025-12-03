@@ -1,5 +1,9 @@
 #include "Functions.h"
 
+#include <GameObject.h>
+#include <Render.h>
+#include <Engine.h>
+
 #include "Grid.h"
 #include "Node.h"
 
@@ -49,6 +53,53 @@ inline std::vector<std::vector<A*>>* EraseTab(std::vector<std::vector<A*>>* all)
 	}
 	all->clear();
 	return all;
+}
+
+template<typename T>
+inline T* CreateGameObject(gce::Scene& scene)
+{
+	return CreateGameObject(scene, nullptr, nullptr);
+}
+
+template<typename T>
+inline T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry)
+{
+	return CreateGameObject(scene, geometry, nullptr);
+}
+
+template<typename T>
+inline T* CreateGameObject(gce::Scene& scene, gce::Texture* texture)
+{
+	return CreateGameObject(scene, nullptr, texture);
+}
+
+template<typename T>
+inline T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture)
+{
+	gce::GameObject& ob = gce::GameObject::Create(scene);
+	T* ob = object.AddScript<T>();
+
+	if (geometry != nullptr)
+	{
+		gce::D12PipelineObject defaultPso(
+			gce::SHADERS.VERTEX,
+			gce::SHADERS.PIXEL,
+			gce::SHADERS.HULL,
+			gce::SHADERS.DOMAIN_,
+			gce::SHADERS.ROOT_SIGNATURE
+		);
+
+		gce::MeshRenderer& meshRenderer = *ob.AddComponent<gce::MeshRenderer>();
+		meshRenderer.pGeometry = geometry;
+		meshRenderer.pPso = &defaultPso;
+
+		if (texture != nullptr)
+		{
+			meshRenderer.pMaterial->albedoTextureID = texture->GetTextureID();
+			meshRenderer.pMaterial->useTextureAlbedo = 1;
+		}
+	}
+	return ob;
 }
 
 template<typename T>
