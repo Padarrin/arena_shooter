@@ -3,8 +3,7 @@
 
 #include <Render.h>
 #include <Engine.h>
-#include "../Gameplay/Entity.hpp"
-#include "../Gameplay/Character.hpp"
+#include "../Gameplay/Player.hpp"
 #include "define.h"
 using namespace gce;
 
@@ -34,9 +33,8 @@ BEGIN_TEST( Game )
 	camera.perspective.up = { 0.0f, 1.0f, 0.0f };
 
 	GameObject& testObject = GameObject::Create(scene);
-	ScriptCharacter& character = *testObject.AddScript< ScriptCharacter>();
+	ScriptPlayer& player = *testObject.AddScript< ScriptPlayer>();
 	
-
 	MeshRenderer& meshRenderer = *testObject.AddComponent<MeshRenderer>();
 	meshRenderer.pGeometry = SHAPES.CUBE;
 	meshRenderer.pPso = &defaultPso;

@@ -7,13 +7,17 @@ DECLARE_SCRIPT(ScriptCharacter, ScriptFlag::Start | ScriptFlag::Update | ScriptF
 		float mSpeed = 0.f;
 
 	public:
-		virtual void Start() { m_pOwner->AddScript<ScriptEntity>();}
+		ScriptEntity* mEntity;
+
+		virtual void Start() { mEntity = m_pOwner->AddScript<ScriptEntity>();}
 		virtual void Update() {}
 		virtual void Destroy() {}
 
 		virtual void CollisionEnter() {}
 		virtual void CollisionStay() {}
 		virtual void CollisionExit() {}
+
+		void Move(gce::Vector3f32 position) { m_pOwner->transform.WorldTranslate(position); }
 
 		void SetLife(int life) { mLife = life; }
 		void SetSpeed(float speed) { mSpeed = speed; }
