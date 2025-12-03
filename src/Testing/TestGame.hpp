@@ -3,7 +3,7 @@
 
 #include <Render.h>
 #include <Engine.h>
-#include "../Gameplay/Entity.h"
+#include "../Gameplay/Entity.hpp"
 #include "define.h"
 using namespace gce;
 
