@@ -15,6 +15,10 @@ DECLARE_SCRIPT(ScriptEntity, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 	void SetRotate(gce::Vector3f32 rotation) { m_pOwner->transform.SetWorldRotation(rotation); }
 	void SetScale(gce::Vector3f32 scale) { m_pOwner->transform.SetWorldScale(scale); }
 
+	gce::Vector3f32 GetPosition() { return m_pOwner->transform.GetWorldPosition(); }
+	gce::Quaternion GetRotate() { return m_pOwner->transform.GetWorldRotation(); }
+	gce::Vector3f32 GetScale() { return m_pOwner->transform.GetWorldScale(); }
+
 	void WorldTranslate(gce::Vector3f32 position) { m_pOwner->transform.WorldTranslate(position); }
 	void WorldRotate(gce::Vector3f32 rotation) { m_pOwner->transform.WorldRotate(rotation); }
 	void WorldScale(gce::Vector3f32 scale) { m_pOwner->transform.WorldScale(scale); }
