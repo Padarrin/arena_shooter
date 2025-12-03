@@ -43,8 +43,9 @@ T* GetNearestCell(gce::Vector3f32 pos, std::vector<std::vector<T*>> allCells);
 template<typename T>
 T* GetEntityNearest(gce::Vector3f32 pos, float minDis);
 
+float DisManhattan(gce::Vector3f32 currentPos, gce::Vector3f32 endPos, int sizeCell);
 
-
+gce::Vector2f32 GetCellInPos(gce::Vector3f32 pos, int sizeCell);
 
 
 

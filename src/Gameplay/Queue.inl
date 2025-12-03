@@ -7,14 +7,14 @@ inline Node<T>* Queue_<T, COMPARE>::operator[](int index)
 	int length = Size();
 	if (IsEmpty() == false && index < length)
 	{
-		std::priority_queue<Node<T>*, std::vector<Node<T>*>, CompareASTAR<T>> queue = GetQueueCopy();
+		std::priority_queue<Node<T>*, std::vector<Node<T>*>, COMPARE> queue = GetQueueCopy();
 		for (int i = 0; i < length; i++)
 		{
 			if (i == index)
 			{
-				return queue.Top();
+				return queue.top();
 			}
-			queue.Pop();
+			queue.pop();
 		}
 	}
 	return nullptr;
@@ -26,15 +26,15 @@ inline int Queue_<T, COMPARE>::GetIndexElement(Node<T>* node)
 	int length = Size();
 	if (IsEmpty() == false)
 	{
-		std::priority_queue<Node<T>*, std::vector<Node<T>*>, CompareASTAR<T>> queue = GetQueueCopy();
+		std::priority_queue<Node<T>*, std::vector<Node<T>*>, COMPARE> queue = GetQueueCopy();
 		for (int i = 0; i < length; i++)
 		{
-			Node<T>* curente = queue.Top();
+			Node<T>* curente = queue.top();
 			if (curente == node)
 			{
 				return i;
 			}
-			queue.Pop();
+			queue.pop();
 		}
 	}
 	return nullptr;

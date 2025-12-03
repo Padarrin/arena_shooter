@@ -6,36 +6,23 @@
 #include "Agent.hpp"
 
 
-template<typename T>
-inline void PathFinding<T>::SetPaths(Queue_<T, ComparePath<T>> path)
-{
-	mPath = path;
-}
 
 template<typename T>
 inline Queue_<T, ComparePath<T>>* PathFinding<T>::GetPaths()
 {
-	if (mPath.Size() > 0)
-	{
-		return &mPath;
-	}
-	else
-	{
-		mPath.Clear();
-		return &mPath;
-	}
+	if (mPath.Size() > 0) { return &mPath; }
+	else { mPath.Clear(); return &mPath; }
 }
 
 template<typename T>
 PathFinding<T>::~PathFinding()
 {
-	mReadFinish = true;
 	mPath.Clear();
 }
 
 
 template<typename T>
-inline void PathFinding<T>::FindPath(Node<T>* startNode, Node<T>* endNode, Grid* grid, Queue<Node<T>>* allFormerPaths, ScriptAgent* owner)
+inline void PathFinding<T>::FindPath(Node<T>* startNode, Node<T>* endNode, Grid* grid, Queue_<T, ComparePath<T>>, ScriptAgent* owner)
 {
 	ResetNodes<T>(grid);
 	Queue<Node<T>> queue;

@@ -54,16 +54,16 @@ inline std::vector<std::vector<A*>>* EraseTab(std::vector<std::vector<A*>>* all)
 template<typename T>
 inline T* GetCell(gce::Vector3f32 pos, Grid* grid)
 {
-	gce::Vector2i32 index = Utils::GetCellInPos(pos, grid->GetCellSize());
-	return grid->GetAllCells()[index.x][index.y];
+	/*gce::Vector2i32 index = GetCellInPos(pos, grid->GetSizeTabCell());
+	return grid->GetAllCells()[index.x][index.y];*/
 }
 
 template<typename T>
 inline Node<T>* GetNode(gce::Vector3f32 pos, Grid* grid)
 {
-	gce::Vector2i32  index = Utils::GetCellInPos(pos, grid->GetCellSize());
-	std::vector<Node<T>*> allNodes = grid->GetAllNodes();
-	return GetNodeInTab(index.x, index.y, grid->GetAllCells()[0].size(), &allNodes);
+	gce::Vector2i32  index = GetCellInPos(pos, grid->GetSizeTabCell());
+	std::vector<Node<T>*>* allNodes = grid->GetAllNodes();
+	return GetNodeInTab(index.x, index.y, grid->GetAllCells()[0].size(), allNodes);
 }
 
 template<typename T>
@@ -75,7 +75,7 @@ inline Node<T>* GetNodeInTab(int row, int col, int length_col, std::vector<Node<
 template<typename T>
 inline T* GetNearestCell(gce::Vector3f32 pos, std::vector<std::vector<T*>> allCells)
 {
-	T* nearest = nullptr;
+	/*T* nearest = nullptr;
 	float smallestSquaredDist = INT_MAX;
 
 	for (auto& row : allCells)
@@ -96,13 +96,14 @@ inline T* GetNearestCell(gce::Vector3f32 pos, std::vector<std::vector<T*>> allCe
 		}
 	}
 
-	return nearest;
+	return nearest;*/
+	return nullptr;
 }
 
 template<typename T>
 inline T* GetEntityNearest(gce::Vector3f32 pos, float minDis)
 {
-	std::list<Entity*> allEntities = GameManager::Get()->GetEntities();
+	/*std::list<Entity*> allEntities = GameManager::Get()->GetEntities();
 
 	gce::Vector3f32 posNearest = gce::Vector3f32(minDis, minDis, minDis);
 	T* entityNearest = nullptr;
@@ -120,5 +121,6 @@ inline T* GetEntityNearest(gce::Vector3f32 pos, float minDis)
 		}
 	}
 
-	return entityNearest;
+	return entityNearest;*/
+	return nullptr;
 }
