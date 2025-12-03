@@ -34,6 +34,7 @@ BEGIN_TEST( Game )
 
 	GameObject& testObject = GameObject::Create(scene);
 	ScriptPlayer& player = *testObject.AddScript< ScriptPlayer>();
+	player.SetCamera(cameraObject);
 	
 	MeshRenderer& meshRenderer = *testObject.AddComponent<MeshRenderer>();
 	meshRenderer.pGeometry = SHAPES.CUBE;
