@@ -240,6 +240,6 @@
     },
     "solution_guid": "2C2F74D8-6E8C-0796-6679-5679007174CA",
     "solution_name": "GCEngine",
-    "startup_project": "Gameplay",
+    "startup_project": "Testing",
     "version": "1.17.4"
 }
