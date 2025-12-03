@@ -58,12 +58,12 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			else if (gce::GetKey(gce::Keyboard::Key::Q))
 				mCharacter->mEntity->WorldTranslate({ -mPosition.x * mDeltaTime, 0, 0 });
 		}
-
+		
 		void Camera()
 		{
 			if (mObjectCamera == nullptr)
 				return;
-			mObjectCamera->transform.SetWorldRotation({ (float)gce::GetMousePosition().y * degree, (float)gce::GetMousePosition().x * degree, 0.f });
+			mObjectCamera->transform.SetWorldRotation({ (float)gce::GetMousePosition().y * gce::Clamp(degree,-180,180), (float)gce::GetMousePosition().x * degree, 0.f });
 		}
 
 		void SetCamera(gce::GameObject& cameraObject)
