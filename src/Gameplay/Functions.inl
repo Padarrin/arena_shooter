@@ -58,25 +58,25 @@ inline std::vector<std::vector<A*>>* EraseTab(std::vector<std::vector<A*>>* all)
 }
 
 template<typename T>
-inline T* CreateGameObject(gce::Scene& scene)
+inline gce::GameObject& CreateGameObject(gce::Scene& scene)
 {
 	return CreateGameObject<T>(scene, nullptr, nullptr);
 }
 
 template<typename T>
-inline T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry)
+inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry)
 {
 	return CreateGameObject<T>(scene, geometry, nullptr);
 }
 
 template<typename T>
-inline T* CreateGameObject(gce::Scene& scene, gce::Texture* texture)
+inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Texture* texture)
 {
 	return CreateGameObject<T>(scene, nullptr, texture);
 }
 
 template<typename T>
-inline T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture)
+inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture)
 {
 	gce::GameObject& object = gce::GameObject::Create(scene);
 	T* ob = object.AddScript<T>();
@@ -98,7 +98,7 @@ inline T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Text
 	}
 	gce::Light* light = object.AddComponent<gce::Light>();
 
-	return ob;
+	return object;
 }
 
 template<typename T>

@@ -43,14 +43,23 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		void InputMove(float deltaTime)
 		{
 			if (gce::GetKey(gce::Keyboard::Key::Z))
+			{
+				float mction = mDirection.z* deltaTime;
 				WorldTranslate({ 0, 0, mDirection.z * deltaTime });
+			}
 			else if (gce::GetKey(gce::Keyboard::Key::S))
+			{
 				WorldTranslate({ 0, 0, -mDirection.z * deltaTime });
+			}
 
 			if (gce::GetKey(gce::Keyboard::Key::D))
+			{
 				WorldTranslate({ mDirection.x * deltaTime, 0, 0 });
+			}
 			else if (gce::GetKey(gce::Keyboard::Key::Q))
+			{
 				WorldTranslate({ -mDirection.x * deltaTime, 0, 0 });
+			}
 		}
 
 		void TurnCamera()
