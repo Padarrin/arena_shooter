@@ -7,10 +7,13 @@ DECLARE_SCRIPT(ScriptEnemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag:
 ScriptAgent* mAgent;
 
 virtual void Start() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Start(); }
-virtual void Update() 
-{ 
-	WorldTranslate(gce::Vector3f32(0.f, 0.f, 0.1f)); // temp
+virtual void Update()
+{
+	WorldTranslate(gce::Vector3f32(0.f, 0.f, 0.01f)); // temp
+	mAgent->mCharacter->mEntity->WorldRotate(gce::Vector3f32(0.f, 0.1f, 0.f));
+	gce::Quaternion rot = mAgent->mCharacter->mEntity->GetWorldRotate();
 	ScriptBall* ball = ScriptBall::CreateBall(GetWorldPosition(), gce::Vector3f32(1.f, 0.f, 0.f), 100.f, *m_pOwner->m_pScene, gce::SHAPES.CUBE); //temp
+	ball->mShootable->mObject->mEntity->SetWorldRotate(gce::Vector3f32(rot.GetX(), 0.f, 0.f));
 }
 virtual void Destroy() {}
 
