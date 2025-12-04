@@ -4,7 +4,7 @@
 DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
 	private:
-		gce::Vector3f32 mPosition;/////////////////////////////////////////
+		gce::Vector3f32 mDirection;
 
 		gce::GameObject* mObjectCamera;
 		gce::Window* mWindow;
@@ -14,8 +14,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		uint32 mWidth;
 		uint32 mHeight;
 
-		float degree;
-
 	public:
 		ScriptCharacter*  mCharacter;
 
@@ -23,26 +21,20 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		{ 
 			mCharacter = m_pOwner->AddScript<ScriptCharacter>();
 			mWindow = gce::GameManager::GetWindow();
-			mWidth = 0;
-			mHeight = 0;
-			degree = 0;
-			mPosition = { 5,5,5 };/////////////////////////////////////////
+			mWidth = mWindow->GetWidth();
+			mHeight = mWindow->GetHeight();
+
+			mDirection = { 5,5,5 };
 		}
 
 		void Update() 
 		{ 
 			mDeltaTime = gce::GameManager::DeltaTime();
 
-			if (mWindow != nullptr)
-			{
-				mWidth = mWindow->GetWidth();///////////////////////////////////
-				mHeight = mWindow->GetHeight();/////////////////////////////////
-
-				degree = 360 / ((gce::Sqrt(mWidth * mWidth + mHeight * mHeight)*100));//////////////////////////////
-			}
+			float degree = 360 / ((gce::Sqrt(mWidth * mWidth + mHeight * mHeight) * 100));
 
 			InputMove();
-			TurnCamera();
+			TurnCamera(degree);
 		}
 
 		void Destroy() {}
@@ -54,17 +46,17 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		void InputMove()
 		{
 			if (gce::GetKey(gce::Keyboard::Key::Z))
-				WorldTranslate({ 0, 0, mPosition.z * mDeltaTime });
+				WorldTranslate({ 0, 0, mDirection.z * mDeltaTime });
 			else if (gce::GetKey(gce::Keyboard::Key::S))
-				WorldTranslate({ 0, 0, -mPosition.z * mDeltaTime });
+				WorldTranslate({ 0, 0, -mDirection.z * mDeltaTime });
 
 			if (gce::GetKey(gce::Keyboard::Key::D))
-				WorldTranslate({ mPosition.x * mDeltaTime, 0, 0 });
+				WorldTranslate({ mDirection.x * mDeltaTime, 0, 0 });
 			else if (gce::GetKey(gce::Keyboard::Key::Q))
-				WorldTranslate({ -mPosition.x * mDeltaTime, 0, 0 });
+				WorldTranslate({ -mDirection.x * mDeltaTime, 0, 0 });
 		}
 
-		void TurnCamera()
+		void TurnCamera(float degree)
 		{
 			if (mObjectCamera == nullptr)
 				return;
