@@ -1,6 +1,7 @@
 #include "Functions.h"
 
 #include <GameObject.h>
+#include "../Engine/Components/MeshRenderer.h"
 #include <Render.h>
 #include <Engine.h>
 
@@ -58,38 +59,33 @@ inline std::vector<std::vector<A*>>* EraseTab(std::vector<std::vector<A*>>* all)
 template<typename T>
 inline T* CreateGameObject(gce::Scene& scene)
 {
-	return CreateGameObject(scene, nullptr, nullptr);
+	return CreateGameObject<T>(scene, nullptr, nullptr);
 }
 
 template<typename T>
 inline T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry)
 {
-	return CreateGameObject(scene, geometry, nullptr);
+	return CreateGameObject<T>(scene, geometry, nullptr);
 }
 
 template<typename T>
 inline T* CreateGameObject(gce::Scene& scene, gce::Texture* texture)
 {
-	return CreateGameObject(scene, nullptr, texture);
+	return CreateGameObject<T>(scene, nullptr, texture);
 }
 
 template<typename T>
 inline T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture)
 {
-	gce::GameObject& ob = gce::GameObject::Create(scene);
+	gce::GameObject& object = gce::GameObject::Create(scene);
 	T* ob = object.AddScript<T>();
+	ob->Start();
 
 	if (geometry != nullptr)
 	{
-		gce::D12PipelineObject defaultPso(
-			gce::SHADERS.VERTEX,
-			gce::SHADERS.PIXEL,
-			gce::SHADERS.HULL,
-			gce::SHADERS.DOMAIN_,
-			gce::SHADERS.ROOT_SIGNATURE
-		);
+		static gce::D12PipelineObject defaultPso(gce::SHADERS.VERTEX, gce::SHADERS.PIXEL, gce::SHADERS.HULL, gce::SHADERS.DOMAIN_, gce::SHADERS.ROOT_SIGNATURE);
 
-		gce::MeshRenderer& meshRenderer = *ob.AddComponent<gce::MeshRenderer>();
+		gce::MeshRenderer& meshRenderer = *object.AddComponent<gce::MeshRenderer>();
 		meshRenderer.pGeometry = geometry;
 		meshRenderer.pPso = &defaultPso;
 

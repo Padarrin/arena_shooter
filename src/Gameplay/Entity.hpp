@@ -35,4 +35,7 @@ DECLARE_SCRIPT(ScriptEntity, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 	}
 
+	gce::GameObject* GetGameObject() { return m_pOwner; }
+	gce::Scene* GetScene() { return m_pOwner->m_pScene; }
+
 END_SCRIPT

@@ -1,5 +1,6 @@
 #pragma once
 #include "Agent.hpp"
+#include "Ball.hpp"
 
 DECLARE_SCRIPT(ScriptEnemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
@@ -9,6 +10,7 @@ virtual void Start() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Sta
 virtual void Update() 
 { 
 	mAgent->mCharacter->mEntity->Translate(gce::Vector3f32(0.f, 0.f, 0.1f)); // temp
+	ScriptBall* ball = ScriptBall::CreateBall(mAgent->mCharacter->mEntity->GetWorldPosition(), gce::Vector3f32(1.f, 0.f, 0.f), 100.f, *m_pOwner->m_pScene, gce::SHAPES.CUBE); //temp
 }
 virtual void Destroy() {}
 
@@ -19,5 +21,3 @@ virtual void CollisionExit() {}
 
 
 END_SCRIPT
-
-#endif
