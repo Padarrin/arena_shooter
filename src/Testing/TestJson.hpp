@@ -8,7 +8,7 @@ using namespace gce;
 
 BEGIN_TEST( Json )
 
-    const char8* path = RES_PATH"res/Testing/scene_v1.json";
+    const char8* path = RES_PATH"res/Testing/sample1.json";
 
     //JsonObject* root = JsonParser::Deserialize(path);
     //JsonParser::Deserialize(path);
