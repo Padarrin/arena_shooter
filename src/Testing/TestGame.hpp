@@ -7,6 +7,23 @@
 #include "../Gameplay/Player.hpp"
 #include "define.h"
 
+void CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
+{
+	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE);
+	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
+
+	gamePlayer.AddChild(cameraObject);
+	player->SetCamera(cameraObject);
+	player->WorldTranslate(gce::Vector3f32(-3.f, 0.f, 0.f));
+
+}
+
+void CreateEnemy(gce::Scene& scene)
+{
+	gce::GameObject& cameraObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	//ScriptEnemy* enemy = cameraObject.GetScript<ScriptEnemy>();
+}
+
 
 BEGIN_TEST( Game )
 
@@ -24,12 +41,9 @@ BEGIN_TEST( Game )
 	camera.perspective.aspectRatio = 600.0f / 400.0f;
 	camera.perspective.up = { 0.0f, 1.0f, 0.0f };
 
-	ScriptEnemy* enemy = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	CreateEnemy(scene);
 
-	ScriptPlayer* player = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE);
-	player->Start();
-	player->SetCamera(cameraObject);
-	player->WorldTranslate(gce::Vector3f32(-3.f, 0.f, 0.f));
+	CreatePlayer(cameraObject, scene);
 
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 	//geometry = 

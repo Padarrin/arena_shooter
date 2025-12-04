@@ -17,6 +17,8 @@ protected:
 	float mSpeed;
 	Target mTarget;
 
+	int mDamage;
+
 public:
 	ScriptEntity* mEntity;
 
@@ -26,42 +28,34 @@ public:
 		mEntity->Start();
 
 		int life = 1;
+		int damage = 1;
 		SetLife(life);
 		SetMaxLife(life);
 		SetSpeed(1.f);
 		SetTargetIsSet(false);
+		SetDamage(damage);
 	}
 	virtual void Update() 
 	{
-		//light engine Entity::Update()
-		/*
-		float dt = GetDeltaTime();
+		float dt = gce::GameManager::DeltaTime();
 		float distance = dt * mSpeed;
-		sf::Vector2f translation = distance * mDirection;
-		mpShape->move(translation);
 
 		if (mTarget.isSet) 
 		{
-			float x1 = GetPosition().x;
-			float y1 = GetPosition().y;
+			gce::Vector3f32 pos = mEntity->GetWorldPosition();
 
-			float x2 = x1 + mDirection.x * mTarget.distance;
-			float y2 = y1 + mDirection.y * mTarget.distance;
-
-			Debug::DrawLine(x1, y1, x2, y2, sf::Color::Cyan);
-
-			Debug::DrawCircle(mTarget.position.x, mTarget.position.y, 5.f, sf::Color::Magenta);
+			float x1 = pos.x;
+			float y1 = pos.y;
+			float z1 = pos.z;
 
 			mTarget.distance -= distance;
 
 			if (mTarget.distance <= 0.f)
 			{
-				SetPosition(mTarget.position.x, mTarget.position.y);
-				mDirection = sf::Vector2f(0.f, 0.f);
+				mEntity->SetWorldPosition(mTarget.position);
 				mTarget.isSet = false;
 			}
 		}
-		*/
 	}
 	virtual void Destroy() {}
 
@@ -69,23 +63,22 @@ public:
 	virtual void CollisionStay() {}
 	virtual void CollisionExit() {}
 
-	//void GoToPosition
-	/*bool Entity::GoToPosition(int x, int y, float speed)
+	bool GoToPosition(gce::Vector3f32 pos, float speed)
 	{
-		if (GoToDirection(x, y, speed) == false)
-			return false;
+		gce::Vector3f32 position = mEntity->GetWorldPosition();
 
-		sf::Vector2f position = GetPosition();
-
-		mTarget.position = { x, y };
-		mTarget.distance = Utils::GetDistance(position.x, position.y, x, y);
+		mTarget.position = pos;
+		mTarget.distance = GetDistance(position, pos);
 		mTarget.isSet = true;
 
 		return true;
-	}*/
+	}
 
-	//damage
-	//health
+	void Damage(int damage) { mLife -= damage; }
+	void Heal(int heal) { mLife += heal; }
+
+	void SetDamage(int damage) { mDamage = damage; }
+	int GetDamage() { return mDamage; }
 
 	void SetMaxLife(int maxLife) { mMaxLife = maxLife; SetLife(maxLife); }
 	int GetMaxLife() { return mMaxLife; }
