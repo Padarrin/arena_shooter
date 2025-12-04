@@ -40,6 +40,7 @@ BEGIN_TEST( Game )
 	//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
 
 	gce::GameObject& testObject = gce::GameObject::Create(scene);
+	testObject.AddChild(cameraObject);
 	ScriptPlayer& player = *testObject.AddScript< ScriptPlayer>();
 	player.SetCamera(cameraObject);
 	

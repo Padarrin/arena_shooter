@@ -2,7 +2,7 @@
 #include "Character.hpp"
 #include "Queue.hpp"
 #include "compare.h"
-#include "PathFinding.hpp"
+#include "PathFinding.h"
 #include "Grid.h"
 
 DECLARE_SCRIPT(ScriptAgent, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
