@@ -61,6 +61,8 @@ public:
 
     Event<GameObject*>* pCollisionEvents = nullptr;
     Event<GameObject*>* pCollision2DEvents = nullptr;
+
+    Scene* m_pScene = nullptr;
 private:
     explicit GameObject( cstr name = "GameObject" );
     // GameObject( GameObject const& ) = default;
@@ -74,8 +76,6 @@ private:
     inline static uint32 s_nextID = 0;
     uint32 m_id = s_nextID++;
     cstr m_name;
-
-    Scene* m_pScene = nullptr;
     
     int64 m_componentsBitmask = 0;
     UnorderedMap<Component::TypeEnum, uint16> m_components {};
