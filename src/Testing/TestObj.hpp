@@ -15,9 +15,9 @@ BEGIN_TEST( Obj )
 
     D12PipelineObject pso{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
 
-    Geometry* pCustomGeo1 = GeometryFactory::LoadGeometry(RES_PATH"res/Test/Obj/bureau.obj");
+    Geometry* pCustomGeo1 = GeometryFactory::LoadGeometry(RES_PATH"res/Test/Obj/wrap.obj");
 
-    Texture* texture = new Texture("res/Test/Texture/bureau_texture.png");
+    //Texture* texture = new Texture("res/Test/Texture/bureau_texture.png");
 
     GameObject& lightObject = GameObject::Create(scene);
     Light* light = lightObject.AddComponent<Light>();
@@ -30,7 +30,7 @@ BEGIN_TEST( Obj )
     meshRenderer1->pGeometry = pCustomGeo1;
     meshRenderer1->pPso = &pso;
 
-    meshRenderer1->pMaterial->albedoTextureID = texture->GetTextureID();
+    //meshRenderer1->pMaterial->albedoTextureID = texture->GetTextureID();
 
     meshRenderer1->pMaterial->subsurface = 0.2f;
     meshRenderer1->pMaterial->useDisplacementTexture = 0;
