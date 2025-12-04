@@ -18,8 +18,6 @@ protected:
 	float mSpeed;
 	Target mTarget;
 
-	
-
 public:
 	ScriptEntity* mEntity;
 

@@ -15,13 +15,22 @@ void CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 	gamePlayer.AddChild(cameraObject);
 	player->SetCamera(cameraObject);
 	player->WorldTranslate(gce::Vector3f32(-3.f, 0.f, 0.f));
+	player->mCharacter->SetSpeed(90);
 
 }
 
 void CreateEnemy(gce::Scene& scene)
 {
-	gce::GameObject& cameraObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
-	//ScriptEnemy* enemy = cameraObject.GetScript<ScriptEnemy>();
+	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	//ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
+}
+
+void CreateFloor(gce::Scene& scene)
+{
+	gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, gce::SHAPES.CUBE);
+	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
+	entity->SetWorldPosition({ 0.f ,-1.f ,0.f });
+	entity->SetWorldScale({ 50.f,0.2f,50.f });
 }
 
 
@@ -45,26 +54,12 @@ BEGIN_TEST( Game )
 
 	CreatePlayer(cameraObject, scene);
 
+	CreateFloor(scene);
+
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 	//geometry = 
 	//texture = 
 	//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
-
-	gce::GameObject& testObject = gce::GameObject::Create(scene);
-	testObject.AddChild(cameraObject);
-	ScriptPlayer& player = *testObject.AddScript< ScriptPlayer>();
-	player.SetCamera(cameraObject);
-
-	gce::MeshRenderer& meshRenderer = *testObject.AddComponent<gce::MeshRenderer>();
-	meshRenderer.pGeometry = gce::SHAPES.CUBE;
-	meshRenderer.pPso = &defaultPso;
-
-	gce::GameObject& floorObject = gce::GameObject::Create(scene);
-	floorObject.transform.SetWorldPosition({ 0,-1,0 });
-	floorObject.transform.SetWorldScale({ 50,0.2f,50 });
-	gce::MeshRenderer& meshRendererFloor = *floorObject.AddComponent<gce::MeshRenderer>();
-	meshRendererFloor.pGeometry = gce::SHAPES.CUBE;
-	meshRendererFloor.pPso = &defaultPso;
 
 	gce::WindowParam windowParam;
 	gce::GameManager::Run(windowParam);

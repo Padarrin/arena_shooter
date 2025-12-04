@@ -4,8 +4,6 @@
 DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
 	protected:
-		float mSpeed;
-
 		gce::GameObject* mObjectCamera;
 		gce::Window* mWindow;
 
@@ -16,9 +14,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		{
 			mCharacter = m_pOwner->AddScript<ScriptCharacter>();
 			mCharacter->Start();
-			mCharacter->SetSpeed(9);
 
-			mSpeed = mCharacter->GetSpeed();
+			mWindow = nullptr;
 		}
 
 		virtual void Update()
@@ -46,7 +43,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * verticalInput;
 
-			mCharacter->mEntity->SetWorldPosition(GetWorldPosition() + direction * mSpeed * deltaTime);
+			SetWorldPosition(GetWorldPosition() + direction * mCharacter->GetSpeed()/*mSpeed*/ * deltaTime);
 		}
 
 		void TurnCamera()
