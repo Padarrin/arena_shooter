@@ -14,7 +14,7 @@ BEGIN_TEST( Game )
 	gce::Scene& scene = gce::Scene::Create();
 
 	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
-	cameraObject.transform.LocalTranslate({ 0, 0, -10 });
+	cameraObject.transform.LocalTranslate({ 0, 0, 0 });
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
 	camera.SetMainCamera();
 	camera.SetType(gce::PERSPECTIVE);
@@ -36,6 +36,22 @@ BEGIN_TEST( Game )
 	//geometry = 
 	//texture = 
 	//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
+
+	gce::GameObject& testObject = gce::GameObject::Create(scene);
+	testObject.AddChild(cameraObject);
+	ScriptPlayer& player = *testObject.AddScript< ScriptPlayer>();
+	player.SetCamera(cameraObject);
+
+	gce::MeshRenderer& meshRenderer = *testObject.AddComponent<gce::MeshRenderer>();
+	meshRenderer.pGeometry = gce::SHAPES.CUBE;
+	meshRenderer.pPso = &defaultPso;
+
+	gce::GameObject& floorObject = gce::GameObject::Create(scene);
+	floorObject.transform.SetWorldPosition({ 0,-1,0 });
+	floorObject.transform.SetWorldScale({ 50,0.2f,50 });
+	gce::MeshRenderer& meshRendererFloor = *floorObject.AddComponent<gce::MeshRenderer>();
+	meshRendererFloor.pGeometry = gce::SHAPES.CUBE;
+	meshRendererFloor.pPso = &defaultPso;
 
 	gce::WindowParam windowParam;
 	gce::GameManager::Run(windowParam);
