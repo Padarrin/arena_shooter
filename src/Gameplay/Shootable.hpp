@@ -26,7 +26,7 @@ public:
 			float dt = gce::GameManager::DeltaTime();
 			float distance = dt * mSpeed;
 			gce::Vector3f32 translation = mDirection * distance;
-			mObject->mEntity->Translate(translation);
+			mObject->mEntity->WorldTranslate(translation);
 		}
 	}
 
@@ -100,7 +100,7 @@ public:
 
 	void Translate(gce::Vector3f32 position)
 	{
-		mObject->mEntity->Translate(position);
+		mObject->mEntity->WorldTranslate(position);
 	}
 
 	END_SCRIPT

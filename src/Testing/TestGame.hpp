@@ -39,12 +39,12 @@ BEGIN_TEST( Game )
 	//texture = 
 	//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
 
-	GameObject& testObject = GameObject::Create(scene);
+	gce::GameObject& testObject = gce::GameObject::Create(scene);
 	ScriptPlayer& player = *testObject.AddScript< ScriptPlayer>();
 	player.SetCamera(cameraObject);
 	
-	MeshRenderer& meshRenderer = *testObject.AddComponent<MeshRenderer>();
-	meshRenderer.pGeometry = SHAPES.CUBE;
+	gce::MeshRenderer& meshRenderer = *testObject.AddComponent<gce::MeshRenderer>();
+	meshRenderer.pGeometry = gce::SHAPES.CUBE;
 	meshRenderer.pPso = &defaultPso;
 
 	gce::WindowParam windowParam;
