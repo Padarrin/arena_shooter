@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include "Cell.h"
 
 template<typename T>
 struct NeighborsCost;

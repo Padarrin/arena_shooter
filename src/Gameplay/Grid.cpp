@@ -5,7 +5,6 @@
 #include <Maths/Vector2.hpp>
 
 #include "Functions.h"
-#include "Cell.h"
 #include "Node.h"
 
 #include <iostream>
