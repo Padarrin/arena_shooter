@@ -63,8 +63,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		{
 			if (mObjectCamera == nullptr)
 				return;
-			std::cout << (float)gce::GetMousePosition().y * degree << std::endl;
-			mObjectCamera->transform.SetWorldRotation({ gce::Clamp((float)gce::GetMousePosition().y * degree, -180,180), (float)gce::GetMousePosition().x * degree, 0.f });
+			std::cout << (float)gce::GetMousePosition().y << "; " << degree << "; " << (float)gce::GetMousePosition().y * degree << std::endl;
+			mObjectCamera->transform.SetWorldRotation({ gce::Clamp((float)gce::GetMousePosition().y - 180,180) * degree, (float)gce::GetMousePosition().x * degree, 0.f });
 		}
 
 		void SetCamera(gce::GameObject& cameraObject)
