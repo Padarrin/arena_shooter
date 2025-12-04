@@ -3,8 +3,8 @@
 
 #include <Render.h>
 #include <Engine.h>
-//#include "../Gameplay/Entity.hpp"
 #include "../Gameplay/Enemy.hpp"
+#include "../Gameplay/Player.hpp"
 #include "define.h"
 
 
@@ -39,9 +39,16 @@ BEGIN_TEST( Game )
 	//texture = 
 	//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
 
+	gce::GameObject& testObject = gce::GameObject::Create(scene);
+	ScriptPlayer& player = *testObject.AddScript< ScriptPlayer>();
+	player.SetCamera(cameraObject);
+	
+	gce::MeshRenderer& meshRenderer = *testObject.AddComponent<gce::MeshRenderer>();
+	meshRenderer.pGeometry = gce::SHAPES.CUBE;
+	meshRenderer.pPso = &defaultPso;
+
 	gce::WindowParam windowParam;
 	gce::GameManager::Run(windowParam);
-
 	gce::GameManager::Destroy();
 
 END_TEST_MAIN_FUNCTION()
