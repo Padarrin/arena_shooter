@@ -24,6 +24,13 @@ public:
 	virtual void CollisionStay() {}
 	virtual void CollisionExit() {}
 
+	static void FocusEntity(ScriptEntity* entityGiveInformation, ScriptEntity* entityTarget)
+	{
+		gce::Vector3f32 dir = entityTarget->GetGameObject()->transform.GetWorldPosition() - entityGiveInformation->GetGameObject()->transform.GetWorldPosition();
+		dir = dir.Normalize();
+		entityGiveInformation->SetWorldRotate(gce::Vector3f32(-asin(dir.y), atan2(dir.x, dir.z), 0.f));
+	}
+
 
 	void SetWorldPosition(gce::Vector3f32 position) { m_pOwner->transform.SetWorldPosition(position); }
 	void SetWorldRotate(gce::Vector3f32 rotation) { m_pOwner->transform.SetWorldRotation(rotation); }
@@ -45,6 +52,8 @@ public:
 	void LocalTranslate(gce::Vector3f32 position) { m_pOwner->transform.LocalTranslate(position); }
 	void LocalRotate(gce::Vector3f32 rotation) { m_pOwner->transform.LocalRotate(rotation); }
 	void LocalScale(gce::Vector3f32 scale) { m_pOwner->transform.LocalScale(scale); }
+
+	gce::Vector3f32 GetWorldForward() { return m_pOwner->transform.GetWorldForward(); }
 
 	gce::GameObject* GetGameObject() { return m_pOwner; }
 	gce::Scene* GetScene() { return m_pOwner->m_pScene; }

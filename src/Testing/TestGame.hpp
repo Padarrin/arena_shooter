@@ -4,10 +4,9 @@
 #include <Render.h>
 #include <Engine.h>
 #include "../Gameplay/Enemy.hpp"
-#include "../Gameplay/Player.hpp"
 #include "define.h"
 
-void CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
+ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 {
 	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE);
 	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
@@ -15,13 +14,15 @@ void CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 	gamePlayer.AddChild(cameraObject);
 	player->SetCamera(cameraObject);
 	player->WorldTranslate(gce::Vector3f32(-3.f, 0.f, 0.f));
-
+	return player;
 }
 
-void CreateEnemy(gce::Scene& scene)
+void CreateEnemy(gce::Scene& scene, ScriptPlayer* player)
 {
 	gce::GameObject& cameraObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
-	//ScriptEnemy* enemy = cameraObject.GetScript<ScriptEnemy>();
+	ScriptEnemy* enemy = cameraObject.GetScript<ScriptEnemy>();
+	enemy->SetPlayer(player);
+
 }
 
 
@@ -41,9 +42,9 @@ BEGIN_TEST( Game )
 	camera.perspective.aspectRatio = 600.0f / 400.0f;
 	camera.perspective.up = { 0.0f, 1.0f, 0.0f };
 
-	CreateEnemy(scene);
+	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
 
-	CreatePlayer(cameraObject, scene);
+	CreateEnemy(scene, player);
 
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 	//geometry = 
