@@ -16,11 +16,11 @@ bool Normalize(gce::Vector3f32& vector)
     return false;
 }
 
-float GetDistance(int x1, int y1, int z1, int x2, int y2, int z2)
+float GetDistance(gce::Vector3f32 pos1, gce::Vector3f32 pos2)
 {
-    int x = x2 - x1;
-    int y = y2 - y1;
-    int z = z2 - z1;
+    int x = pos2.x - pos1.x;
+    int y = pos2.y - pos1.y;
+    int z = pos2.z - pos1.z;
 
     return std::sqrt(x * x + y * y + z * z);
 }

@@ -25,17 +25,17 @@ template<typename A>
 std::vector<std::vector<A*>>* EraseTab(std::vector<std::vector<A*>>* all);
 
 template<typename T>
-T* CreateGameObject(gce::Scene& scene);
+gce::GameObject& CreateGameObject(gce::Scene& scene);
 template<typename T>
-T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry);
+gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry);
 template<typename T>
-T* CreateGameObject(gce::Scene& scene, gce::Texture* texture);
+gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Texture* texture);
 template<typename T>
-T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture);
+gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture);
 
 bool Normalize(gce::Vector3f32& vector);
 
-float GetDistance(int x1, int y1, int z1, int x2, int y2, int z2);
+float GetDistance(gce::Vector3f32 pos1, gce::Vector3f32 pos2);
 
 template<typename T>
 T* GetCell(gce::Vector3f32 pos, Grid* grid);
@@ -59,8 +59,6 @@ T* GetEntityNearest(gce::Vector3f32 pos, float minDis);
 float DisManhattan(gce::Vector3f32 currentPos, gce::Vector3f32 endPos, int sizeCell);
 
 gce::Vector2f32 GetCellInPos(gce::Vector3f32 pos, int sizeCell);
-
-
 
 
 #include "Functions.inl"

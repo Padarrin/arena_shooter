@@ -1,6 +1,7 @@
 #include "Functions.h"
 
 #include <GameObject.h>
+#include "../Engine/Components/Light.h"
 #include "../Engine/Components/MeshRenderer.h"
 #include <Render.h>
 #include <Engine.h>
@@ -57,25 +58,25 @@ inline std::vector<std::vector<A*>>* EraseTab(std::vector<std::vector<A*>>* all)
 }
 
 template<typename T>
-inline T* CreateGameObject(gce::Scene& scene)
+inline gce::GameObject& CreateGameObject(gce::Scene& scene)
 {
 	return CreateGameObject<T>(scene, nullptr, nullptr);
 }
 
 template<typename T>
-inline T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry)
+inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry)
 {
 	return CreateGameObject<T>(scene, geometry, nullptr);
 }
 
 template<typename T>
-inline T* CreateGameObject(gce::Scene& scene, gce::Texture* texture)
+inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Texture* texture)
 {
 	return CreateGameObject<T>(scene, nullptr, texture);
 }
 
 template<typename T>
-inline T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture)
+inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture)
 {
 	gce::GameObject& object = gce::GameObject::Create(scene);
 	T* ob = object.AddScript<T>();
@@ -95,7 +96,9 @@ inline T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Text
 			meshRenderer.pMaterial->useTextureAlbedo = 1;
 		}
 	}
-	return ob;
+	gce::Light* light = object.AddComponent<gce::Light>();
+
+	return object;
 }
 
 template<typename T>

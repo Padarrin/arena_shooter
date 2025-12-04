@@ -9,13 +9,13 @@ protected:
 public:
 	virtual void Start() 
 	{ 
-		SetWorldPosition(gce::Vector3f32(0.f, 0.f, 0.f));
-		SetWorldRotate(gce::Vector3f32(0.f, 0.f, 0.f));
-		SetWorldScale(gce::Vector3f32(1.f, 1.f, 1.f));
+		//SetWorldPosition(gce::Vector3f32(0.f, 0.f, 0.f));
+		//SetWorldRotate(gce::Vector3f32(0.f, 0.f, 0.f));
+		//SetWorldScale(gce::Vector3f32(1.f, 1.f, 1.f));
 
-		SetLocalPosition(gce::Vector3f32(0.f, 0.f, 0.f));
-		SetLocalRotate(gce::Vector3f32(0.f, 0.f, 0.f));
-		SetLocalScale(gce::Vector3f32(1.f, 1.f, 1.f));
+		//SetLocalPosition(gce::Vector3f32(0.f, 0.f, 0.f));
+		//SetLocalRotate(gce::Vector3f32(0.f, 0.f, 0.f));
+		//SetLocalScale(gce::Vector3f32(1.f, 1.f, 1.f));
 	}
 	virtual void Update() {}
 	virtual void Destroy() {}

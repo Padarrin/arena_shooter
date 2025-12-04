@@ -9,78 +9,74 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		gce::GameObject* mObjectCamera;
 		gce::Window* mWindow;
 
-		float32 mDeltaTime;
-
-		uint32 mWidth;
-		uint32 mHeight;
-
 	public:
 		ScriptCharacter*  mCharacter;
 
-		void Start() 
+		virtual void Start() 
 		{ 
 			mCharacter = m_pOwner->AddScript<ScriptCharacter>();
-			mWindow = gce::GameManager::GetWindow();
-			mWidth = mWindow->GetWidth();
-			mHeight = mWindow->GetHeight();
-
+			mCharacter->Start();
+			mWindow = nullptr;
 			mDirection = { 5,5,5 };
 		}
 
-		void Update() 
+		virtual void Update()
 		{ 
-			mDeltaTime = gce::GameManager::DeltaTime();
+			float deltaTime = gce::GameManager::DeltaTime();
 
-			float degree = 360 / ((gce::Sqrt(mWidth * mWidth + mHeight * mHeight) * 100));
+			if (mWindow == nullptr) { mWindow = gce::GameManager::GetWindow(); }
+			else
+			{
+				TurnCamera();
+			}
 
-			InputMove();
-			TurnCamera(degree);
+			InputMove(deltaTime);
+			
 		}
 
-		void Destroy() {}
+		virtual void Destroy() {}
 
-		void CollisionEnter() {}
-		void CollisionStay() {}
-		void CollisionExit() {}
+		virtual void CollisionEnter() {}
+		virtual void CollisionStay() {}
+		virtual void CollisionExit() {}
 		
-		void InputMove()
+		void InputMove(float deltaTime)
 		{
 			if (gce::GetKey(gce::Keyboard::Key::Z))
-				WorldTranslate({ 0, 0, mDirection.z * mDeltaTime });
+			{
+				WorldTranslate({ 0, 0, mDirection.z * deltaTime });
+			}
 			else if (gce::GetKey(gce::Keyboard::Key::S))
-				WorldTranslate({ 0, 0, -mDirection.z * mDeltaTime });
+			{
+				WorldTranslate({ 0, 0, -mDirection.z * deltaTime });
+			}
 
 			if (gce::GetKey(gce::Keyboard::Key::D))
-				WorldTranslate({ mDirection.x * mDeltaTime, 0, 0 });
+			{
+				WorldTranslate({ mDirection.x * deltaTime, 0, 0 });
+			}
 			else if (gce::GetKey(gce::Keyboard::Key::Q))
-				WorldTranslate({ -mDirection.x * mDeltaTime, 0, 0 });
+			{
+				WorldTranslate({ -mDirection.x * deltaTime, 0, 0 });
+			}
 		}
 
-		void TurnCamera(float degree)
+		void TurnCamera()
 		{
 			if (mObjectCamera == nullptr)
 				return;
+
+			uint32 width = mWindow->GetWidth();
+			uint32 height = mWindow->GetHeight();
+
+			float degree = 360 / ((gce::Sqrt(width * width + height * height) * 100));
 			mObjectCamera->transform.SetWorldRotation({ (float)gce::GetMousePosition().y * degree, (float)gce::GetMousePosition().x * degree, 0.f });
 		}
 
-		void SetCamera(gce::GameObject& cameraObject)
-		{
-			mObjectCamera = &cameraObject;
-		}
+		void SetCamera(gce::GameObject& cameraObject) { mObjectCamera = &cameraObject; }
 
-		void SetWorldPosition(gce::Vector3f32 position)
-		{
-			mCharacter->mEntity->SetWorldPosition(position);
-		}
-		
-		gce::Vector3f32 GetWorldPosition()
-		{
-			return mCharacter->mEntity->GetWorldPosition();
-		}
-
-		void WorldTranslate(gce::Vector3f32 position)
-		{
-			mCharacter->mEntity->WorldTranslate(position);
-		}
+		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
+		gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }
+		void WorldTranslate(gce::Vector3f32 position) { mCharacter->mEntity->WorldTranslate(position); }
 
 END_SCRIPT
