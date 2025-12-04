@@ -73,7 +73,7 @@ public:
 		return true;
 	}
 
-	void MakeDamage(int damage) { mLife -= damage; }
+	void Damage(int damage) { mLife -= damage; }
 	void Heal(int heal) { mLife += heal; }
 
 	void SetDamage(int damage) { mDamage = damage; }
