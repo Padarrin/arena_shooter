@@ -44,7 +44,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		{
 			if (gce::GetKey(gce::Keyboard::Key::Z))
 			{
-				float mction = mDirection.z* deltaTime;
 				WorldTranslate({ 0, 0, mDirection.z * deltaTime });
 			}
 			else if (gce::GetKey(gce::Keyboard::Key::S))
