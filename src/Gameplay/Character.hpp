@@ -11,13 +11,14 @@ protected:
 		bool isSet;
 	};
 
+	int mDamage;
 	int mLife;
 	int mMaxLife;
 
 	float mSpeed;
 	Target mTarget;
 
-	int mDamage;
+	
 
 public:
 	ScriptEntity* mEntity;
@@ -29,11 +30,13 @@ public:
 
 		int life = 1;
 		int damage = 1;
+		SetDamage(damage);
 		SetLife(life);
 		SetMaxLife(life);
+
 		SetSpeed(1.f);
 		SetTargetIsSet(false);
-		SetDamage(damage);
+		
 	}
 	virtual void Update() 
 	{
@@ -74,17 +77,43 @@ public:
 		return true;
 	}
 
-	void Damage(int damage) { mLife -= damage; }
-	void Heal(int heal) { mLife += heal; }
-
-	void SetDamage(int damage) { mDamage = damage; }
-	int GetDamage() { return mDamage; }
-
-	void SetMaxLife(int maxLife) { mMaxLife = maxLife; SetLife(maxLife); }
-	int GetMaxLife() { return mMaxLife; }
-
-	void SetLife(int life) { mLife = life; }
-	int GetLife() { return mLife; }
+	void Damage(int damage) 
+	{ 
+		mLife -= damage; 
+		if (mLife < 1) { mEntity->GetGameObject()->Destroy(); } 
+	}
+	void Heal(int heal) 
+	{ 
+		mLife += heal; 
+		if (mLife > mMaxLife) { mLife = mMaxLife; } 
+	}
+	void SetDamage(int damage) 
+	{ 
+		mDamage = damage; 
+	}
+	int GetDamage() 
+	{ 
+		return mDamage; 
+	}
+	void SetMaxLife(int maxLife) 
+	{ 
+		mMaxLife = maxLife; 
+		SetLife(maxLife); 
+	}
+	int GetMaxLife() 
+	{ 
+		return mMaxLife; 
+	}
+	void SetLife(int life) 
+	{ 
+		mLife = life; 
+		if (mLife > mMaxLife) { mLife = mMaxLife; } 
+		else if (mLife < 1) { mEntity->GetGameObject()->Destroy(); }
+	}
+	int GetLife() 
+	{ 
+		return mLife; 
+	}
 
 	void SetSpeed(float speed) { mSpeed = speed; }
 	float GetSpeed() { return mSpeed; }
