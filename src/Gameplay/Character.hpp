@@ -25,6 +25,7 @@ public:
 	virtual void Start() 
 	{ 
 		mEntity = m_pOwner->AddScript<ScriptEntity>();
+		mEntity->Start();
 
 		int life = 1;
 		int damage = 1;
