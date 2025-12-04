@@ -44,6 +44,8 @@ BEGIN_TEST( Game )
 	ScriptPlayer& player = *testObject.AddScript< ScriptPlayer>();
 	player.SetCamera(cameraObject);
 
+	gce::BoxCollider& boxCollider = *testObject.AddComponent<gce::BoxCollider>();
+
 	gce::MeshRenderer& meshRenderer = *testObject.AddComponent<gce::MeshRenderer>();
 	meshRenderer.pGeometry = gce::SHAPES.CUBE;
 	meshRenderer.pPso = &defaultPso;

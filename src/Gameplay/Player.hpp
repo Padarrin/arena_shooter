@@ -17,6 +17,9 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		float mHorizontalInput;
 		float mVerticalInput;
 
+		gce::Vector3f32 velocity = { 0, 0, 0 };
+		float gravity = 9.81f;
+
 	public:
 		ScriptCharacter*  mCharacter;
 
@@ -45,7 +48,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		void Destroy() {}
 
-		void CollisionEnter() {}
+		void CollisionEnter() { std::cout << "d"; }
 		void CollisionStay() {}
 		void CollisionExit() {}
 		
@@ -64,29 +67,51 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			if (mObjectCamera == nullptr)
 				return;
 			
-			std::cout << (float)gce::GetMousePosition().y << "; " << degree << "; " << (float)gce::GetMousePosition().y * degree << std::endl;
+			//std::cout << (float)gce::GetMousePosition().y << "; " << degree << "; " << (float)gce::GetMousePosition().y * degree << std::endl;
 			mObjectCamera->transform.SetLocalRotation({ gce::Clamp((float)gce::GetMousePosition().y * degree, 0,1), 0.f, 0.f });
 			m_pOwner->transform.SetWorldRotation({ 0.f,(float)gce::GetMousePosition().x * degree ,0.f });
 		}
 
-		void SetCamera(gce::GameObject& cameraObject)
+		void SetCamera(gce::GameObject& cameraObject) { mObjectCamera = &cameraObject; }
+
+		void Gravity(float deltaTime)
 		{
-			mObjectCamera = &cameraObject;
+			//Enleve de la velocite
+			velocity.y -= gravity * deltaTime;
+
+			//Fait redescendre le joueur
+			mCharacter->mEntity->SetWorldPosition({ GetWorldPosition().x,GetWorldPosition().y + velocity.y * deltaTime,GetWorldPosition().z });
+
+			//if (CollisionEnter(chunk->GetCurrentChunk(this)))
+			//{
+			//	//Regarde si il est dans les airs pour qu'il puisse sauter
+			//	if (pPlayer->GetPosition().y <= -0.75f)
+			//	{
+			//		pPlayer->SetPosition({ pPlayer->GetPosition().x, -0.75f ,pPlayer->GetPosition().z });
+			//		velocity.y = 0.f;
+			//		isJumping = false;
+			//	}
+			//	else
+			//	{
+			//		isJumping = true;
+			//	}
+			//}
+			//else
+			//{
+			//	pPlayer->SetPosition({ pPlayer->GetPosition().x, pPlayer->GetPosition().y ,pPlayer->GetPosition().z });
+			//}
+
+			//if (pPlayer->GetPosition().y <= -5)
+			//{
+			//	Respawn();
+			//	chunk->ResetChunk();
+			//}
 		}
 
-		void SetWorldPosition(gce::Vector3f32 position)
-		{
-			mCharacter->mEntity->SetWorldPosition(position);
-		}
+		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
 		
-		gce::Vector3f32 GetWorldPosition()
-		{
-			return mCharacter->mEntity->GetWorldPosition();
-		}
+		gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }
 
-		void WorldTranslate(gce::Vector3f32 position)
-		{
-			mCharacter->mEntity->WorldTranslate(position);
-		}
+		void WorldTranslate(gce::Vector3f32 position) { mCharacter->mEntity->WorldTranslate(position); }
 
 END_SCRIPT
