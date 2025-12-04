@@ -35,7 +35,7 @@ T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* te
 
 bool Normalize(gce::Vector3f32& vector);
 
-float GetDistance(int x1, int y1, int z1, int x2, int y2, int z2);
+float GetDistance(gce::Vector3f32 pos1, gce::Vector3f32 pos2);
 
 template<typename T>
 T* GetCell(gce::Vector3f32 pos, Grid* grid);
