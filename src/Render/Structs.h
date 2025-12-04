@@ -96,7 +96,7 @@ namespace gce
         float32 minTessFactor = 2.0f;
         float32 maxTessFactor = 32.0f;
 
-        float32 ambientIntensity = 0.5f;
+        float32 ambientIntensity = 1.0f;
         float32 padding2;
         float32 padding3;
         float32 padding4;

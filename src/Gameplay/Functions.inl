@@ -1,6 +1,7 @@
 #include "Functions.h"
 
 #include <GameObject.h>
+#include "../Engine/Components/Light.h"
 #include "../Engine/Components/MeshRenderer.h"
 #include <Render.h>
 #include <Engine.h>
@@ -95,6 +96,8 @@ inline T* CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Text
 			meshRenderer.pMaterial->useTextureAlbedo = 1;
 		}
 	}
+	gce::Light* light = object.AddComponent<gce::Light>();
+
 	return ob;
 }
 

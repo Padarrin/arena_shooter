@@ -13,14 +13,6 @@ BEGIN_TEST( Game )
 	gce::GameManager::Create();
 	gce::Scene& scene = gce::Scene::Create();
 
-	gce::D12PipelineObject defaultPso(
-		gce::SHADERS.VERTEX,
-		gce::SHADERS.PIXEL,
-		gce::SHADERS.HULL,
-		gce::SHADERS.DOMAIN_,
-		gce::SHADERS.ROOT_SIGNATURE
-	);
-
 	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
 	cameraObject.transform.LocalTranslate({ 0, 0, -10 });
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
@@ -34,21 +26,19 @@ BEGIN_TEST( Game )
 
 	ScriptEnemy* enemy = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 
+	ScriptPlayer* player = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE);
+	player->Start();
+	player->SetCamera(cameraObject);
+	player->WorldTranslate(gce::Vector3f32(-3.f, 0.f, 0.f));
+
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 	//geometry = 
 	//texture = 
 	//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
 
-	gce::GameObject& testObject = gce::GameObject::Create(scene);
-	ScriptPlayer& player = *testObject.AddScript< ScriptPlayer>();
-	player.SetCamera(cameraObject);
-	
-	gce::MeshRenderer& meshRenderer = *testObject.AddComponent<gce::MeshRenderer>();
-	meshRenderer.pGeometry = gce::SHAPES.CUBE;
-	meshRenderer.pPso = &defaultPso;
-
 	gce::WindowParam windowParam;
 	gce::GameManager::Run(windowParam);
+
 	gce::GameManager::Destroy();
 
 END_TEST_MAIN_FUNCTION()
