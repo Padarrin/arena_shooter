@@ -6,7 +6,8 @@ DECLARE_SCRIPT(ScriptEnemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag:
 
 ScriptAgent* mAgent;
 
-virtual void Start() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Start(); }
+virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); }
+virtual void Start() { mAgent->Start(); }
 virtual void Update() 
 { 
 	WorldTranslate(gce::Vector3f32(0.f, 0.f, 0.1f)); // temp

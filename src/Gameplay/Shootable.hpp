@@ -11,7 +11,8 @@ protected:
 public:
 	ScriptObject* mObject;
 
-	virtual void Start() { mObject = m_pOwner->AddScript<ScriptObject>(); mObject->Start(); SetStartPos(GetWorldPosition()); SetDisToDestroy(gce::Vector3f32(1000.f, 1000.f, 1000.f)); }
+	virtual void Initia() { mObject = m_pOwner->AddScript<ScriptObject>(); mObject->Initia(); SetStartPos(GetWorldPosition()); SetDisToDestroy(gce::Vector3f32(1000.f, 1000.f, 1000.f)); }
+	virtual void Start() { mObject->Start(); }
 	virtual void Update() { UpdateDirection(); UpdateOutArea(); }
 	virtual void Destroy() {}
 
