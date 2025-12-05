@@ -13,7 +13,8 @@ protected:
 public:
 	ScriptCharacter* mCharacter;
 
-	virtual void Start() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Start(); void SetPathFinding(PathFinding<Cell>()); void SetPaths(Queue_<Cell, ComparePath<Cell>>()); }
+	virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); void SetPathFinding(PathFinding<Cell>()); }
+	virtual void Start() { mCharacter->Start(); void SetPaths(Queue_<Cell, ComparePath<Cell>>()); }
 	virtual void Update() {}
 	virtual void Destroy() {}
 

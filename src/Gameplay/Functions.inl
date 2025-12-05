@@ -80,7 +80,7 @@ inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geome
 {
 	gce::GameObject& object = gce::GameObject::Create(scene);
 	T* ob = object.AddScript<T>();
-	ob->Start();
+	ob->T::Initia();
 
 	if (geometry != nullptr)
 	{

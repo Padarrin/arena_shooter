@@ -10,13 +10,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 	public:
 		ScriptCharacter* mCharacter;
 
-		void Start() 
-		{
-			mCharacter = m_pOwner->AddScript<ScriptCharacter>();
-			mCharacter->Start();
-
-			mWindow = nullptr;
-		}
+		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); }
+		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); }
 
 		virtual void Update()
 		{ 
@@ -24,10 +19,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 			InputMove(deltaTime);
 
-			if (mWindow == nullptr) { mWindow = gce::GameManager::GetWindow(); }
-			else { TurnCamera(); }
-
-			
+			TurnCamera();
 		}
 
 		virtual void Destroy() {}

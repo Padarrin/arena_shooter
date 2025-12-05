@@ -21,10 +21,10 @@ protected:
 public:
 	ScriptEntity* mEntity;
 
-	virtual void Start() 
+	virtual void Initia()
 	{ 
 		mEntity = m_pOwner->AddScript<ScriptEntity>();
-		mEntity->Start();
+		mEntity->Initia();
 
 		int life = 1;
 		int damage = 1;
@@ -33,6 +33,11 @@ public:
 		SetMaxLife(life);
 
 		SetSpeed(1.f);
+	}
+	virtual void Start() 
+	{ 
+		mEntity->Start();
+
 		SetTargetIsSet(false);
 		
 	}
