@@ -7,6 +7,21 @@
 #include "../Gameplay/Player.hpp"
 #include "define.h"
 
+gce::GameObject& CreateCamera(gce::Scene& scene)
+{
+	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
+	cameraObject.transform.LocalTranslate({ 0, 0, 0 });
+	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
+	camera.SetMainCamera();
+	camera.SetType(gce::PERSPECTIVE);
+	camera.perspective.fov = XM_PIDIV4;
+	camera.perspective.nearPlane = 0.001f;
+	camera.perspective.farPlane = 500.0f;
+	camera.perspective.aspectRatio = 600.0f / 400.0f;
+	camera.perspective.up = { 0.0f, 1.0f, 0.0f };
+	return cameraObject;
+}
+
 void CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 {
 	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE);
@@ -39,16 +54,7 @@ BEGIN_TEST( Game )
 	gce::GameManager::Create();
 	gce::Scene& scene = gce::Scene::Create();
 
-	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
-	cameraObject.transform.LocalTranslate({ 0, 0, 0 });
-	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
-	camera.SetMainCamera();
-	camera.SetType(gce::PERSPECTIVE);
-	camera.perspective.fov = XM_PIDIV4;
-	camera.perspective.nearPlane = 0.001f;
-	camera.perspective.farPlane = 500.0f;
-	camera.perspective.aspectRatio = 600.0f / 400.0f;
-	camera.perspective.up = { 0.0f, 1.0f, 0.0f };
+	gce::GameObject& cameraObject = CreateCamera(scene);
 
 	CreateEnemy(scene);
 

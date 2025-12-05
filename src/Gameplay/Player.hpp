@@ -35,7 +35,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * verticalInput;
 
-			SetWorldPosition(GetWorldPosition() + direction * mCharacter->GetSpeed()/*mSpeed*/ * deltaTime);
+			SetWorldPosition(GetWorldPosition() + direction * mCharacter->GetSpeed() * deltaTime);
 		}
 
 		void TurnCamera()
