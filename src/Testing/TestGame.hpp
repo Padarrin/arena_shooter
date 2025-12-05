@@ -4,12 +4,11 @@
 #include <Render.h>
 #include <Engine.h>
 #include "../Gameplay/Enemy.hpp"
-#include "../Gameplay/Player.hpp"
 #include "define.h"
 
 gce::GameObject& CreateCamera(gce::Scene& scene)
 {
-	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
+		gce::GameObject& cameraObject = gce::GameObject::Create(scene);
 	cameraObject.transform.LocalTranslate({ 0, 0, 0 });
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
 	camera.SetMainCamera();
@@ -22,7 +21,7 @@ gce::GameObject& CreateCamera(gce::Scene& scene)
 	return cameraObject;
 }
 
-void CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
+ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 {
 	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE);
 	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
@@ -31,13 +30,14 @@ void CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 	player->SetCamera(cameraObject);
 	player->WorldTranslate(gce::Vector3f32(-3.f, 0.f, 0.f));
 	player->mCharacter->SetSpeed(90);
-
+	return player;
 }
 
-void CreateEnemy(gce::Scene& scene)
+void CreateEnemy(gce::Scene& scene, ScriptPlayer* player)
 {
-	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
-	//ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
+	gce::GameObject& cameraObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	ScriptEnemy* enemy = cameraObject.GetScript<ScriptEnemy>();
+	enemy->SetPlayer(player);
 }
 
 void CreateFloor(gce::Scene& scene)
@@ -56,9 +56,9 @@ BEGIN_TEST( Game )
 
 	gce::GameObject& cameraObject = CreateCamera(scene);
 
-	CreateEnemy(scene);
+	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
 
-	CreatePlayer(cameraObject, scene);
+	CreateEnemy(scene, player);
 
 	CreateFloor(scene);
 

@@ -7,16 +7,16 @@ DECLARE_SCRIPT(ScriptX, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Des
 protected:
 
 public:
-Scripty* mY;
+    Scripty* mY;
 
-virtual void Initia() { mY = m_pOwner->AddScript<ScriptY>(); mY->Initia();}
-virtual void Start() { mY->Start();}
-virtual void Update() {}
-virtual void Destroy() {}
+    virtual void Initia() { mY = m_pOwner->AddScript<ScriptY>(); mY->Initia();}
+    virtual void Start() { mY->Start();}
+    virtual void Update() {}
+    virtual void Destroy() {}
 
-virtual void CollisionEnter() {}
-virtual void CollisionStay() {}
-virtual void CollisionExit() {}
+    virtual void CollisionEnter() {}
+    virtual void CollisionStay() {}
+    virtual void CollisionExit() {}
 
 END_SCRIPT
 
