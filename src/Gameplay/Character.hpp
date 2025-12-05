@@ -69,6 +69,14 @@ public:
 	virtual void CollisionStay() {}
 	virtual void CollisionExit() {}
 
+	template<typename T>
+	static void CreateBallInFront(float speed, gce::Geometry* geometry, ScriptEntity* entityGiveInformation)
+	{
+		gce::Quaternion rot = entityGiveInformation->GetWorldRotate();
+		T* ball = T::CreateBall(entityGiveInformation->GetWorldPosition(), entityGiveInformation->GetWorldForward(), speed, *entityGiveInformation->GetScene(), geometry);
+		ball->mShootable->mObject->mEntity->SetWorldRotate(gce::Vector3f32(rot.GetX(), rot.GetY(), rot.GetZ()));
+	}
+
 	bool GoToPosition(gce::Vector3f32 pos, float speed)
 	{
 		gce::Vector3f32 position = mEntity->GetWorldPosition();
