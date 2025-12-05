@@ -7,9 +7,11 @@ DECLARE_SCRIPT(ScriptX, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Des
 protected:
 
 public:
-ScriptY* mY;
 
-virtual void Start() { mY = m_pOwner->AddScript<ScriptY>(); mY->Start();}
+Scripty* mY;
+
+virtual void Initia() { mY = m_pOwner->AddScript<ScriptY>(); mY->Initia();}
+virtual void Start() { mY->Start();}
 virtual void Update() {}
 virtual void Destroy() {}
 

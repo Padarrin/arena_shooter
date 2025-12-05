@@ -7,7 +7,8 @@ protected:
 public:
 	ScriptShootable* mShootable;
 
-	virtual void Start() { mShootable = m_pOwner->AddScript<ScriptShootable>(); mShootable->Start(); }
+	virtual void Initia() { mShootable = m_pOwner->AddScript<ScriptShootable>(); mShootable->Initia(); }
+	virtual void Start() { mShootable->Start(); }
 	virtual void Update() {}
 	virtual void Destroy() {}
 

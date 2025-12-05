@@ -8,7 +8,8 @@ protected:
 public:
 	ScriptEntity* mEntity;
 
-	virtual void Start() { mEntity = m_pOwner->AddScript<ScriptEntity>(); mEntity->Start(); }
+	virtual void Initia() { mEntity = m_pOwner->AddScript<ScriptEntity>(); mEntity->Initia(); }
+	virtual void Start() { mEntity->Start(); }
 	virtual void Update() {}
 	virtual void Destroy() {}
 
