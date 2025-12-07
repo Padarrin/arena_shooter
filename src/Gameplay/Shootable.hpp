@@ -11,7 +11,8 @@ protected:
 public:
 	ScriptObject* mObject;
 
-	virtual void Start() { mObject = m_pOwner->AddScript<ScriptObject>(); mObject->Start(); SetStartPos(GetWorldPosition()); SetDisToDestroy(gce::Vector3f32(1000.f, 1000.f, 1000.f)); }
+	virtual void Initia() { mObject = m_pOwner->AddScript<ScriptObject>(); mObject->Initia(); SetStartPos(GetWorldPosition()); SetDisToDestroy(gce::Vector3f32(1000.f, 1000.f, 1000.f)); }
+	virtual void Start() { mObject->Start(); }
 	virtual void Update() { UpdateDirection(); UpdateOutArea(); }
 	virtual void Destroy() {}
 
@@ -26,7 +27,7 @@ public:
 			float dt = gce::GameManager::DeltaTime();
 			float distance = dt * mSpeed;
 			gce::Vector3f32 translation = mDirection * distance;
-			mObject->mEntity->WorldTranslate(translation);
+			WorldTranslate(translation);
 		}
 	}
 
@@ -58,6 +59,12 @@ public:
 		return true;
 	}
 
+	static void SetShootable(ScriptShootable* shootable, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed)
+	{
+		shootable->SetWorldPosition(pos);
+		shootable->SetDirection(dir, speed);
+	}
+
 	void SetDirection(float x, float y, float z, float speed)
 	{
 		SetDirection(gce::Vector3f32(x, y, z), speed);
@@ -82,25 +89,8 @@ public:
 	void SetDisToDestroy(gce::Vector3f32 disToDestroy) { mDisToDestroy = disToDestroy; }
 	gce::Vector3f32 GetDisToDestroy() { return mDisToDestroy; }
 
-	static void SetShootable(ScriptShootable* shootable, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed)
-	{
-		shootable->SetWorldPosition(pos);
-		shootable->SetDirection(dir, speed);
-	}
-
-	gce::Vector3f32 GetWorldPosition()
-	{
-		return mObject->mEntity->GetWorldPosition();
-	}
-
-	void SetWorldPosition(gce::Vector3f32 position)
-	{
-		mObject->mEntity->SetWorldPosition(position);
-	}
-
-	void Translate(gce::Vector3f32 position)
-	{
-		mObject->mEntity->WorldTranslate(position);
-	}
+	void SetWorldPosition(gce::Vector3f32 position) { mObject->mEntity->SetWorldPosition(position); }
+	gce::Vector3f32 GetWorldPosition(){ return mObject->mEntity->GetWorldPosition(); }
+	void WorldTranslate(gce::Vector3f32 position) { mObject->mEntity->WorldTranslate(position); }
 
 	END_SCRIPT

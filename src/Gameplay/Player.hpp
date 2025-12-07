@@ -3,72 +3,51 @@
 
 DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
-	private:
-		float mSpeed;
-
+	protected:
 		gce::GameObject* mObjectCamera;
 		gce::Window* mWindow;
 
-		float32 mDeltaTime;
-
-		uint32 mWidth;
-		uint32 mHeight;
-
-		float mHorizontalInput;
-		float mVerticalInput;
-
-		gce::Vector3f32 velocity = { 0, 0, 0 };
-		float gravity = 9.81f;
-
 	public:
-		ScriptCharacter*  mCharacter;
+		ScriptCharacter* mCharacter;
 
-		void Start() 
-		{
-			mCharacter = m_pOwner->AddScript<ScriptCharacter>();
-			mCharacter->Start();
-			mCharacter->SetSpeed(9);
+		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); }
+		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); }
 
-			mSpeed = mCharacter->GetSpeed();
-
-			mWindow = gce::GameManager::GetWindow();
-			mWidth = mWindow->GetWidth();
-			mHeight = mWindow->GetHeight();
-		}
-
-		void Update() 
+		virtual void Update()
 		{ 
-			mDeltaTime = gce::GameManager::DeltaTime();
+			float deltaTime = gce::GameManager::DeltaTime();
 
-			float degree = 360 / ((gce::Sqrt(mWidth * mWidth + mHeight * mHeight) * 100));
+			InputMove(deltaTime);
 
-			InputMove(degree);
-			TurnCamera(degree);
+			TurnCamera();
 		}
 
-		void Destroy() {}
+		virtual void Destroy() {}
 
-		void CollisionEnter() { std::cout << "d"; }
-		void CollisionStay() {}
-		void CollisionExit() {}
+		virtual void CollisionEnter() { std::cout << "d"; }
+		virtual void CollisionStay() {}
+		virtual void CollisionExit() {}
 		
-		void InputMove(float degree)
+		void InputMove(float deltaTime)
 		{
-			mHorizontalInput = gce::GetKey(gce::Keyboard::Key::D) - gce::GetKey(gce::Keyboard::Key::Q);
-			mVerticalInput = gce::GetKey(gce::Keyboard::Key::Z) - gce::GetKey(gce::Keyboard::Key::S);
+			float horizontalInput = gce::GetKey(gce::Keyboard::Key::D) - gce::GetKey(gce::Keyboard::Key::Q);
+			float verticalInput = gce::GetKey(gce::Keyboard::Key::Z) - gce::GetKey(gce::Keyboard::Key::S);
 
-			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * mHorizontalInput + m_pOwner->transform.GetWorldForward() * mVerticalInput;
+			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * verticalInput;
 
-			mCharacter->mEntity->SetWorldPosition(GetWorldPosition() + direction * mSpeed * mDeltaTime);
+			SetWorldPosition(GetWorldPosition() + direction * mCharacter->GetSpeed() * deltaTime);
 		}
 
-		void TurnCamera(float degree)
+		void TurnCamera()
 		{
 			if (mObjectCamera == nullptr)
 				return;
-			
-			//std::cout << (float)gce::GetMousePosition().y << "; " << degree << "; " << (float)gce::GetMousePosition().y * degree << std::endl;
-			mObjectCamera->transform.SetLocalRotation({ gce::Clamp((float)gce::GetMousePosition().y * degree, 0,1), 0.f, 0.f });
+
+			uint32 width = mWindow->GetWidth();
+			uint32 height = mWindow->GetHeight();
+			float degree = 360.f / ((gce::Sqrt(width * width + height * height) * 100.f));
+
+			mObjectCamera->transform.SetLocalRotation({ (float)gce::GetMousePosition().y * degree, 0.f, 0.f });
 			m_pOwner->transform.SetWorldRotation({ 0.f,(float)gce::GetMousePosition().x * degree ,0.f });
 		}
 
@@ -109,7 +88,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		}
 
 		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
-		
+
 		gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }
 
 		void WorldTranslate(gce::Vector3f32 position) { mCharacter->mEntity->WorldTranslate(position); }

@@ -1,21 +1,22 @@
-//remplace 'x' par Le nom de la classe et 'y' par le nom de son parent
+//remplace 'X' par Le nom de la classe et 'Y' par le nom de son parent
 /*
 #pragma once
-#include "y.hpp"
+#include "Y.hpp"
 
-DECLARE_SCRIPT(Scriptx, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
+DECLARE_SCRIPT(ScriptX, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 protected:
 
 public:
-Scripty* my;
+    Scripty* mY;
 
-virtual void Start() { my = m_pOwner->AddScript<Scripty>(); my->Start();}
-virtual void Update() {}
-virtual void Destroy() {}
+    virtual void Initia() { mY = m_pOwner->AddScript<ScriptY>(); mY->Initia();}
+    virtual void Start() { mY->Start();}
+    virtual void Update() {}
+    virtual void Destroy() {}
 
-virtual void CollisionEnter() {}
-virtual void CollisionStay() {}
-virtual void CollisionExit() {}
+    virtual void CollisionEnter() {}
+    virtual void CollisionStay() {}
+    virtual void CollisionExit() {}
 
 END_SCRIPT
 

@@ -7,7 +7,8 @@ protected:
 public:
 	ScriptShootable* mShootable;
 
-	virtual void Start() { mShootable = m_pOwner->AddScript<ScriptShootable>(); mShootable->Start(); }
+	virtual void Initia() { mShootable = m_pOwner->AddScript<ScriptShootable>(); mShootable->Initia(); }
+	virtual void Start() { mShootable->Start(); }
 	virtual void Update() {}
 	virtual void Destroy() {}
 
@@ -23,58 +24,18 @@ public:
 
 
 
-	static ScriptSeekerBall* CreateSeekerBall(gce::Vector3f32 pos, gce::Scene& scene)
-	{
-		ScriptSeekerBall* ball = CreateGameObject<ScriptSeekerBall>(scene, nullptr, nullptr);
-		ball->mShootable->SetShootable(ball->mShootable, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f);
-		return ball;
-	}
-
-	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Scene& scene, gce::Texture* texture)
-	{
-		ScriptSeekerBall* ball = CreateGameObject<ScriptSeekerBall>(scene, nullptr, texture);
-		ball->mShootable->SetShootable(ball->mShootable, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f);
-		return ball;
-	}
-
-	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Scene& scene, gce::Geometry* geometry)
-	{
-		ScriptSeekerBall* ball = CreateGameObject<ScriptSeekerBall>(scene, geometry, nullptr);
-		ball->mShootable->SetShootable(ball->mShootable, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f);
-		return ball;
-	}
-
-	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture)
-	{
-		ScriptSeekerBall* ball = CreateGameObject<ScriptSeekerBall>(scene, geometry, texture);
-		ball->mShootable->SetShootable(ball->mShootable, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f);
-		return ball;
-	}
-
-	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene)
-	{
-		ScriptSeekerBall* ball = CreateGameObject<ScriptSeekerBall>(scene, nullptr, nullptr);
-		ball->mShootable->SetShootable(ball->mShootable, pos, dir, speed);
-		return ball;
-	}
-
-	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene, gce::Texture* texture)
-	{
-		ScriptSeekerBall* ball = CreateGameObject<ScriptSeekerBall>(scene, nullptr, texture);
-		ball->mShootable->SetShootable(ball->mShootable, pos, dir, speed);
-		return ball;
-	}
-
-	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene, gce::Geometry* geometry)
-	{
-		ScriptSeekerBall* ball = CreateGameObject<ScriptSeekerBall>(scene, geometry, nullptr);
-		ball->mShootable->SetShootable(ball->mShootable, pos, dir, speed);
-		return ball;
-	}
+	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Scene& scene) { return CreateBall(pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, nullptr, nullptr); }
+	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Scene& scene, gce::Texture* texture) { return CreateBall(pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, nullptr, texture); }
+	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Scene& scene, gce::Geometry* geometry) { return CreateBall(pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, geometry, nullptr); }
+	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture) { return CreateBall(pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, geometry, texture); }
+	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene) { return CreateBall(pos, dir, speed, scene, nullptr, nullptr); }
+	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene, gce::Texture* texture) { return CreateBall(pos, dir, speed, scene, nullptr, texture); }
+	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene, gce::Geometry* geometry) { return CreateBall(pos, dir, speed, scene, geometry, nullptr); }
 
 	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture)
 	{
-		ScriptSeekerBall* ball = CreateGameObject<ScriptSeekerBall>(scene, geometry, texture);
+		gce::GameObject& gameBall = CreateGameObject<ScriptSeekerBall>(scene, geometry, texture);
+		ScriptSeekerBall* ball = gameBall.GetScript<ScriptSeekerBall>();
 		ball->mShootable->SetShootable(ball->mShootable, pos, dir, speed);
 		return ball;
 	}

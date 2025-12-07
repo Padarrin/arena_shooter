@@ -7,8 +7,8 @@ DECLARE_SCRIPT(ScriptEntity, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 protected:
 
 public:
-	virtual void Start() 
-	{ 
+	virtual void Initia()
+	{
 		SetWorldPosition(gce::Vector3f32(0.f, 0.f, 0.f));
 		SetWorldRotate(gce::Vector3f32(0.f, 0.f, 0.f));
 		SetWorldScale(gce::Vector3f32(1.f, 1.f, 1.f));
@@ -17,12 +17,23 @@ public:
 		SetLocalRotate(gce::Vector3f32(0.f, 0.f, 0.f));
 		SetLocalScale(gce::Vector3f32(1.f, 1.f, 1.f));
 	}
+	virtual void Start() 
+	{ 
+
+	}
 	virtual void Update() {}
 	virtual void Destroy() {}
 
 	virtual void CollisionEnter() {}
 	virtual void CollisionStay() {}
 	virtual void CollisionExit() {}
+
+	static void FocusEntity(ScriptEntity* entityGiveInformation, ScriptEntity* entityTarget)
+	{
+		gce::Vector3f32 dir = entityTarget->GetGameObject()->transform.GetWorldPosition() - entityGiveInformation->GetGameObject()->transform.GetWorldPosition();
+		dir = dir.Normalize();
+		entityGiveInformation->SetWorldRotate(gce::Vector3f32(-asin(dir.y), atan2(dir.x, dir.z), 0.f));
+	}
 
 
 	void SetWorldPosition(gce::Vector3f32 position) { m_pOwner->transform.SetWorldPosition(position); }
@@ -45,6 +56,8 @@ public:
 	void LocalTranslate(gce::Vector3f32 position) { m_pOwner->transform.LocalTranslate(position); }
 	void LocalRotate(gce::Vector3f32 rotation) { m_pOwner->transform.LocalRotate(rotation); }
 	void LocalScale(gce::Vector3f32 scale) { m_pOwner->transform.LocalScale(scale); }
+
+	gce::Vector3f32 GetWorldForward() { return m_pOwner->transform.GetWorldForward(); }
 
 	gce::GameObject* GetGameObject() { return m_pOwner; }
 	gce::Scene* GetScene() { return m_pOwner->m_pScene; }

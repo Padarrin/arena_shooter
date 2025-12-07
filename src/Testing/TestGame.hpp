@@ -4,24 +4,11 @@
 #include <Render.h>
 #include <Engine.h>
 #include "../Gameplay/Enemy.hpp"
-#include "../Gameplay/Player.hpp"
 #include "define.h"
 
-
-BEGIN_TEST( Game )
-
-	gce::GameManager::Create();
-	gce::Scene& scene = gce::Scene::Create();
-
-	gce::D12PipelineObject defaultPso(
-		gce::SHADERS.VERTEX,
-		gce::SHADERS.PIXEL,
-		gce::SHADERS.HULL,
-		gce::SHADERS.DOMAIN_,
-		gce::SHADERS.ROOT_SIGNATURE
-	);
-
-	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
+gce::GameObject& CreateCamera(gce::Scene& scene)
+{
+		gce::GameObject& cameraObject = gce::GameObject::Create(scene);
 	cameraObject.transform.LocalTranslate({ 0, 0, 0 });
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
 	camera.SetMainCamera();
@@ -31,34 +18,76 @@ BEGIN_TEST( Game )
 	camera.perspective.farPlane = 500.0f;
 	camera.perspective.aspectRatio = 600.0f / 400.0f;
 	camera.perspective.up = { 0.0f, 1.0f, 0.0f };
+	return cameraObject;
+}
 
-	ScriptEnemy* enemy = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
+{
+	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE);
+	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
+
+	gamePlayer.AddChild(cameraObject);
+	player->SetCamera(cameraObject);
+	player->WorldTranslate(gce::Vector3f32(-3.f, 0.f, 0.f));
+	player->mCharacter->SetSpeed(90);
+	return player;
+}
+
+void CreateEnemy(gce::Scene& scene, ScriptPlayer* player)
+{
+	gce::GameObject& cameraObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	ScriptEnemy* enemy = cameraObject.GetScript<ScriptEnemy>();
+	enemy->SetPlayer(player);
+}
+
+void CreateFloor(gce::Scene& scene)
+{
+	gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, gce::SHAPES.CUBE);
+	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
+	entity->SetWorldPosition({ 0.f ,-1.f ,0.f });
+	entity->SetWorldScale({ 50.f,0.2f,50.f });
+}
+
+
+BEGIN_TEST( Game )
+
+	gce::GameManager::Create();
+	gce::Scene& scene = gce::Scene::Create();
+
+	gce::GameObject& cameraObject = CreateCamera(scene);
+
+	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
+
+	CreateEnemy(scene, player);
+
+	CreateFloor(scene);
 
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 	//geometry = 
 	//texture = 
 	//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
 
-	gce::GameObject& testObject = gce::GameObject::Create(scene);
-	testObject.AddChild(cameraObject);
-	ScriptPlayer& player = *testObject.AddScript< ScriptPlayer>();
-	player.SetCamera(cameraObject);
+	// gce::GameObject& testObject = gce::GameObject::Create(scene);
+	// testObject.AddChild(cameraObject);
+	// ScriptPlayer& player = *testObject.AddScript< ScriptPlayer>();
+	// player.SetCamera(cameraObject);
 
-	gce::BoxCollider& boxCollider = *testObject.AddComponent<gce::BoxCollider>();
+	// gce::BoxCollider& boxCollider = *testObject.AddComponent<gce::BoxCollider>();
 
-	gce::MeshRenderer& meshRenderer = *testObject.AddComponent<gce::MeshRenderer>();
-	meshRenderer.pGeometry = gce::SHAPES.CUBE;
-	meshRenderer.pPso = &defaultPso;
+	// gce::MeshRenderer& meshRenderer = *testObject.AddComponent<gce::MeshRenderer>();
+	// meshRenderer.pGeometry = gce::SHAPES.CUBE;
+	// meshRenderer.pPso = &defaultPso;
 
-	gce::GameObject& floorObject = gce::GameObject::Create(scene);
-	floorObject.transform.SetWorldPosition({ 0,-1,0 });
-	floorObject.transform.SetWorldScale({ 50,0.2f,50 });
-	gce::MeshRenderer& meshRendererFloor = *floorObject.AddComponent<gce::MeshRenderer>();
-	meshRendererFloor.pGeometry = gce::SHAPES.CUBE;
-	meshRendererFloor.pPso = &defaultPso;
+	// gce::GameObject& floorObject = gce::GameObject::Create(scene);
+	// floorObject.transform.SetWorldPosition({ 0,-1,0 });
+	// floorObject.transform.SetWorldScale({ 50,0.2f,50 });
+	// gce::MeshRenderer& meshRendererFloor = *floorObject.AddComponent<gce::MeshRenderer>();
+	// meshRendererFloor.pGeometry = gce::SHAPES.CUBE;
+	// meshRendererFloor.pPso = &defaultPso;
 
 	gce::WindowParam windowParam;
 	gce::GameManager::Run(windowParam);
+
 	gce::GameManager::Destroy();
 
 END_TEST_MAIN_FUNCTION()

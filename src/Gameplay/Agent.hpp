@@ -13,19 +13,14 @@ protected:
 public:
 	ScriptCharacter* mCharacter;
 
-	virtual void Start() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Start(); }
+	virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); void SetPathFinding(PathFinding<Cell>()); }
+	virtual void Start() { mCharacter->Start(); void SetPaths(Queue_<Cell, ComparePath<Cell>>()); }
 	virtual void Update() {}
 	virtual void Destroy() {}
 
 	virtual void CollisionEnter() {}
 	virtual void CollisionStay() {}
 	virtual void CollisionExit() {}
-
-	//void GoToCell(Cell* cellEnd, Grid* grid);
-	//void GoToCell(gce::Vector3f32 pos, Grid* grid);
-	//void GoToNode(Node<Cell>* endNode, Grid* grid);
-	//void GoToNode(Node<Cell>* startNode, Node<Cell>* endNode, Grid* grid);
-
 
 	void SetPathFinding(PathFinding<Cell> pathFinding) { mPathFinding = pathFinding; }
 	PathFinding<Cell>* GetPathFinding() { return &mPathFinding; }
@@ -60,7 +55,7 @@ public:
 		else
 		{
 			//position actuelle
-			//startNode = GetNode<Cell>(GetPosition(), grid);
+			startNode = GetNode<Cell>(GetWorldPosition(), grid);
 		}
 
 		GoToNode(startNode, endNode, grid);
@@ -72,6 +67,10 @@ public:
 		//SetEndNode(endNode);
 		mPathFinding.Find(startNode, endNode, grid, this);
 	}
+
+	void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
+	gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }
+	void WorldTranslate(gce::Vector3f32 position) { mCharacter->mEntity->WorldTranslate(position); }
 
 END_SCRIPT
 

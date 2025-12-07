@@ -11,29 +11,35 @@ protected:
 		bool isSet;
 	};
 
+	int mDamage;
 	int mLife;
 	int mMaxLife;
 
 	float mSpeed;
 	Target mTarget;
 
-	int mDamage;
-
 public:
 	ScriptEntity* mEntity;
 
-	virtual void Start() 
+	virtual void Initia()
 	{ 
 		mEntity = m_pOwner->AddScript<ScriptEntity>();
-		mEntity->Start();
+		mEntity->Initia();
 
 		int life = 1;
 		int damage = 1;
+		SetDamage(damage);
 		SetLife(life);
 		SetMaxLife(life);
+
 		SetSpeed(1.f);
+	}
+	virtual void Start() 
+	{ 
+		mEntity->Start();
+
 		SetTargetIsSet(false);
-		SetDamage(damage);
+		
 	}
 	virtual void Update() 
 	{
@@ -63,6 +69,14 @@ public:
 	virtual void CollisionStay() {}
 	virtual void CollisionExit() {}
 
+	template<typename T>
+	static void CreateBallInFront(float speed, gce::Geometry* geometry, ScriptEntity* entityGiveInformation)
+	{
+		gce::Quaternion rot = entityGiveInformation->GetWorldRotate();
+		T* ball = T::CreateBall(entityGiveInformation->GetWorldPosition(), entityGiveInformation->GetWorldForward(), speed, *entityGiveInformation->GetScene(), geometry);
+		ball->mShootable->mObject->mEntity->SetWorldRotate(gce::Vector3f32(rot.GetX(), rot.GetY(), rot.GetZ()));
+	}
+
 	bool GoToPosition(gce::Vector3f32 pos, float speed)
 	{
 		gce::Vector3f32 position = mEntity->GetWorldPosition();
@@ -74,17 +88,43 @@ public:
 		return true;
 	}
 
-	void Damage(int damage) { mLife -= damage; }
-	void Heal(int heal) { mLife += heal; }
-
-	void SetDamage(int damage) { mDamage = damage; }
-	int GetDamage() { return mDamage; }
-
-	void SetMaxLife(int maxLife) { mMaxLife = maxLife; SetLife(maxLife); }
-	int GetMaxLife() { return mMaxLife; }
-
-	void SetLife(int life) { mLife = life; }
-	int GetLife() { return mLife; }
+	void Damage(int damage) 
+	{ 
+		mLife -= damage; 
+		if (mLife < 1) { mEntity->GetGameObject()->Destroy(); } 
+	}
+	void Heal(int heal) 
+	{ 
+		mLife += heal; 
+		if (mLife > mMaxLife) { mLife = mMaxLife; } 
+	}
+	void SetDamage(int damage) 
+	{ 
+		mDamage = damage; 
+	}
+	int GetDamage() 
+	{ 
+		return mDamage; 
+	}
+	void SetMaxLife(int maxLife) 
+	{ 
+		mMaxLife = maxLife; 
+		SetLife(maxLife); 
+	}
+	int GetMaxLife() 
+	{ 
+		return mMaxLife; 
+	}
+	void SetLife(int life) 
+	{ 
+		mLife = life; 
+		if (mLife > mMaxLife) { mLife = mMaxLife; } 
+		else if (mLife < 1) { mEntity->GetGameObject()->Destroy(); }
+	}
+	int GetLife() 
+	{ 
+		return mLife; 
+	}
 
 	void SetSpeed(float speed) { mSpeed = speed; }
 	float GetSpeed() { return mSpeed; }

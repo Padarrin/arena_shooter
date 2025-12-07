@@ -15,7 +15,7 @@ namespace gce
         position = { 0.0f, 0.0f, 0.0f };
         color = { 1.0f, 1.0f, 1.0f, 1.0f };
         range = 8.0f;
-        intensity = 0.5f;
+        intensity = 1.0f;
         strength = { 0.8f, 0.8f, 0.8f };
         rimLightColor = { color.x(), color.y(), color.z() };
         rimLightIntensity = 0.3f;
@@ -43,7 +43,7 @@ namespace gce
         spotAngle = 30.0f;
         penumbraAngle = 45.0f;
         range = 2.0f;
-        intensity = 0.1f;
+        intensity = 1.0f;
         strength = { 0.5f, 0.5f, 0.5f };
         rimLightColor = { color.x(), color.y(), color.z() };
         rimLightIntensity = 0.4f;
