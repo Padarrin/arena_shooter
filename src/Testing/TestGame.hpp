@@ -4,6 +4,8 @@
 #include <Render.h>
 #include <Engine.h>
 #include "../Gameplay/Enemy.hpp"
+#include "../Gameplay/Grid.hpp"
+#include "../Engine/Components/MeshRenderer.h"
 #include "define.h"
 
 ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
@@ -19,10 +21,17 @@ ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 
 void CreateEnemy(gce::Scene& scene, ScriptPlayer* player)
 {
-	gce::GameObject& cameraObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
-	ScriptEnemy* enemy = cameraObject.GetScript<ScriptEnemy>();
+	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
 	enemy->SetPlayer(player);
+}
 
+void CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vector3f32 positionCenter)
+{
+	gce::GameObject& gridObject = CreateGameObject<ScriptGrid>(scene, gce::SHAPES.CUBE);
+	ScriptGrid* grid = gridObject.GetScript<ScriptGrid>();
+	grid->SetSizeTabCell(sizeTabCell); //SetScale et lance InitTab
+	grid->SetCenterOfGrid(positionCenter);
 }
 
 
@@ -45,6 +54,8 @@ BEGIN_TEST( Game )
 	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
 
 	CreateEnemy(scene, player);
+
+	CreateGrid(scene, gce::Vector2f32(10, 10), player->GetWorldPosition());
 
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 	//geometry = 

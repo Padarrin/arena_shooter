@@ -58,14 +58,3 @@ float DisManhattan(gce::Vector3f32 currentPos, gce::Vector3f32 endPos, int sizeC
 {
     return (abs(currentPos.x - endPos.x) + abs(currentPos.y - endPos.y)) / sizeCell;
 }
-
-gce::Vector2f32 GetCellInPos(gce::Vector3f32 pos, int sizeCell)
-{
-    //Cell* nearest = GetNearestCell<Cell>(pos, GameManager::Get()->GetScene<MainScene>()->GetGrid()->GetAllCells());
-
-    //if (!nearest)
-    //    return { 0, 0 };
-
-    //return 	nearest->GetRowCol();
-    return gce::Vector2f32();
-}

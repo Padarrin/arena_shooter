@@ -3,7 +3,7 @@
 #include "Queue.hpp"
 #include "compare.h"
 #include "PathFinding.h"
-#include "Grid.h"
+#include "Grid.hpp"
 
 DECLARE_SCRIPT(ScriptAgent, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 

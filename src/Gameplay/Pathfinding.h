@@ -6,7 +6,7 @@
 template<typename T>
 class Node;
 
-class Grid;
+class ScriptGrid;
 
 class ScriptAgent;
 
@@ -35,7 +35,7 @@ protected:
 	//static void CreatePath(bool isfinish, Node<T>* startNode, Node<T>* endNode, std::vector<Node<T>*>* allFormerPaths);
 	static void ResetNodes(Grid* grid);
 
-#include "Grid.h"
+#include "Grid.hpp"
 #include "Node.h"
 #include "Agent.hpp"
 
