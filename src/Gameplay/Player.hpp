@@ -10,6 +10,9 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		gce::Vector3f32 velocity = { 0, 0, 0 };
 		float gravity = 9.81f;
 
+		bool mCollision = false;
+		bool mIsJumping = false;
+
 	public:
 		ScriptCharacter* mCharacter;
 
@@ -27,7 +30,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		virtual void Destroy() {}
 
-		virtual void CollisionEnter() { std::cout << "d"; }
+		virtual void CollisionEnter() { mCollision = true; }
 		virtual void CollisionStay() {}
 		virtual void CollisionExit() {}
 		
@@ -39,6 +42,11 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * verticalInput;
 
 			SetWorldPosition(GetWorldPosition() + direction * mCharacter->GetSpeed() * deltaTime);
+
+			if (gce::GetKeyDown(gce::Keyboard::SPACE))
+			{
+				Jump(0.3f, deltaTime);
+			}
 		}
 
 		void TurnCamera()
@@ -56,6 +64,15 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		void SetCamera(gce::GameObject& cameraObject) { mObjectCamera = &cameraObject; }
 
+		void Jump(float force, float deltaTime)
+		{
+			if (mIsJumping == false)
+			{
+				velocity.y = 6.f;
+				mIsJumping = true;
+			}
+		}
+
 		void Gravity(float deltaTime)
 		{
 			//Enleve de la velocite
@@ -64,30 +81,24 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			//Fait redescendre le joueur
 			mCharacter->mEntity->SetWorldPosition({ GetWorldPosition().x,GetWorldPosition().y + velocity.y * deltaTime,GetWorldPosition().z });
 
-			//if (CollisionEnter(chunk->GetCurrentChunk(this)))
-			//{
-			//	//Regarde si il est dans les airs pour qu'il puisse sauter
-			//	if (pPlayer->GetPosition().y <= -0.75f)
-			//	{
-			//		pPlayer->SetPosition({ pPlayer->GetPosition().x, -0.75f ,pPlayer->GetPosition().z });
-			//		velocity.y = 0.f;
-			//		isJumping = false;
-			//	}
-			//	else
-			//	{
-			//		isJumping = true;
-			//	}
-			//}
-			//else
-			//{
-			//	pPlayer->SetPosition({ pPlayer->GetPosition().x, pPlayer->GetPosition().y ,pPlayer->GetPosition().z });
-			//}
-
-			//if (pPlayer->GetPosition().y <= -5)
-			//{
-			//	Respawn();
-			//	chunk->ResetChunk();
-			//}
+			if (mCollision == true)
+			{
+				//Regarde si il est dans les airs pour qu'il puisse sauter
+				if (GetWorldPosition().y <= -0.75f)
+				{
+					SetWorldPosition({ GetWorldPosition().x, -0.75f ,GetWorldPosition().z });
+					velocity.y = 0.f;
+					mIsJumping = false;
+				}
+				else
+				{
+					mIsJumping = true;
+				}
+			}
+			else
+			{
+				SetWorldPosition({ GetWorldPosition().x, GetWorldPosition().y ,GetWorldPosition().z });
+			}
 		}
 
 		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
