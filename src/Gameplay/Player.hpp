@@ -7,17 +7,18 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		gce::GameObject* mObjectCamera;
 		gce::Window* mWindow;
 
-		gce::Vector3f32 velocity = { 0, 0, 0 };
-		float gravity = 9.81f;
+		gce::Vector3f32 mVelocity;
+		float mGravity;
+		float mJump;
 
-		bool mCollision = false;
-		bool mIsJumping = false;
+		bool mCollision;
+		bool mIsJumping;
 
 	public:
 		ScriptCharacter* mCharacter;
 
-		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); }
-		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); }
+		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mVelocity = gce::Vector3f32(0.f, 0.f, 0.f); mGravity = 9.81f; mJump = 6.f; }
+		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); mCollision = false; mIsJumping = false; }
 
 		virtual void Update()
 		{ 
@@ -30,9 +31,9 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		virtual void Destroy() {}
 
-		virtual void CollisionEnter() { mCollision = true; }
-		virtual void CollisionStay() {}
-		virtual void CollisionExit() {}
+		virtual void CollisionEnter(GameObject* other) { mCharacter->CollisionEnter(other); }
+		virtual void CollisionStay(GameObject* other) { mCharacter->CollisionStay(other); }
+		virtual void CollisionExit(GameObject* other) { mCharacter->CollisionExit(other); }
 		
 		void InputMove(float deltaTime)
 		{
@@ -41,11 +42,12 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * verticalInput;
 
-			SetWorldPosition(GetWorldPosition() + direction * mCharacter->GetSpeed() * deltaTime);
+			//SetWorldPosition(GetWorldPosition() + direction * mCharacter->GetSpeed() * deltaTime);
+			WorldTranslate(direction * mCharacter->GetSpeed() * deltaTime);
 
 			if (gce::GetKeyDown(gce::Keyboard::SPACE))
 			{
-				Jump(0.3f, deltaTime);
+				Jump(mJump, deltaTime);
 			}
 		}
 
@@ -64,11 +66,11 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		void SetCamera(gce::GameObject& cameraObject) { mObjectCamera = &cameraObject; }
 
-		void Jump(float force, float deltaTime)
+		void Jump(float strength, float deltaTime)
 		{
 			if (mIsJumping == false)
 			{
-				velocity.y = 6.f;
+				velocity.y = strength;
 				mIsJumping = true;
 			}
 		}
@@ -76,10 +78,11 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		void Gravity(float deltaTime)
 		{
 			//Enleve de la velocite
-			velocity.y -= gravity * deltaTime;
+			velocity.y -= mGravity * deltaTime;
 
 			//Fait redescendre le joueur
-			mCharacter->mEntity->SetWorldPosition({ GetWorldPosition().x,GetWorldPosition().y + velocity.y * deltaTime,GetWorldPosition().z });
+			//mCharacter->mEntity->SetWorldPosition({ GetWorldPosition().x, GetWorldPosition().y + , GetWorldPosition().z });
+			WorldTranslate(gce::Vector3f32(0.f, velocity.y * deltaTime, 0.f));
 
 			if (mCollision == true)
 			{
