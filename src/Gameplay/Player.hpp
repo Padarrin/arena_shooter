@@ -7,6 +7,9 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		gce::GameObject* mObjectCamera;
 		gce::Window* mWindow;
 
+		gce::Vector3f32 velocity = { 0, 0, 0 };
+		float gravity = 9.81f;
+
 	public:
 		ScriptCharacter* mCharacter;
 
