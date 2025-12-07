@@ -17,7 +17,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		ScriptCharacter* mCharacter;
 
 		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mVelocity = gce::Vector3f32(0.f, 0.f, 0.f); mGravity = 9.81f; mJump = 6.f; }
-		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); mCollision = false; mIsJumping = false; }
+		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); mIsJumping = false; }
 
 		virtual void Update()
 		{ 
@@ -33,8 +33,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		virtual void CollisionEnter(GameObject* other) 
 		{ 
 			mCharacter->CollisionEnter(other);
-			//Regarde si il est dans les airs pour qu'il puisse sauter
-			gce::Vector3f32 pos = GetWorldPosition();
+			//Regarde si il est dans les airs pour qu'il puisse saute 
 			WorldTranslate({ 0.f, -mVelocity.y , 0.f });
 			mVelocity.y = 0.f;
 			mIsJumping = false;
@@ -101,5 +100,19 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
 		gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }
 		void WorldTranslate(gce::Vector3f32 position) { mCharacter->mEntity->WorldTranslate(position); }
+
+		void SetJump(float jump) { mJump = jump; }
+		float GetJump() { return mJump; }
+
+		void SetGravity(float gravity) { mGravity = gravity; }
+		float GetGravity() { return mGravity; }
+
+		void SetWorldPosition(gce::Vector3f32 velocity) { mVelocity = velocity; }
+		gce::Vector3f32 GetWorldPosition() { return mVelocity; }
+		void AddVelocity(gce::Vector3f32 velocity) { mVelocity + velocity; }
+		void ResetVelocity() { mVelocity = gce::Vector3f32(0.f, 0.f, 0.f); }
+
+		void SetIsJumping(bool isJumping) { mIsJumping = isJumping; }
+		bool GetIsJumping() { return mIsJumping; }
 
 END_SCRIPT

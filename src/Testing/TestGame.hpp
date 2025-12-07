@@ -30,6 +30,9 @@ ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 	player->SetCamera(cameraObject);
 	player->WorldTranslate(gce::Vector3f32(-3.f, 0.f, 0.f));
 	player->mCharacter->SetSpeed(90);
+	player->SetGravity(0.981f);
+	player->SetJump(6.f);
+	player->SetJump(6.f);
 	return player;
 }
 
