@@ -4,6 +4,7 @@
 #include <Render.h>
 #include <Engine.h>
 #include "../Gameplay/Enemy.hpp"
+#include "../Engine/Components/ColliderBase3D.h"
 #include "define.h"
 
 gce::GameObject& CreateCamera(gce::Scene& scene)
@@ -24,6 +25,7 @@ gce::GameObject& CreateCamera(gce::Scene& scene)
 ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 {
 	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE);
+	gamePlayer.AddComponent<ColliderBase3D>()
 	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
 
 	gamePlayer.AddChild(cameraObject);

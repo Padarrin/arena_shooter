@@ -17,13 +17,14 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		ScriptCharacter* mCharacter;
 
 		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mVelocity = gce::Vector3f32(0.f, 0.f, 0.f); mGravity = 9.81f; mJump = 6.f; }
-		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); mIsJumping = false; }
+		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); mIsJumping = true; }
 
 		virtual void Update()
 		{ 
 			float deltaTime = gce::GameManager::DeltaTime();
 
 			InputMove(deltaTime);
+			Gravity(deltaTime);
 
 			TurnCamera();
 		}
@@ -57,7 +58,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			//SetWorldPosition(GetWorldPosition() + direction * mCharacter->GetSpeed() * deltaTime);
 			WorldTranslate(direction * mCharacter->GetSpeed() * deltaTime);
 
-			if (gce::GetKeyDown(gce::Keyboard::SPACE))
+			if (gce::GetKeyDown(gce::Keyboard::Key::SPACE))
 			{
 				Jump(mJump, deltaTime);
 			}
@@ -107,8 +108,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		void SetGravity(float gravity) { mGravity = gravity; }
 		float GetGravity() { return mGravity; }
 
-		void SetWorldPosition(gce::Vector3f32 velocity) { mVelocity = velocity; }
-		gce::Vector3f32 GetWorldPosition() { return mVelocity; }
+		void SetWorldVelocity(gce::Vector3f32 velocity) { mVelocity = velocity; }
+		gce::Vector3f32 GetWorldVelocity() { return mVelocity; }
 		void AddVelocity(gce::Vector3f32 velocity) { mVelocity + velocity; }
 		void ResetVelocity() { mVelocity = gce::Vector3f32(0.f, 0.f, 0.f); }
 
