@@ -24,9 +24,9 @@ public:
 	virtual void Update() {}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter() {}
-	virtual void CollisionStay() {}
-	virtual void CollisionExit() {}
+	virtual void CollisionEnter(GameObject* other) { }
+	virtual void CollisionStay(GameObject* other) { }
+	virtual void CollisionExit(GameObject* other) { }
 
 	static void FocusEntity(ScriptEntity* entityGiveInformation, ScriptEntity* entityTarget)
 	{

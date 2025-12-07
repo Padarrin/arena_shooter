@@ -14,9 +14,9 @@ public:
 	virtual void Update() { }
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter() {}
-	virtual void CollisionStay() {}
-	virtual void CollisionExit() {}
+	virtual void CollisionEnter(GameObject* other) { mObject->CollisionEnter(other); }
+	virtual void CollisionStay(GameObject* other) { mObject->CollisionStay(other); }
+	virtual void CollisionExit(GameObject* other) { mObject->CollisionExit(other); }
 
 	void SetTurnSpeed(float turnSpeed) { mTurnSpeed = turnSpeed; }
 	float GetTurnSpeed() { return mTurnSpeed; }

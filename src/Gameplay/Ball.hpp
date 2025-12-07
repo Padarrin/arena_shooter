@@ -12,9 +12,9 @@ public:
 	virtual void Update() {}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter() {}
-	virtual void CollisionStay() {}
-	virtual void CollisionExit() {}
+	virtual void CollisionEnter(GameObject* other) { mShootable->CollisionEnter(other); }
+	virtual void CollisionStay(GameObject* other) { mShootable->CollisionStay(other); }
+	virtual void CollisionExit(GameObject* other) { mShootable->CollisionExit(other); }
 
 
 

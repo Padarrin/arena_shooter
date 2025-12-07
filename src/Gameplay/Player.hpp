@@ -11,7 +11,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		float mGravity;
 		float mJump;
 
-		bool mCollision;
 		bool mIsJumping;
 
 	public:
@@ -31,9 +30,23 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		virtual void Destroy() {}
 
-		virtual void CollisionEnter(GameObject* other) { mCharacter->CollisionEnter(other); }
-		virtual void CollisionStay(GameObject* other) { mCharacter->CollisionStay(other); }
-		virtual void CollisionExit(GameObject* other) { mCharacter->CollisionExit(other); }
+		virtual void CollisionEnter(GameObject* other) 
+		{ 
+			mCharacter->CollisionEnter(other);
+			//Regarde si il est dans les airs pour qu'il puisse sauter
+			gce::Vector3f32 pos = GetWorldPosition();
+			WorldTranslate({ 0.f, -mVelocity.y , 0.f });
+			mVelocity.y = 0.f;
+			mIsJumping = false;
+		}
+		virtual void CollisionStay(GameObject* other) 
+		{ 
+			mCharacter->CollisionStay(other);
+		}
+		virtual void CollisionExit(GameObject* other) 
+		{ 
+			mCharacter->CollisionExit(other);
+		}
 		
 		void InputMove(float deltaTime)
 		{
@@ -70,7 +83,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		{
 			if (mIsJumping == false)
 			{
-				velocity.y = strength;
+				mVelocity.y = strength;
 				mIsJumping = true;
 			}
 		}
@@ -78,36 +91,15 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		void Gravity(float deltaTime)
 		{
 			//Enleve de la velocite
-			velocity.y -= mGravity * deltaTime;
+			mVelocity.y -= mGravity * deltaTime;
 
 			//Fait redescendre le joueur
 			//mCharacter->mEntity->SetWorldPosition({ GetWorldPosition().x, GetWorldPosition().y + , GetWorldPosition().z });
-			WorldTranslate(gce::Vector3f32(0.f, velocity.y * deltaTime, 0.f));
-
-			if (mCollision == true)
-			{
-				//Regarde si il est dans les airs pour qu'il puisse sauter
-				if (GetWorldPosition().y <= -0.75f)
-				{
-					SetWorldPosition({ GetWorldPosition().x, -0.75f ,GetWorldPosition().z });
-					velocity.y = 0.f;
-					mIsJumping = false;
-				}
-				else
-				{
-					mIsJumping = true;
-				}
-			}
-			else
-			{
-				SetWorldPosition({ GetWorldPosition().x, GetWorldPosition().y ,GetWorldPosition().z });
-			}
+			WorldTranslate(gce::Vector3f32(0.f, mVelocity.y * deltaTime, 0.f));
 		}
 
 		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
-
 		gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }
-
 		void WorldTranslate(gce::Vector3f32 position) { mCharacter->mEntity->WorldTranslate(position); }
 
 END_SCRIPT

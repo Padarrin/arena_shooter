@@ -65,9 +65,9 @@ public:
 	}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter() {}
-	virtual void CollisionStay() {}
-	virtual void CollisionExit() {}
+	virtual void CollisionEnter(GameObject* other) { mEntity->CollisionEnter(other); }
+	virtual void CollisionStay(GameObject* other) { mEntity->CollisionStay(other); }
+	virtual void CollisionExit(GameObject* other) { mEntity->CollisionExit(other); }
 
 	template<typename T>
 	static void CreateBallInFront(float speed, gce::Geometry* geometry, ScriptEntity* entityGiveInformation)

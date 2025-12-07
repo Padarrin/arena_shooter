@@ -27,9 +27,9 @@ public:
 	}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter() {}
-	virtual void CollisionStay() {}
-	virtual void CollisionExit() {}
+	virtual void CollisionEnter(GameObject* other) { mAgent->CollisionEnter(other); }
+	virtual void CollisionStay(GameObject* other) { mAgent->CollisionStay(other); }
+	virtual void CollisionExit(GameObject* other) { mAgent->CollisionExit(other); }
 
 
 	void SetWorldPosition(gce::Vector3f32 position) { mAgent->SetWorldPosition(position); }
