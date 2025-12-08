@@ -25,7 +25,7 @@ gce::GameObject& CreateCamera(gce::Scene& scene)
 ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 {
 	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE);
-	gamePlayer.AddComponent<ColliderBase3D>()
+	//gamePlayer.AddComponent<ColliderBase3D>()
 	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
 
 	gamePlayer.AddChild(cameraObject);
