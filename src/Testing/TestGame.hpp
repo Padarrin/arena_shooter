@@ -4,12 +4,12 @@
 #include <Render.h>
 #include <Engine.h>
 #include "../Gameplay/Enemy.hpp"
-#include "../Engine/Components/ColliderBase3D.h"
+#include "../Engine/Components/BoxCollider.h"
 #include "define.h"
 
 gce::GameObject& CreateCamera(gce::Scene& scene)
 {
-		gce::GameObject& cameraObject = gce::GameObject::Create(scene);
+	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
 	cameraObject.transform.LocalTranslate({ 0, 0, 0 });
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
 	camera.SetMainCamera();
@@ -25,15 +25,15 @@ gce::GameObject& CreateCamera(gce::Scene& scene)
 ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 {
 	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE);
-	//gamePlayer.AddComponent<ColliderBase3D>()
+	gamePlayer.AddComponent<gce::BoxCollider>()->SetActive(true);
+	gamePlayer.AddComponent<gce::PhysicComponent>()->SetActive(true);
 	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
 
 	gamePlayer.AddChild(cameraObject);
 	player->SetCamera(cameraObject);
 	player->WorldTranslate(gce::Vector3f32(-3.f, 0.f, 0.f));
-	player->mCharacter->SetSpeed(90);
-	player->SetGravity(0.981f);
-	player->SetJump(6.f);
+	player->mCharacter->SetSpeed(30);
+	player->SetGravity(0.981f, gamePlayer);
 	player->SetJump(6.f);
 	return player;
 }
@@ -48,8 +48,9 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player)
 void CreateFloor(gce::Scene& scene)
 {
 	gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, gce::SHAPES.CUBE);
+	floorObject.AddComponent<gce::BoxCollider>()->SetActive(true);
 	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
-	entity->SetWorldPosition({ 0.f ,-1.f ,0.f });
+	entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
 	entity->SetWorldScale({ 50.f,0.2f,50.f });
 }
 
@@ -61,7 +62,7 @@ BEGIN_TEST( Game )
 
 	gce::GameObject& cameraObject = CreateCamera(scene);
 
-	//ScriptPlayer* player = CreatePlayer(cameraObject, scene);
+	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
 
 	//CreateEnemy(scene, player);
 

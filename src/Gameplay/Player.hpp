@@ -17,7 +17,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		ScriptCharacter* mCharacter;
 
 		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mVelocity = gce::Vector3f32(0.f, 0.f, 0.f); mGravity = 9.81f; mJump = 6.f; }
-		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); mIsJumping = true; }
+		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); mIsJumping = false; }
 
 		virtual void Update()
 		{ 
@@ -105,7 +105,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		void SetJump(float jump) { mJump = jump; }
 		float GetJump() { return mJump; }
 
-		void SetGravity(float gravity) { mGravity = gravity; }
+		void SetGravity(float gravity, gce::GameObject& gamePlayer) { mGravity = gravity; /*gamePlayer.GetComponent<gce::PhysicComponent>()->SetGravityScale(0.981f);*/ }
 		float GetGravity() { return mGravity; }
 
 		void SetWorldVelocity(gce::Vector3f32 velocity) { mVelocity = velocity; }
