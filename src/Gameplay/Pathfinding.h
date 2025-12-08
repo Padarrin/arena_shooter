@@ -16,24 +16,28 @@ class PathFinding
 {
 protected:
 	Queue_<T, ComparePath<T>> mPath;
+	ScriptGrid* mGrid;
 public:
 	PathFinding() { Start(); }
 
-	void Start() { SetPaths(Queue_<T, ComparePath<T>>()); }
+	void Start() { SetPaths(Queue_<T, ComparePath<T>>()); SetGrid(nullptr);  }
 
 	void Find(Node<T>* startNode, Node<T>* endNode, Grid* grid, ScriptAgent* owner) { FindPath(startNode, endNode, grid, GetPaths(), owner); }
 
 	void SetPaths(Queue_<T, ComparePath<T>> path) { mPath = path; }
 	Queue_<T, ComparePath<T>>* GetPaths();
 
+	void SetGrid(ScriptGrid* grid) { mGrid = grid; }
+	ScriptGrid* GetGrid() { return mGrid; }
+
 	~PathFinding()
 	{
 		mPath.Clear();
 	}
 protected:
-	static void FindPath(Node<T>* startNode, Node<T>* endNode, Grid* grid, Queue_<T, ComparePath<T>>* allFormerPaths, ScriptAgent* owner);
+	void FindPath(Node<T>* startNode, Node<T>* endNode, Queue_<T, ComparePath<T>>* allFormerPaths, ScriptAgent* owner);
 	//static void CreatePath(bool isfinish, Node<T>* startNode, Node<T>* endNode, std::vector<Node<T>*>* allFormerPaths);
-	static void ResetNodes(Grid* grid);
+	void ResetNodes();
 
 #include "Grid.hpp"
 #include "Node.h"
@@ -139,7 +143,7 @@ protected:
 	}*/
 
 	template<typename T>
-	void ResetNodes(Grid* grid)
+	void ResetNodes(ScriptGrid* grid)
 	{
 		std::vector<Node<T>*> allNodes = grid->GetAllNodes();
 		int lenght = allNodes.size();
