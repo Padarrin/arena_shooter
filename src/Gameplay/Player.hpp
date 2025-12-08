@@ -29,10 +29,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			{
 				TurnCamera();
 			}
-			gce::Light* light = m_pOwner->GetComponent<gce::Light>();
-			gce::Vector4 color = light->color;
+
 			InputMove(deltaTime);
-			
 		}
 
 		virtual void Destroy() {}

@@ -46,7 +46,7 @@ BEGIN_TEST( Game )
 	gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
 	gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
 	directionalLight.DefaultDirectionLight();
-	directionalLight.color = { 0.0f, 1.0f, 0.0f, 1.0f };
+	directionalLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
 	cameraObject.transform.LocalTranslate({ 0, 0, -10 });
@@ -64,7 +64,7 @@ BEGIN_TEST( Game )
 
 	ScriptGrid* grid = CreateGrid(scene, gce::Vector2f32(2.f, 1.f), gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z));
 
-	CreateEnemy(scene, player, grid);
+	//CreateEnemy(scene, player, grid);
 
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 	//geometry = 

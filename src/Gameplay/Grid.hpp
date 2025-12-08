@@ -42,7 +42,9 @@ public:
 	{
 
 	}
-	virtual void Update() {}
+	virtual void Update() 
+	{
+	}
 	virtual void Destroy() {}
 
 	void InitTab() { InitTab(GetSizeTabCell()); }
