@@ -11,8 +11,8 @@ protected:
 public:
 	ScriptObject* mObject;
 
-	virtual void Initia() { mObject = m_pOwner->AddScript<ScriptObject>(); mObject->Initia(); SetStartPos(GetWorldPosition()); SetDisToDestroy(gce::Vector3f32(1000.f, 1000.f, 1000.f)); }
-	virtual void Start() { mObject->Start(); }
+	virtual void Initia() { mObject = m_pOwner->AddScript<ScriptObject>(); mObject->Initia(); SetDisToDestroy(gce::Vector3f32(100.f, 100.f, 100.f)); }
+	virtual void Start() { mObject->Start(); SetStartPos(GetWorldPosition()); }
 	virtual void Update() { UpdateDirection(); UpdateOutArea(); }
 	virtual void Destroy() {}
 
@@ -34,7 +34,7 @@ public:
 	void UpdateOutArea()
 	{
 		gce::Vector3f32 pos = GetWorldPosition();
-		if (mStartPos.x + mDisToDestroy.x < abs(pos.x) || mStartPos.y + mDisToDestroy.y < abs(pos.y) || mStartPos.z + mDisToDestroy.z < abs(pos.z))
+		if (abs(mStartPos.x + mDisToDestroy.x - pos.x) < 0.f || abs(mStartPos.y + mDisToDestroy.y - pos.y) < 0.f || abs(mStartPos.z + mDisToDestroy.z - pos.z) < 0.f)
 		{
 			m_pOwner->Destroy();
 		}

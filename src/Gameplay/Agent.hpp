@@ -4,6 +4,7 @@
 #include "compare.h"
 #include "PathFinding.h"
 #include "Grid.hpp"
+#include "Functions.h"
 
 DECLARE_SCRIPT(ScriptAgent, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
@@ -38,10 +39,7 @@ public:
 		GoToNode(grid->GetNodeInTab((int)indexRowCol.x, (int)indexRowCol.y, lengthCell, allNodes));
 	}
 
-	void GoToCell(gce::Vector3f32 pos)
-	{
-		GoToNode(mPathFinding.GetGrid()->GetNode(pos));
-	}
+	void GoToCell(gce::Vector3f32 pos) { GoToNode(mPathFinding.GetGrid()->GetNode(pos)); }
 
 	void GoToNode(Node<Cell>* endNode)
 	{
@@ -61,13 +59,7 @@ public:
 
 		GoToNode(startNode, endNode);
 	}
-
-	void GoToNode(Node<Cell>* startNode, Node<Cell>* endNode)
-	{
-		//SetStartNode(startNode);
-		//SetEndNode(endNode);
-		mPathFinding.Find(startNode, endNode, this);
-	}
+	void GoToNode(Node<Cell>* startNode, Node<Cell>* endNode) { mPathFinding.Find(startNode, endNode, this); }
 
 	void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
 	gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }

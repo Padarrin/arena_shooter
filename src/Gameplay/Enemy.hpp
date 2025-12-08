@@ -2,6 +2,7 @@
 #include "Agent.hpp"
 #include "Ball.hpp"
 #include "Player.hpp"
+#include "Grid.hpp"
 
 DECLARE_SCRIPT(ScriptEnemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
@@ -11,11 +12,18 @@ protected:
 public:
 	ScriptAgent* mAgent;
 
-	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); mPlayer = nullptr;}
-	virtual void Start() { mAgent->Start(); }
+	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); }
+	virtual void Start() 
+	{ 
+		mAgent->Start();
+		
+		ScriptGrid* grid = GetGrid();
+		Cell* nerestCell = grid->GetNearestCell(GetWorldPosition());
+		SetWorldPosition(grid->GetPosOfCell(nerestCell));
+	}
 	virtual void Update() 
 	{ 
-		WorldTranslate(gce::Vector3f32(0.f, 0.f, 0.01f)); // temp deplacement
+		WorldTranslate(gce::Vector3f32(0.f, 0.f, 0.05f)); // temp deplacement
 		ScriptEntity* myParentEntity = mAgent->mCharacter->mEntity;
 	
 		if (mPlayer != nullptr)
@@ -23,7 +31,12 @@ public:
 			myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
 		}
 
-		mAgent->mCharacter->CreateBallInFront<ScriptBall>(1.f, gce::SHAPES.CUBE, myParentEntity);//temp creation de ball
+		mAgent->mCharacter->CreateBallInFront<ScriptBall>(5.f, gce::SHAPES.CUBE, myParentEntity);//temp creation de ball
+		
+		if (mAgent->GetPaths()->Size() < 1)
+		{
+			mAgent->GoToCell(mPlayer->GetWorldPosition());
+		}
 	}
 	virtual void Destroy() {}
 
@@ -38,5 +51,7 @@ public:
 
 	void SetPlayer(ScriptPlayer* player) { mPlayer = player; }
 	ScriptPlayer* GetPlayer() { return mPlayer; }
+
+	ScriptGrid* GetGrid() { return mAgent->GetPathFinding()->GetGrid(); }
 
 END_SCRIPT

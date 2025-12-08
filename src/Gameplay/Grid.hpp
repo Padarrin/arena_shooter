@@ -87,6 +87,9 @@ public:
 	std::vector<std::vector<Cell*>>* GetAllCells() { return &mAllCells; }
 	std::vector<Node<Cell>*>* GetAllNodes() { return &mAllNodes; }
 
+	void SetCellSize(int cellSize) { mCellSize = cellSize; }
+	int GetCellSize() { return mCellSize; }
+
 	//void SetUtmostPositionX(gce::Vector2f32 utmostPosX) { mUtmostPositionOnX = utmostPosX; }
 	//gce::Vector2f32 GetUtmostPositionX() { return mUtmostPositionOnX; }
 	//void SetUtmostPositionZ(gce::Vector2f32 utmostPosZ) { mUtmostPositionOnZ = utmostPosZ; }
