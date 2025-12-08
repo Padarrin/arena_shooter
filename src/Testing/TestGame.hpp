@@ -6,32 +6,35 @@
 #include "../Gameplay/Enemy.hpp"
 #include "../Gameplay/Grid.hpp"
 #include "../Engine/Components/MeshRenderer.h"
+#include "../Engine/Components/Light.h"
 #include "define.h"
 
 ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 {
-	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE);
+	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
 
 	gamePlayer.AddChild(cameraObject);
 	player->SetCamera(cameraObject);
-	player->WorldTranslate(gce::Vector3f32(-3.f, 0.f, 0.f));
+	player->WorldTranslate(gce::Vector3f32(-3.f, 10.f, 0.f));
 	return player;
 }
 
-void CreateEnemy(gce::Scene& scene, ScriptPlayer* player)
+void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
 	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
 	enemy->SetPlayer(player);
+	enemy->mAgent->GetPathFinding()->SetGrid(grid);
 }
 
-void CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vector3f32 positionCenter)
+ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vector3f32 positionCenter)
 {
 	gce::GameObject& gridObject = CreateGameObject<ScriptGrid>(scene, gce::SHAPES.CUBE);
 	ScriptGrid* grid = gridObject.GetScript<ScriptGrid>();
 	grid->SetSizeTabCell(sizeTabCell); //SetScale et lance InitTab
 	grid->SetCenterOfGrid(positionCenter);
+	return grid;
 }
 
 
@@ -39,6 +42,11 @@ BEGIN_TEST( Game )
 
 	gce::GameManager::Create();
 	gce::Scene& scene = gce::Scene::Create();
+
+	gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
+	gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
+	directionalLight.DefaultDirectionLight();
+	directionalLight.color = { 0.0f, 1.0f, 0.0f, 1.0f };
 
 	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
 	cameraObject.transform.LocalTranslate({ 0, 0, -10 });
@@ -52,10 +60,11 @@ BEGIN_TEST( Game )
 	camera.perspective.up = { 0.0f, 1.0f, 0.0f };
 
 	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
+	gce::Vector3f32 posPlayer = player->GetWorldPosition();
 
-	CreateEnemy(scene, player);
+	ScriptGrid* grid = CreateGrid(scene, gce::Vector2f32(2.f, 1.f), gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z));
 
-	CreateGrid(scene, gce::Vector2f32(10, 10), player->GetWorldPosition());
+	CreateEnemy(scene, player, grid);
 
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 	//geometry = 

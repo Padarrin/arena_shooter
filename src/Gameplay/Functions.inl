@@ -66,17 +66,29 @@ inline gce::GameObject& CreateGameObject(gce::Scene& scene)
 template<typename T>
 inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry)
 {
-	return CreateGameObject<T>(scene, geometry, nullptr);
+	return CreateGameObject<T>(scene, geometry, nullptr, DEFAULTCOLOR);
+}
+
+template<typename T>
+inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Vector4 color)
+{
+	return CreateGameObject<T>(scene, geometry, nullptr, color);
 }
 
 template<typename T>
 inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Texture* texture)
 {
-	return CreateGameObject<T>(scene, nullptr, texture);
+	return CreateGameObject<T>(scene, nullptr, texture, DEFAULTCOLOR);
 }
 
 template<typename T>
 inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture)
+{
+	return CreateGameObject<T>(scene, geometry, nullptr, DEFAULTCOLOR);
+}
+
+template<typename T>
+inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture, gce::Vector4 color)
 {
 	gce::GameObject& object = gce::GameObject::Create(scene);
 	T* ob = object.AddScript<T>();
@@ -97,6 +109,7 @@ inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geome
 		}
 	}
 	gce::Light* light = object.AddComponent<gce::Light>();
+	light->color = color;
 
 	return object;
 }

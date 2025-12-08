@@ -6,6 +6,7 @@
 #include <GameObject.h>
 
 #include "Node.h"
+#include "Functions.h"
 
 class Cell;
 //template<typename T>
@@ -142,8 +143,8 @@ public:
 		}
 	}
 
-	Node<Cell>* GetNode(gce::Vector3f32 pos, Grid* grid) { Cell* cell = GetCell(pos); return GetNodeInTab(cell->GetRowCol(), GetSizeTabCell().y); }
-	Node<Cell>* GetNode(Cell* cell, Grid* grid) { return GetNodeInTab(cell->GetRowCol(), GetSizeTabCell().y); }
+	Node<Cell>* GetNode(gce::Vector3f32 pos) { Cell* cell = GetCell(pos); return GetNodeInTab(cell->GetRowCol(), GetSizeTabCell().y); }
+	Node<Cell>* GetNode(Cell* cell) { return GetNodeInTab(cell->GetRowCol(), GetSizeTabCell().y); }
 
 	Node<Cell>* GetNodeInTab(gce::Vector2i32 rowCol, int lengthCol, std::vector<Node<Cell>*>* allNodes) { return (*allNodes)[rowCol.x * lengthCol + rowCol.y]; }
 	Node<Cell>* GetNodeInTab(int row, int col, int lengthCol, std::vector<Node<Cell>*>* allNodes) { return (*allNodes)[row * lengthCol + col]; }
