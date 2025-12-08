@@ -81,7 +81,7 @@ BEGIN_TEST( Game )
 
 	CreateEnemy(scene, player, grid);
 
-	//CreateFloor(scene);
+	CreateFloor(scene);
 
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 	//geometry = 
