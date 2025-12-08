@@ -1,13 +1,13 @@
 #include "PathFinding.h"
 #include "Queue.hpp"
 #include "Compare.h"
-#include "Grid.h"
+#include "Grid.hpp"
 #include "Node.h"
 #include "Agent.hpp"
 
 
 
-template<typename T>
+/*template<typename T>
 inline Queue_<T, ComparePath<T>>* PathFinding<T>::GetPaths()
 {
 	if (mPath.Size() > 0) { return &mPath; }
@@ -24,7 +24,7 @@ PathFinding<T>::~PathFinding()
 template<typename T>
 inline void PathFinding<T>::FindPath(Node<T>* startNode, Node<T>* endNode, Grid* grid, Queue_<T, ComparePath<T>>, ScriptAgent* owner)
 {
-	ResetNodes<T>(grid);
+	ResetNodes<T>();
 	Queue<Node<T>> queue;
 	startNode->SetDisStart(0.f);
 	startNode->SetDisEnd(Utils::DisManhattan(startNode->GetData()->GetPosition(), endNode->GetData()->GetPosition()));
@@ -110,7 +110,7 @@ void PathFinding<T>::CreatePath(bool isfinish, Node<T>* startNode, Node<T>* endN
 	{
 		allPathStarts->push_back(allPathEnds[i]);
 	}
-}*/
+}
 
 template<typename T>
 void PathFinding<T>::ResetNodes(Grid* grid)
@@ -123,6 +123,6 @@ void PathFinding<T>::ResetNodes(Grid* grid)
 		allNodes[i]->SetVisited(false);
 		allNodes[i]->SetCallMe(nullptr);
 	}
-}
+}*/
 
 

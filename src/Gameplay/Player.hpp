@@ -18,7 +18,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			float deltaTime = gce::GameManager::DeltaTime();
 
 			InputMove(deltaTime);
-
 			TurnCamera();
 		}
 

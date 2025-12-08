@@ -6,7 +6,7 @@
 #include <Render.h>
 #include <Engine.h>
 
-#include "Grid.h"
+#include "Grid.hpp"
 #include "Node.h"
 
 template<typename A>
@@ -66,17 +66,29 @@ inline gce::GameObject& CreateGameObject(gce::Scene& scene)
 template<typename T>
 inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry)
 {
-	return CreateGameObject<T>(scene, geometry, nullptr);
+	return CreateGameObject<T>(scene, geometry, nullptr, DEFAULTCOLOR);
+}
+
+template<typename T>
+inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Vector4 color)
+{
+	return CreateGameObject<T>(scene, geometry, nullptr, color);
 }
 
 template<typename T>
 inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Texture* texture)
 {
-	return CreateGameObject<T>(scene, nullptr, texture);
+	return CreateGameObject<T>(scene, nullptr, texture, DEFAULTCOLOR);
 }
 
 template<typename T>
 inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture)
+{
+	return CreateGameObject<T>(scene, geometry, nullptr, DEFAULTCOLOR);
+}
+
+template<typename T>
+inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture, gce::Vector4 color)
 {
 	gce::GameObject& object = gce::GameObject::Create(scene);
 	T* ob = object.AddScript<T>();
@@ -97,57 +109,9 @@ inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geome
 		}
 	}
 	gce::Light* light = object.AddComponent<gce::Light>();
+	light->color = color;
 
 	return object;
-}
-
-template<typename T>
-inline T* GetCell(gce::Vector3f32 pos, Grid* grid)
-{
-	/*gce::Vector2i32 index = GetCellInPos(pos, grid->GetSizeTabCell());
-	return grid->GetAllCells()[index.x][index.y];*/
-}
-
-template<typename T>
-inline Node<T>* GetNode(gce::Vector3f32 pos, Grid* grid)
-{
-	gce::Vector2i32  index = GetCellInPos(pos, grid->GetSizeTabCell());
-	std::vector<Node<T>*>* allNodes = grid->GetAllNodes();
-	return GetNodeInTab(index.x, index.y, grid->GetAllCells()[0].size(), allNodes);
-}
-
-template<typename T>
-inline Node<T>* GetNodeInTab(int row, int col, int length_col, std::vector<Node<T>*>* allNodes)
-{
-	return (*allNodes)[row * length_col + col];
-}
-
-template<typename T>
-inline T* GetNearestCell(gce::Vector3f32 pos, std::vector<std::vector<T*>> allCells)
-{
-	/*T* nearest = nullptr;
-	float smallestSquaredDist = INT_MAX;
-
-	for (auto& row : allCells)
-	{
-		for (auto cell : row)
-		{
-			float dx = abs(cell->GetPosition().x - pos.x);
-			float dy = abs(cell->GetPosition().z - pos.z);
-
-			float squaredDist = dx * dx + dy * dy;
-
-			if (squaredDist < smallestSquaredDist)
-			{
-				nearest = cell;
-
-				smallestSquaredDist = squaredDist;
-			}
-		}
-	}
-
-	return nearest;*/
-	return nullptr;
 }
 
 template<typename T>
