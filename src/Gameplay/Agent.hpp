@@ -3,7 +3,7 @@
 #include "Queue.hpp"
 #include "compare.h"
 #include "PathFinding.h"
-#include "Grid.h"
+#include "Grid.hpp"
 
 DECLARE_SCRIPT(ScriptAgent, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
@@ -13,7 +13,7 @@ protected:
 public:
 	ScriptCharacter* mCharacter;
 
-	virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); void SetPathFinding(PathFinding<Cell>()); }
+	virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); void SetPathFinding(PathFinding<Cell>()); SetPaths(Queue_<Cell, ComparePath<Cell>>()); mPathFinding.SetGrid(nullptr);}
 	virtual void Start() { mCharacter->Start(); void SetPaths(Queue_<Cell, ComparePath<Cell>>()); }
 	virtual void Update() {}
 	virtual void Destroy() {}
@@ -29,20 +29,21 @@ public:
 	Queue_<Cell, ComparePath<Cell>>* GetPaths() { return mPathFinding.GetPaths(); }
 
 
-	void GoToCell(Cell* cellEnd, Grid* grid)
+	void GoToCell(Cell* cellEnd)
 	{
+		ScriptGrid* grid = mPathFinding.GetGrid();
 		gce::Vector2i32 indexRowCol = cellEnd->GetRowCol();
 		std::vector<Node<Cell>*>* allNodes = grid->GetAllNodes();
 		int lengthCell = grid->GetSizeTabCell();
-		GoToNode(GetNodeInTab((int)indexRowCol.x, (int)indexRowCol.y, lengthCell, allNodes), grid);
+		GoToNode(grid->GetNodeInTab((int)indexRowCol.x, (int)indexRowCol.y, lengthCell, allNodes));
 	}
 
-	void GoToCell(gce::Vector3f32 pos, Grid* grid)
+	void GoToCell(gce::Vector3f32 pos)
 	{
-		GoToNode(GetNode<Cell>(pos, grid), grid);
+		GoToNode(mPathFinding.GetGrid()->GetNode(pos));
 	}
 
-	void GoToNode(Node<Cell>* endNode, Grid* grid)
+	void GoToNode(Node<Cell>* endNode)
 	{
 		Node<Cell>* startNode;
 		Queue_<Cell, ComparePath<Cell>>* currentPath = ScriptAgent::GetPaths();
@@ -55,17 +56,17 @@ public:
 		else
 		{
 			//position actuelle
-			startNode = GetNode<Cell>(GetWorldPosition(), grid);
+			startNode = mPathFinding.GetGrid()->GetNode(GetWorldPosition());
 		}
 
-		GoToNode(startNode, endNode, grid);
+		GoToNode(startNode, endNode);
 	}
 
-	void GoToNode(Node<Cell>* startNode, Node<Cell>* endNode, Grid* grid)
+	void GoToNode(Node<Cell>* startNode, Node<Cell>* endNode)
 	{
 		//SetStartNode(startNode);
 		//SetEndNode(endNode);
-		mPathFinding.Find(startNode, endNode, grid, this);
+		mPathFinding.Find(startNode, endNode, this);
 	}
 
 	void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }

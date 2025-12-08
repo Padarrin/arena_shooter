@@ -6,8 +6,7 @@
 template<typename T>
 class Node;
 
-class Grid;
-
+class ScriptGrid;
 class ScriptAgent;
 
 
@@ -16,26 +15,37 @@ class PathFinding
 {
 protected:
 	Queue_<T, ComparePath<T>> mPath;
+	ScriptGrid* mGrid;
 public:
 	PathFinding() { Start(); }
 
-	void Start() { SetPaths(Queue_<T, ComparePath<T>>()); }
-
-	void Find(Node<T>* startNode, Node<T>* endNode, Grid* grid, ScriptAgent* owner) { FindPath(startNode, endNode, grid, GetPaths(), owner); }
+	void Start() { SetPaths(Queue_<T, ComparePath<T>>()); SetGrid(nullptr);  }
+	void Find(Node<T>* startNode, Node<T>* endNode, ScriptAgent* owner) { FindPath(startNode, endNode, GetPaths(), owner); }
 
 	void SetPaths(Queue_<T, ComparePath<T>> path) { mPath = path; }
+	void AddPaths(Queue_<T, ComparePath<T>> path) 
+	{ 
+		while (!path.IsEmpty())
+		{
+			Node<T*> node = path.Top();
+			path.Pop();
+			mPath.Puch(node);
+		}
+	}
 	Queue_<T, ComparePath<T>>* GetPaths();
+
+	void SetGrid(ScriptGrid* grid) { mGrid = grid; }
+	ScriptGrid* GetGrid() { return mGrid; }
 
 	~PathFinding()
 	{
 		mPath.Clear();
 	}
 protected:
-	static void FindPath(Node<T>* startNode, Node<T>* endNode, Grid* grid, Queue_<T, ComparePath<T>>* allFormerPaths, ScriptAgent* owner);
-	//static void CreatePath(bool isfinish, Node<T>* startNode, Node<T>* endNode, std::vector<Node<T>*>* allFormerPaths);
-	static void ResetNodes(Grid* grid);
+	void FindPath(Node<T>* startNode, Node<T>* endNode, Queue_<T, ComparePath<T>>* allFormerPaths, ScriptAgent* owner);
+	void ResetNodes();
 
-#include "Grid.h"
+#include "Grid.hpp"
 #include "Node.h"
 #include "Agent.hpp"
 
@@ -48,9 +58,9 @@ protected:
 
 
 	template<typename T>
-	inline void FindPath(Node<T>* startNode, Node<T>* endNode, Grid* grid, Queue_<T, ComparePath<T>>* allFormerPaths, ScriptAgent* owner)
+	inline void FindPath(Node<T>* startNode, Node<T>* endNode, Queue_<T, ComparePath<T>>* allFormerPaths, ScriptAgent* owner)
 	{
-		ResetNodes<T>(grid);
+		ResetNodes<T>();
 		Queue<Node<T>> queue;
 		startNode->SetDisStart(0.f);
 		startNode->SetDisEnd(DisManhattan(startNode->GetData()->GetPosition(), endNode->GetData()->GetPosition()));
@@ -84,7 +94,14 @@ protected:
 
 			if (nodeCurrent == endNode)
 			{
-				CreatePath(false, startNode, endNode, allFormerPaths);
+				Queue_<T, ComparePath<T>> path = Queue_<T, ComparePath<T>>();
+				while (endNode != startNode)
+				{
+					path.push_back(endNode);
+					endNode = endNode->GetCallMe();
+				}
+				path.Swap();
+				AddPaths(path);
 				return;
 			}
 
@@ -114,34 +131,10 @@ protected:
 		allFormerPaths->Clear();
 	}
 
-
-	/*template<typename T>
-	void PathFinding<T>::CreatePath(bool isfinish, Node<T>* startNode, Node<T>* endNode, std::vector<Node<T>*>* allFormerPaths)
-	{
-		std::vector<Node<T>*> allPathEnds = std::vector<Node<T>*>();
-		while (endNode != startNode)
-		{
-			allPathEnds.push_back(endNode);
-			endNode = endNode->GetCallMe();
-		}
-
-		std::vector<Node<T>*>* allPathStarts = allFormerPaths;
-		if (isfinish)
-		{
-			*allPathStarts = std::vector<Node<T>*>();
-		}
-
-		int lenghtAllPathEnds = allPathEnds.size() - 1;
-		for (int i = lenghtAllPathEnds; i > -1; i--)
-		{
-			allPathStarts->push_back(allPathEnds[i]);
-		}
-	}*/
-
 	template<typename T>
-	void ResetNodes(Grid* grid)
+	void ResetNodes()
 	{
-		std::vector<Node<T>*> allNodes = grid->GetAllNodes();
+		std::vector<Node<T>*> allNodes = mGrid->GetAllNodes();
 		int lenght = allNodes.size();
 		for (int i = 0; i < lenght; i++)
 		{

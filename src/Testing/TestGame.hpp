@@ -4,6 +4,9 @@
 #include <Render.h>
 #include <Engine.h>
 #include "../Gameplay/Enemy.hpp"
+#include "../Gameplay/Grid.hpp"
+#include "../Engine/Components/MeshRenderer.h"
+#include "../Engine/Components/Light.h"
 #include "define.h"
 using namespace gce;
 
@@ -24,17 +27,17 @@ gce::GameObject& CreateCamera(gce::Scene& scene)
 
 ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 {
-	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE);
+	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
 
 	gamePlayer.AddChild(cameraObject);
 	player->SetCamera(cameraObject);
-	player->WorldTranslate(gce::Vector3f32(-3.f, 0.f, 0.f));
+	player->WorldTranslate(gce::Vector3f32(-3.f, 10.f, 0.f));
 	player->mCharacter->SetSpeed(90);
 	return player;
 }
 
-void CreateEnemy(gce::Scene& scene, ScriptPlayer* player)
+void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
 	/*gce::GameObject& cameraObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 	ScriptEnemy* enemy = cameraObject.GetScript<ScriptEnemy>();
@@ -52,6 +55,15 @@ void CreateFloor(gce::Scene& scene)
 	entity->SetWorldScale({ 50.f,0.2f,50.f });
 }
 
+ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vector3f32 positionCenter)
+{
+	gce::GameObject& gridObject = CreateGameObject<ScriptGrid>(scene, gce::SHAPES.CUBE);
+	ScriptGrid* grid = gridObject.GetScript<ScriptGrid>();
+	grid->SetSizeTabCell(sizeTabCell); //SetScale et lance InitTab
+	grid->SetCenterOfGrid(positionCenter);
+	return grid;
+}
+
 
 BEGIN_TEST( Game )
 
@@ -60,9 +72,17 @@ BEGIN_TEST( Game )
 
 	gce::GameObject& cameraObject = CreateCamera(scene);
 
-	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
+	gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
+	gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
+	directionalLight.DefaultDirectionLight();
+	directionalLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-	CreateEnemy(scene, player);
+	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
+	gce::Vector3f32 posPlayer = player->GetWorldPosition();
+
+	ScriptGrid* grid = CreateGrid(scene, gce::Vector2f32(20.f, 100.f), gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z));
+
+	CreateEnemy(scene, player, grid);
 
 	CreateFloor(scene);
 
