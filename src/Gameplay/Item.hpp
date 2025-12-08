@@ -11,7 +11,7 @@ public:
 
 	virtual void Initia() { mObject = m_pOwner->AddScript<ScriptObject>(); mObject->Initia(); }
 	virtual void Start() { mObject->Start(); }
-	virtual void Update() { }
+	virtual void Update() {}
 	virtual void Destroy() {}
 
 	virtual void CollisionEnter() {}
