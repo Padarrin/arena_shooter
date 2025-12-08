@@ -2,6 +2,7 @@
 #include "GeometryFactory.h"
 
 #include "Obj.h"
+#include "../Engine/Json.h"
 #include "Geometry.h"
 #include "Structs.h"
 #include "define.h"
@@ -334,6 +335,9 @@ Vertex v[24]{
 
 		Obj obj(path.data());
 		obj.LoadObj();
+
+		Json json(path.data());
+		json.LoadJson();
 
 
 		for (int i = 0; i < obj.meshs.Size(); i++)
