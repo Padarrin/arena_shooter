@@ -5,6 +5,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 	protected:
 		gce::GameObject* mObjectCamera;
+		gce::GameObject* mGamePlayer;
 		gce::Window* mWindow;
 
 		gce::Vector3f32 mVelocity;
@@ -24,12 +25,10 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			float deltaTime = gce::GameManager::DeltaTime();
 
 			InputMove(deltaTime);
-			Gravity(deltaTime);
+			//Gravity(deltaTime);
 
 			TurnCamera();
 
-
-			std::cout << GetWorldPosition().x << "; " << GetWorldPosition().y << "; " << GetWorldPosition().z << std::endl;
 		}
 
 		virtual void Destroy() {}
@@ -37,9 +36,9 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		virtual void CollisionEnter(gce::GameObject* other) 
 		{ 
 			mCharacter->CollisionEnter(other);
-			//Regarde si il est dans les airs pour qu'il puisse saute 
-			WorldTranslate({ 0.f, -mVelocity.y , 0.f });
+			//Regarde si il est dans les airs pour qu'il puisse saute
 			mVelocity.y = 0.f;
+			mGamePlayer->GetComponent<gce::PhysicComponent>()->SetVelocity(mVelocity);
 			mIsJumping = false;
 		}
 		virtual void CollisionStay(GameObject* other) 
@@ -81,25 +80,28 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		}
 
 		void SetCamera(gce::GameObject& cameraObject) { mObjectCamera = &cameraObject; }
+		void SetPlayer(gce::GameObject& gamePlayer) { mGamePlayer = &gamePlayer; }
 
 		void Jump(float strength, float deltaTime)
 		{
 			if (mIsJumping == false)
 			{
 				mVelocity.y = strength;
+				mGamePlayer->GetComponent<gce::PhysicComponent>()->SetVelocity(mVelocity);
+				WorldTranslate({ 0.f, mVelocity.y, 0.f });
 				mIsJumping = true;
 			}
 		}
 
-		void Gravity(float deltaTime)
-		{
-			//Enleve de la velocite
-			mVelocity.y -= mGravity * deltaTime;
+		//void Gravity(float deltaTime)
+		//{
+		//	//Enleve de la velocite
+		//	mVelocity.y -= mGravity * deltaTime;
 
-			//Fait redescendre le joueur
-			//mCharacter->mEntity->SetWorldPosition({ GetWorldPosition().x, GetWorldPosition().y + , GetWorldPosition().z });
-			WorldTranslate(gce::Vector3f32(0.f, mVelocity.y * deltaTime, 0.f));
-		}
+		//	//Fait redescendre le joueur
+		//	//mCharacter->mEntity->SetWorldPosition({ GetWorldPosition().x, GetWorldPosition().y + , GetWorldPosition().z });
+		//	WorldTranslate(gce::Vector3f32(0.f, mVelocity.y * deltaTime, 0.f));
+		//}
 
 		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
 		gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }

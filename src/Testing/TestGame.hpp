@@ -32,6 +32,7 @@ ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 
 	gamePlayer.AddChild(cameraObject);
 	player->SetCamera(cameraObject);
+	player->SetPlayer(gamePlayer);
 	player->WorldTranslate(gce::Vector3f32(-3.f, 0.f, 0.f));
 	player->mCharacter->SetSpeed(30);
 	player->SetGravity(0.981f, gamePlayer);
@@ -51,9 +52,6 @@ void CreateFloor(gce::Scene& scene)
 	gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, gce::SHAPES.CUBE);
 	floorObject.AddComponent<gce::BoxCollider>()->SetActive(true);
 	floorObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
-	/*floorObject.GetComponent<gce::PhysicComponent>()->SetGravityScale(0);
-	floorObject.GetComponent<gce::PhysicComponent>()->SetVelocity({ 0,0,0 });
-	floorObject.GetComponent<gce::PhysicComponent>()->SetMass(0 );*/
 
 	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
 	entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
