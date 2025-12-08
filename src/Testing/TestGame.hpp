@@ -61,9 +61,9 @@ BEGIN_TEST( Game )
 
 	gce::GameObject& cameraObject = CreateCamera(scene);
 
-	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
+	//ScriptPlayer* player = CreatePlayer(cameraObject, scene);
 
-	CreateEnemy(scene, player);
+	//CreateEnemy(scene, player);
 
 	CreateFloor(scene);
 
