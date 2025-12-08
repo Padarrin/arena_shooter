@@ -14,8 +14,8 @@ protected:
 public:
 	ScriptCharacter* mCharacter;
 
-	virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); void SetPathFinding(PathFinding<Cell>()); SetPaths(Queue_<Cell, ComparePath<Cell>>()); mPathFinding.SetGrid(nullptr);}
-	virtual void Start() { mCharacter->Start(); void SetPaths(Queue_<Cell, ComparePath<Cell>>()); }
+	virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); SetPathFinding(PathFinding<Cell>()); mPathFinding.SetGrid(nullptr);}
+	virtual void Start() { mCharacter->Start(); SetPaths(Queue_<Cell, ComparePath<Cell>>()); }
 	virtual void Update() {}
 	virtual void Destroy() {}
 
@@ -30,18 +30,31 @@ public:
 	Queue_<Cell, ComparePath<Cell>>* GetPaths() { return mPathFinding.GetPaths(); }
 
 
-	void GoToCell(Cell* cellEnd)
+	bool GoToCell(Cell* cellEnd)
 	{
 		ScriptGrid* grid = mPathFinding.GetGrid();
 		gce::Vector2i32 indexRowCol = cellEnd->GetRowCol();
 		std::vector<Node<Cell>*>* allNodes = grid->GetAllNodes();
 		int lengthCell = grid->GetSizeTabCell();
-		GoToNode(grid->GetNodeInTab((int)indexRowCol.x, (int)indexRowCol.y, lengthCell, allNodes));
+		Node<Cell>* endNode = grid->GetNodeInTab((int)indexRowCol.x, (int)indexRowCol.y, lengthCell, allNodes);
+		if (endNode != nullptr)
+		{
+			return GoToNode(endNode);
+		}
+		return false;
 	}
 
-	void GoToCell(gce::Vector3f32 pos) { GoToNode(mPathFinding.GetGrid()->GetNode(pos)); }
+	bool GoToCell(gce::Vector3f32 pos)
+	{ 
+		Node<Cell>* endNode = mPathFinding.GetGrid()->GetNode(pos);
+		if (endNode != nullptr)
+		{
+			return GoToNode(endNode);
+		}
+		return false;
+	}
 
-	void GoToNode(Node<Cell>* endNode)
+	bool GoToNode(Node<Cell>* endNode)
 	{
 		Node<Cell>* startNode;
 		Queue_<Cell, ComparePath<Cell>>* currentPath = ScriptAgent::GetPaths();
@@ -57,9 +70,13 @@ public:
 			startNode = mPathFinding.GetGrid()->GetNode(GetWorldPosition());
 		}
 
-		GoToNode(startNode, endNode);
+		if (startNode != nullptr)
+		{
+			return GoToNode(startNode, endNode);
+		}
+		return false;
 	}
-	void GoToNode(Node<Cell>* startNode, Node<Cell>* endNode) { mPathFinding.Find(startNode, endNode, this); }
+	bool GoToNode(Node<Cell>* startNode, Node<Cell>* endNode) { mPathFinding.Find(startNode, endNode, this); return true; }
 
 	void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
 	gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }

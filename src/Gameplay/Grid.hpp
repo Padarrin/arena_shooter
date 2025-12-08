@@ -34,7 +34,7 @@ public:
 		std::vector<Node<Cell>*> mAllNodes;
 		std::vector<std::vector<Cell*>> mAllCells;
 
-		int mCellSize = 50;
+		mCellSize = 50;
 
 		SetCenterOfGrid(gce::Vector3f32(0.f, 0.f, 0.f));
 	}
@@ -146,15 +146,63 @@ public:
 		{
 			return nearest;
 		}
+		return nullptr;
 	}
 
-	Node<Cell>* GetNode(gce::Vector3f32 pos) { Cell* cell = GetCell(pos); return GetNodeInTab(cell->GetRowCol(), GetSizeTabCell().y); }
-	Node<Cell>* GetNode(Cell* cell) { return GetNodeInTab(cell->GetRowCol(), GetSizeTabCell().y); }
+	Node<Cell>* GetNode(gce::Vector3f32 pos) 
+	{
+		Cell* cell = GetCell(pos);
+		if (cell != nullptr)
+		{
+			return GetNode(cell);
+		}
+		return nullptr;
+	}
+	Node<Cell>* GetNode(Cell* cell) 
+	{ 
+		if (cell != nullptr)
+		{
+			return GetNodeInTab(cell->GetRowCol(), GetSizeTabCell().y);
+		}
+		return nullptr;
+	}
 
-	Node<Cell>* GetNodeInTab(gce::Vector2i32 rowCol, int lengthCol, std::vector<Node<Cell>*>* allNodes) { return (*allNodes)[rowCol.x * lengthCol + rowCol.y]; }
-	Node<Cell>* GetNodeInTab(int row, int col, int lengthCol, std::vector<Node<Cell>*>* allNodes) { return (*allNodes)[row * lengthCol + col]; }
-	Node<Cell>* GetNodeInTab(gce::Vector2i32 rowCol, int lengthCol) { return mAllNodes[rowCol.x * lengthCol + rowCol.y]; }
-	Node<Cell>* GetNodeInTab(int row, int col, int lengthCol) { return mAllNodes[row * lengthCol + col]; }
+	Node<Cell>* GetNodeInTab(gce::Vector2i32 rowCol, int lengthCol, std::vector<Node<Cell>*>* allNodes) 
+	{ 
+		int index = rowCol.x * lengthCol + rowCol.y;
+		if (index < allNodes->size())
+		{
+			return (*allNodes)[index];
+		}
+		return nullptr;
+	}
+	Node<Cell>* GetNodeInTab(int row, int col, int lengthCol, std::vector<Node<Cell>*>* allNodes) 
+	{ 
+		int index = row * lengthCol + col;
+		if (index < allNodes->size())
+		{
+			return (*allNodes)[index];
+		}
+		return nullptr;
+	}
+	Node<Cell>* GetNodeInTab(gce::Vector2i32 rowCol, int lengthCol) 
+	{ 
+		int index = rowCol.x * lengthCol + rowCol.y;
+		if (index < mAllNodes.size())
+		{
+			return mAllNodes[index];
+		}
+		return nullptr;
+	}
+	Node<Cell>* GetNodeInTab(int row, int col, int lengthCol) 
+	{ 
+		int index = row * lengthCol + col;
+		if (index < mAllNodes.size())
+		{
+			return mAllNodes[index];
+		}
+		return nullptr;
+	}
 
 	Cell* GetNearestCell(gce::Vector3f32 pos)
 	{
@@ -165,13 +213,15 @@ public:
 			return nullptr;
 		}
 
-		std::vector<std::vector<Cell*>>* allCells = GetAllCells();
-		if (index.x > allCells->size() - 1 || index.y > allCells[0].size() - 1)
+		//std::vector<std::vector<Cell*>>* allCells = GetAllCells();
+		int lenghtRows = mAllCells.size();
+		int lenghtCols = mAllCells[0].size();
+		if (index.x > lenghtRows - 1 || index.y > lenghtCols - 1)
 		{
 			return nullptr;
 		}
 
-		return (*allCells)[index.x][index.y];
+		return mAllCells[index.x][index.y];
 	}
 
 protected:

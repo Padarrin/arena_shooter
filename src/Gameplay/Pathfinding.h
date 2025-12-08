@@ -61,7 +61,7 @@ protected:
 
 		Queue_<T, CompareASTAR<T>> queue;
 		startNode->SetDisStart(0.f);
-		startNode->SetDisEnd(DisManhattan({100.f, 10.f, 1.f}, { 100.f, 1.f, 1.f }, 10));
+		startNode->SetDisEnd(DisManhattan({100.f, 10.f, 1.f}, { 100.f, 1.f, 1.f }, 10));//mGrid->GetPosOfCell(startNode->GetData()), mGrid->GetPosOfCell(endNode->GetData()), cellSize
 		queue.Push(startNode);
 
 		while (queue.IsEmpty() == false)

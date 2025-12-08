@@ -18,8 +18,12 @@ public:
 		mAgent->Start();
 		
 		ScriptGrid* grid = GetGrid();
-		Cell* nerestCell = grid->GetNearestCell(GetWorldPosition());
-		SetWorldPosition(grid->GetPosOfCell(nerestCell));
+		Cell* nearestCell = grid->GetNearestCell(GetWorldPosition());
+		if (nearestCell != nullptr)
+		{
+			gce::Vector3f32 pos = grid->GetPosOfCell(nearestCell);
+			SetWorldPosition(gce::Vector3f32(pos.x, pos.y + (mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f), pos.z));
+		}
 	}
 	virtual void Update() 
 	{ 
@@ -35,7 +39,8 @@ public:
 		
 		if (mAgent->GetPaths()->Size() < 1)
 		{
-			mAgent->GoToCell(mPlayer->GetWorldPosition());
+			bool isExecute = mAgent->GoToCell(mPlayer->GetWorldPosition());
+			isExecute = isExecute;
 		}
 	}
 	virtual void Destroy() {}
