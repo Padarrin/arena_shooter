@@ -23,7 +23,7 @@ public:
 			myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
 		}
 
-		mAgent->mCharacter->CreateBallInFront<ScriptBall>(100.f, gce::SHAPES.CUBE, myParentEntity);//temp creation de ball
+		mAgent->mCharacter->CreateBallInFront<ScriptBall>(1.f, gce::SHAPES.CUBE, myParentEntity);//temp creation de ball
 	}
 	virtual void Destroy() {}
 

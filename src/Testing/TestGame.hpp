@@ -31,7 +31,7 @@ ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 
 	gamePlayer.AddChild(cameraObject);
 	player->SetCamera(cameraObject);
-	pplayer->WorldTranslate(gce::Vector3f32(-3.f, 10.f, 0.f));
+	player->WorldTranslate(gce::Vector3f32(-3.f, 10.f, 0.f));
 	player->mCharacter->SetSpeed(90);
 	return player;
 }
