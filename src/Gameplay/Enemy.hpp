@@ -27,7 +27,7 @@ public:
 	}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter(GameObject* other) { mAgent->CollisionEnter(other); }
+	virtual void CollisionEnter(gce::GameObject* other) { mAgent->CollisionEnter(other); }
 	virtual void CollisionStay(GameObject* other) { mAgent->CollisionStay(other); }
 	virtual void CollisionExit(GameObject* other) { mAgent->CollisionExit(other); }
 

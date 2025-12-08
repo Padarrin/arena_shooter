@@ -16,7 +16,7 @@ public:
 	virtual void Update() { UpdateDirection(); UpdateOutArea(); }
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter(GameObject* other) { mObject->CollisionEnter(other); }
+	virtual void CollisionEnter(gce::GameObject* other) { mObject->CollisionEnter(other); }
 	virtual void CollisionStay(GameObject* other) { mObject->CollisionStay(other); }
 	virtual void CollisionExit(GameObject* other) { mObject->CollisionExit(other); }
 

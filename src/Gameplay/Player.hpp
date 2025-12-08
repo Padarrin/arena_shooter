@@ -17,7 +17,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		ScriptCharacter* mCharacter;
 
 		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mVelocity = gce::Vector3f32(0.f, 0.f, 0.f); mGravity = 9.81f; mJump = 6.f; }
-		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); mIsJumping = false; }
+		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); mIsJumping = true; }
 
 		virtual void Update()
 		{ 
@@ -27,11 +27,14 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			Gravity(deltaTime);
 
 			TurnCamera();
+
+
+			std::cout << GetWorldPosition().x << "; " << GetWorldPosition().y << "; " << GetWorldPosition().z << std::endl;
 		}
 
 		virtual void Destroy() {}
 
-		virtual void CollisionEnter(GameObject* other) 
+		virtual void CollisionEnter(gce::GameObject* other) 
 		{ 
 			mCharacter->CollisionEnter(other);
 			//Regarde si il est dans les airs pour qu'il puisse saute 

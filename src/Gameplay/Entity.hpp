@@ -24,7 +24,7 @@ public:
 	virtual void Update() {}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter(GameObject* other) { }
+	virtual void CollisionEnter(gce::GameObject* other) { }
 	virtual void CollisionStay(GameObject* other) { }
 	virtual void CollisionExit(GameObject* other) { }
 

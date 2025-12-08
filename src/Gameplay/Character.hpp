@@ -65,7 +65,7 @@ public:
 	}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter(GameObject* other) { mEntity->CollisionEnter(other); }
+	virtual void CollisionEnter(gce::GameObject* other) { mEntity->CollisionEnter(other); }
 	virtual void CollisionStay(GameObject* other) { mEntity->CollisionStay(other); }
 	virtual void CollisionExit(GameObject* other) { mEntity->CollisionExit(other); }
 

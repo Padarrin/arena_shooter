@@ -4,6 +4,7 @@
 #include <Render.h>
 #include <Engine.h>
 #include "../Gameplay/Enemy.hpp"
+#include "../Engine/Components/ColliderBase3D.h"
 #include "../Engine/Components/BoxCollider.h"
 #include "define.h"
 
@@ -49,9 +50,15 @@ void CreateFloor(gce::Scene& scene)
 {
 	gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, gce::SHAPES.CUBE);
 	floorObject.AddComponent<gce::BoxCollider>()->SetActive(true);
+	floorObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
+	/*floorObject.GetComponent<gce::PhysicComponent>()->SetGravityScale(0);
+	floorObject.GetComponent<gce::PhysicComponent>()->SetVelocity({ 0,0,0 });
+	floorObject.GetComponent<gce::PhysicComponent>()->SetMass(0 );*/
+
 	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
 	entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
 	entity->SetWorldScale({ 50.f,0.2f,50.f });
+
 }
 
 
