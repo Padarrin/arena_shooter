@@ -5,6 +5,7 @@
 #include <Engine.h>
 #include "../Gameplay/Enemy.hpp"
 #include "define.h"
+using namespace gce;
 
 gce::GameObject& CreateCamera(gce::Scene& scene)
 {
@@ -35,10 +36,13 @@ ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 
 void CreateEnemy(gce::Scene& scene, ScriptPlayer* player)
 {
-	gce::GameObject& cameraObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	/*gce::GameObject& cameraObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 	ScriptEnemy* enemy = cameraObject.GetScript<ScriptEnemy>();
-	enemy->SetPlayer(player);
-}
+	enemy->SetPlayer(player);*/
+
+	Geometry* lampe = gce::GeometryFactory::LoadGeometry(RES_PATH"res/Gameplay/Obj/lampe-tempete.usd");
+	Texture3D* texture = new Texture3D("res/Gameplay/Texture/Lamp1_2D_View.png");
+	texture
 
 void CreateFloor(gce::Scene& scene)
 {
