@@ -333,12 +333,9 @@ Vertex v[24]{
 		Vector<Vertex> vertices;
 		Vector<uint32> indices;
 
+		// Obj
 		Obj obj(path.data());
 		obj.LoadObj();
-
-		Json json(path.data());
-		json.LoadJson();
-
 
 		for (int i = 0; i < obj.meshs.Size(); i++)
 		{
@@ -353,6 +350,24 @@ Vertex v[24]{
 			for (uint32 index : obj.meshs[i].indices)
 				indices.PushBack(index);
 		}
+
+		// Json
+//		Json json(path.data());
+//		json.LoadJson();
+//
+//		for (int i = 0; i < json.meshs.Size(); i++)
+//		{
+//			for (Vertex& v : json.vertices)
+//			{
+//				Vertex ve;
+//				ve.pos = { v.position.x, v.position.y, v.position.z };
+//				ve.normal = { v.normal.x, v.normal.y, v.normal.z };
+//				ve.uv = { v.textureCoordinate.x, 1.f - v.textureCoordinate.y };
+//				vertices.PushBack(ve);
+//			}
+//			for (uint32 index : obj.meshs[i].indices)
+//				indices.PushBack(index);
+//		}
 
 		customGeo = new Geometry(vertices.Data(), vertices.Size(), indices.Data(), indices.Size());
 		return customGeo;
