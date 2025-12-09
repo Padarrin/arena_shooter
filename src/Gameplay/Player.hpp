@@ -88,7 +88,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			{
 				mVelocity.y = strength;
 				mGamePlayer->GetComponent<gce::PhysicComponent>()->SetVelocity(mVelocity);
-				WorldTranslate({ 0.f, mVelocity.y, 0.f });
+				WorldTranslate({ 0.f, mVelocity.y * deltaTime, 0.f });
 				mIsJumping = true;
 			}
 		}
