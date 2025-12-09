@@ -1,13 +1,10 @@
 #pragma once
 #include "Object.hpp"
-#include "Player.hpp"
 
 DECLARE_SCRIPT(ScriptItem, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
 protected:
 	float mTurnSpeed;
-
-	ScriptPlayer* mPlayer;
 
 public:
 	ScriptObject* mObject;
