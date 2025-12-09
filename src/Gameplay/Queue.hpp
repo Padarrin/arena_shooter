@@ -16,7 +16,7 @@ public:
 	Queue_(std::priority_queue<Node<T>*, std::vector<Node<T>*>, COMPARE> queue) { mQueue = queue; }
 
 	Node<T>* Top() { return mQueue.top(); };
-	void Pop() { return mQueue.pop(); };
+	void Pop() { mQueue.pop(); };
 	int Size() { return mQueue.size(); };
 
 	void Push(Node<T>* node) { mQueue.push(node); };

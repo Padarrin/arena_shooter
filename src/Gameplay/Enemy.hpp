@@ -22,12 +22,12 @@ public:
 		if (nearestCell != nullptr)
 		{
 			gce::Vector3f32 pos = grid->GetPosOfCell(nearestCell);
-			SetWorldPosition(gce::Vector3f32(pos.x, pos.y + (mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f), pos.z));
+			SetWorldPosition(gce::Vector3f32(pos.x, pos.y + (mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 10.5f), pos.z));
 		}
 	}
 	virtual void Update() 
 	{ 
-		WorldTranslate(gce::Vector3f32(0.f, 0.f, 0.05f)); // temp deplacement
+		//WorldTranslate(gce::Vector3f32(0.f, 0.f, 0.05f)); // temp deplacement
 		ScriptEntity* myParentEntity = mAgent->mCharacter->mEntity;
 	
 		if (mPlayer != nullptr)
@@ -35,12 +35,16 @@ public:
 			myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
 		}
 
-		mAgent->mCharacter->CreateBallInFront<ScriptBall>(5.f, gce::SHAPES.CUBE, myParentEntity);//temp creation de ball
+		//mAgent->mCharacter->CreateBallInFront<ScriptBall>(5.f, gce::SHAPES.CUBE, myParentEntity);//temp creation de ball
 		
 		if (mAgent->GetPaths()->Size() < 1)
 		{
-			bool isExecute = mAgent->GoToCell(mPlayer->GetWorldPosition());
-			isExecute = isExecute;
+			gce::Vector3f32 posPlayer = mPlayer->GetWorldPosition();
+			bool isExecute = mAgent->GoToCell(posPlayer);
+			if (isExecute == false)
+			{
+				int i;
+			}
 		}
 	}
 	virtual void Destroy() {}

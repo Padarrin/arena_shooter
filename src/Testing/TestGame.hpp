@@ -31,7 +31,7 @@ ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 
 	gamePlayer.AddChild(cameraObject);
 	player->SetCamera(cameraObject);
-	player->WorldTranslate(gce::Vector3f32(-3.f, 10.f, 0.f));
+	player->WorldTranslate(gce::Vector3f32(30.f, 10.f, 0.f));
 	player->mCharacter->SetSpeed(90);
 	return player;
 }
@@ -41,6 +41,7 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
 	enemy->SetPlayer(player);
+	enemy->mAgent->mCharacter->SetSpeed(1.f);
 	enemy->mAgent->GetPathFinding()->SetGrid(grid);
 }
 

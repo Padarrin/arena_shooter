@@ -49,16 +49,18 @@ public:
 		if (mTarget.isSet) 
 		{
 			gce::Vector3f32 pos = mEntity->GetWorldPosition();
+			gce::Vector3f32 otherPosition = mTarget.position;
 
-			float x1 = pos.x;
-			float y1 = pos.y;
-			float z1 = pos.z;
-
+			gce::Vector3f32 direction = pos - otherPosition;
+			direction = direction.Normalize();
+			
 			mTarget.distance -= distance;
+			gce::Vector3f32 translate = direction * distance;
+			mEntity->WorldTranslate(translate);
 
 			if (mTarget.distance <= 0.f)
 			{
-				mEntity->SetWorldPosition(mTarget.position);
+				mEntity->SetWorldPosition(otherPosition);
 				mTarget.isSet = false;
 			}
 		}
@@ -77,15 +79,13 @@ public:
 		ball->mShootable->mObject->mEntity->SetWorldRotate(gce::Vector3f32(rot.GetX(), rot.GetY(), rot.GetZ()));
 	}
 
-	bool GoToPosition(gce::Vector3f32 pos, float speed)
+	void GoToPosition(gce::Vector3f32 pos, float speed)
 	{
 		gce::Vector3f32 position = mEntity->GetWorldPosition();
 
 		mTarget.position = pos;
 		mTarget.distance = GetDistance(position, pos);
 		mTarget.isSet = true;
-
-		return true;
 	}
 
 	void Damage(int damage) 
