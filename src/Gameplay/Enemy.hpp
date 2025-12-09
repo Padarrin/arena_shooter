@@ -2,11 +2,16 @@
 #include "Agent.hpp"
 #include "Ball.hpp"
 #include "Player.hpp"
+#include <chrono>
 
 DECLARE_SCRIPT(ScriptEnemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
 protected:
 	ScriptPlayer* mPlayer;
+
+	using clock = std::chrono::steady_clock;
+
+	clock::time_point previousTime = clock::now();
 
 public:
 	ScriptAgent* mAgent;
@@ -23,7 +28,14 @@ public:
 			myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
 		}
 
-		mAgent->mCharacter->CreateBallInFront<ScriptBall>(100.f, gce::SHAPES.CUBE, myParentEntity);//temp creation de ball
+		auto currentTime = clock::now();
+		auto elapsed = currentTime - previousTime;
+
+		if (elapsed >= std::chrono::seconds(3))
+		{
+			mAgent->mCharacter->CreateBallInFront<ScriptBall>(100.f, gce::SHAPES.CUBE, myParentEntity);
+			previousTime = currentTime;
+		}
 	}
 	virtual void Destroy() {}
 

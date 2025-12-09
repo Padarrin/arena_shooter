@@ -34,6 +34,8 @@ public:
 	static ScriptBall* CreateBall(gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture)
 	{
 		gce::GameObject& gameBall = CreateGameObject<ScriptBall>(scene, geometry, texture);
+		gameBall.SetName("Ball");
+		gameBall.AddComponent<gce::BoxCollider>()->SetActive(false);
 		ScriptBall* ball = gameBall.GetScript<ScriptBall>();
 		ball->mShootable->SetShootable(ball->mShootable, pos, dir, speed);
 		return ball;

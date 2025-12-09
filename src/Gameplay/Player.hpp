@@ -9,7 +9,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		gce::Window* mWindow;
 
 		gce::Vector3f32 mVelocity;
-		float mGravity;
 		float mJump;
 
 		bool mIsJumping;
@@ -17,18 +16,21 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 	public:
 		ScriptCharacter* mCharacter;
 
-		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mVelocity = gce::Vector3f32(0.f, 0.f, 0.f); mGravity = 9.81f; mJump = 6.f; }
-		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); mIsJumping = true; }
+		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mVelocity = gce::Vector3f32(0.f, 0.f, 0.f); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); }
+		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); mIsJumping = true; gce::HideMouseCursor(); }
 
 		virtual void Update()
 		{ 
 			float deltaTime = gce::GameManager::DeltaTime();
 
 			InputMove(deltaTime);
-			//Gravity(deltaTime);
 
 			TurnCamera();
 
+			if (mCharacter->GetLife() <= 0)
+			{
+				m_pOwner->Destroy();
+			}
 		}
 
 		virtual void Destroy() {}
@@ -36,10 +38,16 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		virtual void CollisionEnter(gce::GameObject* other) 
 		{ 
 			mCharacter->CollisionEnter(other);
-			//Regarde si il est dans les airs pour qu'il puisse saute
-			mVelocity.y = 0.f;
-			mGamePlayer->GetComponent<gce::PhysicComponent>()->SetVelocity(mVelocity);
-			mIsJumping = false;
+
+			if (other->GetName() == "Floor")
+				ColliderFloor();
+
+			if (other->GetName() == "Ball")
+			{
+				std::cout << "ball" << std::endl;
+				//mCharacter->Damage(5);
+				//other->Destroy();
+			}
 		}
 		virtual void CollisionStay(GameObject* other) 
 		{ 
@@ -57,7 +65,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * verticalInput;
 
-			//SetWorldPosition(GetWorldPosition() + direction * mCharacter->GetSpeed() * deltaTime);
 			WorldTranslate(direction * mCharacter->GetSpeed() * deltaTime);
 
 			if (gce::GetKeyDown(gce::Keyboard::Key::SPACE))
@@ -79,9 +86,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			m_pOwner->transform.SetWorldRotation({ 0.f,(float)gce::GetMousePosition().x * degree ,0.f });
 		}
 
-		void SetCamera(gce::GameObject& cameraObject) { mObjectCamera = &cameraObject; }
-		void SetPlayer(gce::GameObject& gamePlayer) { mGamePlayer = &gamePlayer; }
-
 		void Jump(float strength, float deltaTime)
 		{
 			if (mIsJumping == false)
@@ -93,15 +97,16 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			}
 		}
 
-		//void Gravity(float deltaTime)
-		//{
-		//	//Enleve de la velocite
-		//	mVelocity.y -= mGravity * deltaTime;
+		void ColliderFloor()
+		{
+			//Regarde si il est dans les airs pour qu'il puisse saute
+			mVelocity.y = 0.f;
+			mGamePlayer->GetComponent<gce::PhysicComponent>()->SetVelocity(mVelocity);
+			mIsJumping = false;
+		}
 
-		//	//Fait redescendre le joueur
-		//	//mCharacter->mEntity->SetWorldPosition({ GetWorldPosition().x, GetWorldPosition().y + , GetWorldPosition().z });
-		//	WorldTranslate(gce::Vector3f32(0.f, mVelocity.y * deltaTime, 0.f));
-		//}
+		void SetCamera(gce::GameObject& cameraObject) { mObjectCamera = &cameraObject; }
+		void SetPlayer(gce::GameObject& gamePlayer) { mGamePlayer = &gamePlayer; }
 
 		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
 		gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }
@@ -109,9 +114,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		void SetJump(float jump) { mJump = jump; }
 		float GetJump() { return mJump; }
-
-		void SetGravity(float gravity, gce::GameObject& gamePlayer) { mGravity = gravity; /*gamePlayer.GetComponent<gce::PhysicComponent>()->SetGravityScale(0.981f);*/ }
-		float GetGravity() { return mGravity; }
 
 		void SetWorldVelocity(gce::Vector3f32 velocity) { mVelocity = velocity; }
 		gce::Vector3f32 GetWorldVelocity() { return mVelocity; }

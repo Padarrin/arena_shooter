@@ -28,22 +28,25 @@ ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE);
 	gamePlayer.AddComponent<gce::BoxCollider>()->SetActive(true);
 	gamePlayer.AddComponent<gce::PhysicComponent>()->SetActive(true);
-	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
-
+	gamePlayer.SetName("Player");
 	gamePlayer.AddChild(cameraObject);
+
+	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
 	player->SetCamera(cameraObject);
 	player->SetPlayer(gamePlayer);
 	player->WorldTranslate(gce::Vector3f32(-3.f, 0.f, 0.f));
-	player->mCharacter->SetSpeed(30);
-	player->SetGravity(0.981f, gamePlayer);
+	player->mCharacter->SetSpeed(10);
 	player->SetJump(6.f);
+
 	return player;
 }
 
 void CreateEnemy(gce::Scene& scene, ScriptPlayer* player)
 {
-	gce::GameObject& cameraObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
-	ScriptEnemy* enemy = cameraObject.GetScript<ScriptEnemy>();
+	//Life = 20 à 200, Damage = 1 à 5
+	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE); 
+	enemyObject.SetName("Enemy");
+	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
 	enemy->SetPlayer(player);
 }
 
@@ -52,6 +55,7 @@ void CreateFloor(gce::Scene& scene)
 	gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, gce::SHAPES.CUBE);
 	floorObject.AddComponent<gce::BoxCollider>()->SetActive(true);
 	floorObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
+	floorObject.SetName("Floor");
 
 	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
 	entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
@@ -69,7 +73,7 @@ BEGIN_TEST( Game )
 
 	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
 
-	//CreateEnemy(scene, player);
+	CreateEnemy(scene, player);
 
 	CreateFloor(scene);
 
@@ -77,24 +81,6 @@ BEGIN_TEST( Game )
 	//geometry = 
 	//texture = 
 	//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
-
-	// gce::GameObject& testObject = gce::GameObject::Create(scene);
-	// testObject.AddChild(cameraObject);
-	// ScriptPlayer& player = *testObject.AddScript< ScriptPlayer>();
-	// player.SetCamera(cameraObject);
-
-	// gce::BoxCollider& boxCollider = *testObject.AddComponent<gce::BoxCollider>();
-
-	// gce::MeshRenderer& meshRenderer = *testObject.AddComponent<gce::MeshRenderer>();
-	// meshRenderer.pGeometry = gce::SHAPES.CUBE;
-	// meshRenderer.pPso = &defaultPso;
-
-	// gce::GameObject& floorObject = gce::GameObject::Create(scene);
-	// floorObject.transform.SetWorldPosition({ 0,-1,0 });
-	// floorObject.transform.SetWorldScale({ 50,0.2f,50 });
-	// gce::MeshRenderer& meshRendererFloor = *floorObject.AddComponent<gce::MeshRenderer>();
-	// meshRendererFloor.pGeometry = gce::SHAPES.CUBE;
-	// meshRendererFloor.pPso = &defaultPso;
 
 	gce::WindowParam windowParam;
 	gce::GameManager::Run(windowParam);
