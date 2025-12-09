@@ -9,9 +9,8 @@ DECLARE_SCRIPT(ScriptEnemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag:
 protected:
 	ScriptPlayer* mPlayer;
 
-	using clock = std::chrono::steady_clock;
-
-	clock::time_point previousTime = clock::now();
+	using mClock = std::chrono::steady_clock;
+	mClock::time_point mPreviousTime = mClock::now();
 
 public:
 	ScriptAgent* mAgent;
@@ -28,13 +27,13 @@ public:
 			myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
 		}
 
-		auto currentTime = clock::now();
-		auto elapsed = currentTime - previousTime;
+		auto currentTime = mClock::now();
+		auto elapsed = currentTime - mPreviousTime;
 
 		if (elapsed >= std::chrono::seconds(3))
 		{
 			mAgent->mCharacter->CreateBallInFront<ScriptBall>(100.f, gce::SHAPES.CUBE, myParentEntity);
-			previousTime = currentTime;
+			mPreviousTime = currentTime;
 		}
 	}
 	virtual void Destroy() {}

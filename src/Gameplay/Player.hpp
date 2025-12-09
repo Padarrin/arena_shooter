@@ -45,8 +45,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			if (other->GetName() == "Ball")
 			{
 				std::cout << "ball" << std::endl;
-				//mCharacter->Damage(5);
-				//other->Destroy();
+				mCharacter->Damage(5);
+				other->Destroy();
 			}
 		}
 		virtual void CollisionStay(GameObject* other) 

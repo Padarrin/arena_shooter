@@ -36,7 +36,7 @@ public:
 	{
 		gce::GameObject& gameBall = CreateGameObject<ScriptSeekerBall>(scene, geometry, texture);
 		gameBall.SetName("Ball");
-		gameBall.AddComponent<gce::BoxCollider>()->SetActive(true);
+		gameBall.AddComponent<gce::BoxCollider>()->SetActive(false);
 		ScriptSeekerBall* ball = gameBall.GetScript<ScriptSeekerBall>();
 		ball->mShootable->SetShootable(ball->mShootable, pos, dir, speed);
 		return ball;
