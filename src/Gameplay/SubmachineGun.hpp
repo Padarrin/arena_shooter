@@ -12,7 +12,15 @@ public:
 
     virtual void Initia() { mWeapons = m_pOwner->AddScript<ScriptWeapons>(); mWeapons->Initia(); }
     virtual void Start() { mWeapons->Start(); }
-    virtual void Update() {}
+    virtual void Update() 
+    {
+        float deltatime = gce::GameManager::DeltaTime();
+        
+        mWeapons->Update();
+
+        InputShoot(deltatime);
+        
+    }
     virtual void Destroy() {}
 
     virtual void CollisionEnter() {}
@@ -21,7 +29,8 @@ public:
 
     void Reload()
     {
-        // faut reload
+        // faut reload mdrrrrrrrrr
+        mWeapons->mPMagazine->SetCurrentBullets(mWeapons->mPMagazine->GetMaxBullets());
     }
 
     void Shoot()
@@ -33,6 +42,16 @@ public:
         }
 
         mWeapons->mPMagazine->SetCurrentBullets(-1);
+    }
+
+    void InputShoot(float deltatime)
+    {
+        float horizontalInput = gce::GetKey(gce::Keyboard::Key::D) - gce::GetKey(gce::Keyboard::Key::Q);
+        float verticalInput = gce::GetKey(gce::Keyboard::Key::Z) - gce::GetKey(gce::Keyboard::Key::S);
+
+        gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * verticalInput;
+
+        mWeapons->mEntity->SetWorldPosition(mWeapons->mEntity->GetWorldPosition() + direction * mShootSpeed * deltatime);
     }
 
     END_SCRIPT

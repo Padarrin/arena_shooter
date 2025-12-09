@@ -39,15 +39,12 @@ ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 
 void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
-	/*gce::GameObject& cameraObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	gce::GameObject& cameraObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 	ScriptEnemy* enemy = cameraObject.GetScript<ScriptEnemy>();
-	enemy->SetPlayer(player);*/
+	enemy->SetPlayer(player);
 
-	Geometry* lampe = gce::GeometryFactory::LoadGeometry(RES_PATH"res/Gameplay/Obj/Lampe.obj");
-	Texture* texture = new Texture("res/Test/Texture/Lamp1_2D_View.png.png");
-
-
-
+	//Geometry* lampe = gce::GeometryFactory::LoadGeometry(RES_PATH"res/Gameplay/Obj/Lampe.obj");
+	//Texture* texture = new Texture("res/Test/Texture/Lamp1_2D_View.png.png");
 }
 
 void CreateFloor(gce::Scene& scene)
