@@ -24,4 +24,7 @@ public:
 	void SetTurnSpeed(float turnSpeed) { mTurnSpeed = turnSpeed; }
 	float GetTurnSpeed() { return mTurnSpeed; }
 
+	void SetPlayer(ScriptPlayer* player) { mPlayer = player; }
+	ScriptPlayer* GetPlayer() { return mPlayer; }
+
 END_SCRIPT
