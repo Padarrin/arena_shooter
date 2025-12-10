@@ -43,19 +43,19 @@ struct JsonLoader
             mesh.pPso = pso;
             gameObject.SetName(currObject["name"].get<String>().c_str());
 
-            if (currObject["has_collider"].get<bool>() == true)
-            {
-                gameObject.AddComponent<BoxCollider>();
-                if (currObject["destructible"].get<bool>() == true)
-                {
-                    //Health* h = gameObject.AddScript<Health>();
-                    //h->maxHealth = 1.0f;
-                }
-            }
+            //if (currObject["has_collider"].get<bool>() == true)
+            //{
+            //    gameObject.AddComponent<BoxCollider>();
+            //    if (currObject["destructible"].get<bool>() == true)
+            //    {
+            //        //Health* h = gameObject.AddScript<Health>();
+            //        //h->maxHealth = 1.0f;
+            //    }
+            //}
 
             if (currObject.contains("texture") && currObject["texture"].is_string())
             {
-                std::string texturePath = RES_PATH;
+                std::string texturePath = "";
                 texturePath.append("res/Textures/");
                 texturePath.append(currObject["texture"].get<std::string>());
                 Texture* texture = new Texture(texturePath);

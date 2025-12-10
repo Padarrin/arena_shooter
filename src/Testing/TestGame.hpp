@@ -51,8 +51,7 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 
 void CreateFloor(gce::Scene& scene, D12PipelineObject* pso)
 {
-	//Geometry* floorTest = gce::GeometryFactory::LoadJsonGeometry(RES_PATH"res/Gameplay/Obj/map_test.json");
-	JsonLoader::LoadMap(RES_PATH"res/Gameplay/Obj/map_test.json", &scene, pso);
+	JsonLoader::LoadMap("C:/Users/jvincent/Documents/GitHub/arena_shooter/res/Gameplay/Json/map_test.json", &scene, pso);
 
 	/*gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, floorTest);
 	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
@@ -90,9 +89,9 @@ BEGIN_TEST( Game )
 
 	D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
 
-	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
+	/*ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-	CreateEnemy(scene, player, grid);
+	CreateEnemy(scene, player, grid);*/
 
 	CreateFloor(scene, pso);
 
