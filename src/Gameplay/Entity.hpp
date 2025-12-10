@@ -58,6 +58,7 @@ public:
 	void LocalScale(gce::Vector3f32 scale) { m_pOwner->transform.LocalScale(scale); }
 
 	gce::Vector3f32 GetWorldForward() { return m_pOwner->transform.GetWorldForward(); }
+	gce::Vector3f32 GetWorldUp() { return m_pOwner->transform.GetWorldUp(); }
 
 	gce::GameObject* GetGameObject() { return m_pOwner; }
 	gce::Scene* GetScene() { return m_pOwner->m_pScene; }

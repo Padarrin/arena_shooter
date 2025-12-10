@@ -73,21 +73,8 @@ public:
 	static void CreateBallInFront(cstr name, float speed, gce::Geometry* geometry, ScriptEntity* entityGiveInformation)
 	{
 		gce::Quaternion rot = entityGiveInformation->GetWorldRotate();
-		T* ball = T::CreateBall(name, entityGiveInformation->GetWorldPosition(), entityGiveInformation->GetWorldForward(), speed, * entityGiveInformation->GetScene(), geometry);
-		ball->mShootable->mObject->mEntity->SetWorldRotate(gce::Vector3f32(rot.GetX(), rot.GetY(), rot.GetZ()));
-	}
-
-	template<typename T>
-	static void CreateBallInFrontPlayer(cstr name, float speed, gce::Geometry* geometry, ScriptEntity* entityGiveInformation, gce::GameObject* objectCamera)
-	{
-		gce::Quaternion rot = entityGiveInformation->GetWorldRotate();
-		gce::Quaternion rotCamera = objectCamera->transform.GetWorldRotation();
-
 		T* ball = T::CreateBall(name, entityGiveInformation->GetWorldPosition() + entityGiveInformation->GetWorldForward(), entityGiveInformation->GetWorldForward(), speed, *entityGiveInformation->GetScene(), geometry);
-		gce::Vector3f32 posBall = ball->mShootable->mObject->mEntity->GetWorldPosition();
-
-		ball->mShootable->mObject->mEntity->SetWorldPosition()
-		ball->mShootable->mObject->mEntity->SetWorldRotate(gce::Vector3f32(rotCamera.GetX(), rot.GetY(), rot.GetZ()));
+		ball->mShootable->mObject->mEntity->SetWorldRotate(gce::Vector3f32(rot.GetX(), rot.GetY(), rot.GetZ()));
 	}
 
 	bool GoToPosition(gce::Vector3f32 pos, float speed)

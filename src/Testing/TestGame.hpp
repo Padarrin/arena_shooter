@@ -47,6 +47,7 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player)
 	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE); 
 	enemyObject.SetName("Enemy");
 	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
+	enemy->SetWorldPosition({ 10,-8,10 });
 	enemy->SetPlayer(player);
 	enemy->SetMaxLife(20);
 	enemy->SetDamage(5);
@@ -61,8 +62,7 @@ void CreateFloor(gce::Scene& scene)
 
 	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
 	entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
-	entity->SetWorldScale({ 50.f,0.2f,50.f });
-
+	entity->SetWorldScale({ 50.f,16.f,50.f });
 }
 
 
@@ -75,7 +75,7 @@ BEGIN_TEST( Game )
 
 	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
 
-	//CreateEnemy(scene, player);
+	CreateEnemy(scene, player);
 
 	CreateFloor(scene);
 
@@ -85,6 +85,8 @@ BEGIN_TEST( Game )
 	//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
 
 	gce::WindowParam windowParam;
+	/*windowParam.height = 992;
+	windowParam.width = 1768;*/
 	gce::GameManager::Run(windowParam);
 
 	gce::GameManager::Destroy();

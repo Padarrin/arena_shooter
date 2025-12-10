@@ -19,12 +19,12 @@ public:
 	virtual void Start() { mAgent->Start(); }
 	virtual void Update() 
 	{ 
-		WorldTranslate(gce::Vector3f32(0.f, 0.f, 0.01f)); // temp deplacement
+		WorldTranslate(gce::Vector3f32(0.f, 0.f, 0.0f)); // temp deplacement
 		ScriptEntity* myParentEntity = mAgent->mCharacter->mEntity;
 	
 		if (mPlayer != nullptr)
 		{
-			myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
+			//myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
 		}
 
 		auto currentTime = mClock::now();
@@ -32,7 +32,7 @@ public:
 
 		if (elapsed >= std::chrono::seconds(3))
 		{
-			mAgent->mCharacter->CreateBallInFront<ScriptBall>("EnemyBall", 100.f, gce::SHAPES.CUBE, myParentEntity);
+			//mAgent->mCharacter->CreateBallInFront<ScriptBall>("EnemyBall", 100.f, gce::SHAPES.CUBE, myParentEntity);
 			mPreviousTime = currentTime;
 		}
 	}

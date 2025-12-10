@@ -17,11 +17,19 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		ScriptCharacter* mCharacter;
 
 		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mVelocity = gce::Vector3f32(0.f, 0.f, 0.f); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); }
-		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); mIsJumping = true; gce::HideMouseCursor(); }
+		virtual void Start() 
+		{ 
+			mCharacter->Start();
+			mWindow = gce::GameManager::GetWindow(); 
+			mIsJumping = true; 
+		}
 
 		virtual void Update()
 		{ 
 			float deltaTime = gce::GameManager::DeltaTime();
+
+			gce::HideMouseCursor();
+			//gce::SetMousePosition(gce::Vector2i32(1768 * 0.5f,992 * 0.5f));
 
 			InputMove(deltaTime);
 
@@ -70,7 +78,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			}
 
 			if(gce::GetButtonDown( gce::Mouse::Button::LEFT))
-				mCharacter->CreateBallInFrontPlayer<ScriptBall>("PlayerBall", 100.f, gce::SHAPES.CUBE, mCharacter->mEntity, mObjectCamera);
+				mCharacter->CreateBallInFront<ScriptBall>("PlayerBall", 100.f, gce::SHAPES.CUBE, mCharacter->mEntity);
 		}
 
 		void TurnCamera()
@@ -81,9 +89,11 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			uint32 width = mWindow->GetWidth();
 			uint32 height = mWindow->GetHeight();
 			float degree = 360.f / ((gce::Sqrt(width * width + height * height) * 100.f));
-
+			std::cout << (float)gce::GetMousePosition().y * degree << std::endl;
 			mObjectCamera->transform.SetLocalRotation({ (float)gce::GetMousePosition().y * degree, 0.f, 0.f });
-			m_pOwner->transform.SetWorldRotation({ 0.f,(float)gce::GetMousePosition().x * degree ,0.f });
+			m_pOwner->transform.SetWorldRotation({ gce::Clamp((float)gce::GetMousePosition().y * degree,-0.5f,0.5f) ,(float)gce::GetMousePosition().x * degree ,0.f });
+			
+			//gce::SetMousePosition(gce::Vector2i32(width * 0.5f, height * 0.5f));
 		}
 
 		void Jump(float strength, float deltaTime)
