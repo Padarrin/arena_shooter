@@ -27,21 +27,22 @@ public:
     virtual void CollisionStay() {}
     virtual void CollisionExit() {}
 
-    void Reload()
-    {
-        // faut reload mdrrrrrrrrr
-        mWeapons->mPMagazine->SetCurrentBullets(mWeapons->mPMagazine->GetMaxBullets());
-    }
+    
 
     void Shoot()
     {
-        if (mWeapons->mPMagazine->GetCurrentBullets() == 0)
+        if (GetPistolMagazine()->IsEmpty() == false && )
         {
-            Reload();
-            return;
+            GetPistolMagazine()->Shoot();
         }
+    }
 
-        mWeapons->mPMagazine->SetCurrentBullets(-1);
+    void Reload()
+    {
+        if (GetPistolMagazine()->IsEmpty() == true)
+        {
+            GetPistolMagazine()->Reload();
+        }
     }
 
     void InputShoot(float deltatime)
@@ -52,6 +53,11 @@ public:
         gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * verticalInput;
 
         mWeapons->mEntity->SetWorldPosition(mWeapons->mEntity->GetWorldPosition() + direction * mShootSpeed * deltatime);
+    }
+
+    ScriptPistolMagazine* GetPistolMagazine()
+    {
+        return mWeapons->mMagazine;
     }
 
     END_SCRIPT
