@@ -19,7 +19,7 @@ public:
 	}
 	virtual void Start() {}
 	virtual void Update() {}
-	virtual void Destroy() { m_pOwner->SetActive(false); }
+	virtual void Destroy() {}
 
 	virtual void CollisionEnter(gce::GameObject* other) {}
 	virtual void CollisionStay(GameObject* other) {}
@@ -32,6 +32,10 @@ public:
 		entityGiveInformation->SetWorldRotate(gce::Vector3f32(-asin(dir.y), atan2(dir.x, dir.z), 0.f));
 	}
 
+	void DestroyEntity()
+	{
+		m_pOwner->SetActive(false);
+	}
 
 	void SetWorldPosition(gce::Vector3f32 position) { m_pOwner->transform.SetWorldPosition(position); }
 	void SetWorldRotate(gce::Vector3f32 rotation) { m_pOwner->transform.SetWorldRotation(rotation); }

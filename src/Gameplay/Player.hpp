@@ -37,7 +37,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			TurnCamera();
 
 			if (mCharacter->GetLife() <= 0)
-				mCharacter->Destroy();
+				m_pOwner->SetActive(false);
 		}
 
 		virtual void Destroy() {}

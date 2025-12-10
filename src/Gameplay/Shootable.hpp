@@ -38,7 +38,7 @@ public:
 		gce::Vector3f32 pos = GetWorldPosition();
 		if (abs(mStartPos.x + mDisToDestroy.x - pos.x) < 0.f || abs(mStartPos.y + mDisToDestroy.y - pos.y) < 0.f || abs(mStartPos.z + mDisToDestroy.z - pos.z) < 0.f)
 		{
-			mObject->mEntity->Destroy();
+			m_pOwner->Destroy();
 		}
 	}
 
