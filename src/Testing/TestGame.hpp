@@ -8,6 +8,7 @@
 #include "../Engine/Components/MeshRenderer.h"
 #include "../Engine/Components/Light.h"
 #include "define.h"
+#include "JsonLoader.hpp"
 using namespace gce;
 
 gce::GameObject& CreateCamera(gce::Scene& scene)
@@ -45,13 +46,15 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 
 }
 
-void CreateFloor(gce::Scene& scene)
+void CreateFloor(gce::Scene& scene, D12PipelineObject* pso)
 {
-	Geometry* floorTest = gce::GeometryFactory::LoadJsonGeometry(RES_PATH"res/Gameplay/Obj/map_test.json");
-	gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, floorTest);
+	//Geometry* floorTest = gce::GeometryFactory::LoadJsonGeometry(RES_PATH"res/Gameplay/Obj/map_test.json");
+	MapLoader::LoadMap(RES_PATH"res/Gameplay/Obj/map_test.json", &scene, pso);
+
+	/*gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, floorTest);
 	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
 	entity->SetWorldPosition({ 0.f ,-1.f ,0.f });
-	entity->SetWorldScale({ 50.f,0.2f,50.f });
+	entity->SetWorldScale({ 50.f,0.2f,50.f });*/
 }
 
 ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vector3f32 positionCenter)
@@ -79,11 +82,13 @@ BEGIN_TEST( Game )
 	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
 	gce::Vector3f32 posPlayer = player->GetWorldPosition();
 
+	D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
+
 	ScriptGrid* grid = CreateGrid(scene, gce::Vector2f32(20.f, 100.f), gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z));
 
 	CreateEnemy(scene, player, grid);
 
-	CreateFloor(scene);
+	CreateFloor(scene, pso);
 
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 	//geometry = 
