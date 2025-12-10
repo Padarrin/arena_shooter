@@ -51,7 +51,7 @@ public:
 			gce::Vector3f32 pos = mEntity->GetWorldPosition();
 			gce::Vector3f32 otherPosition = mTarget.position;
 
-			gce::Vector3f32 direction = pos - otherPosition;
+			gce::Vector3f32 direction = otherPosition - pos;
 			direction = direction.Normalize();
 			
 			mTarget.distance -= distance;

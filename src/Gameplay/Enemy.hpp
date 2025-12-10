@@ -8,11 +8,13 @@ DECLARE_SCRIPT(ScriptEnemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag:
 
 protected:
 	ScriptPlayer* mPlayer;
+	Cell* mCellTarget;
+	bool mIsNoPath;
 
 public:
 	ScriptAgent* mAgent;
 
-	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); }
+	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); }
 	virtual void Start() 
 	{ 
 		mAgent->Start();
@@ -22,14 +24,14 @@ public:
 		if (nearestCell != nullptr)
 		{
 			gce::Vector3f32 pos = grid->GetPosOfCell(nearestCell);
-			SetWorldPosition(gce::Vector3f32(pos.x, pos.y + (mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 10.5f), pos.z));
+			SetWorldPosition(gce::Vector3f32(pos.x, pos.y + mAgent->GetOffsetOfGrid().y, pos.z));
 		}
+
+		SetIsNoPath(false);
 	}
 	virtual void Update() 
 	{ 
-		//WorldTranslate(gce::Vector3f32(0.f, 0.f, 0.05f)); // temp deplacement
 		ScriptEntity* myParentEntity = mAgent->mCharacter->mEntity;
-	
 		if (mPlayer != nullptr)
 		{
 			myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
@@ -39,12 +41,16 @@ public:
 		
 		if (mAgent->GetPaths()->Size() < 1)
 		{
-			gce::Vector3f32 posPlayer = mPlayer->GetWorldPosition();
-			bool isExecute = mAgent->GoToCell(posPlayer);
-			if (isExecute == false)
+			mIsNoPath = true;
+			if (mCellTarget != nullptr)
 			{
-				int i;
+				mAgent->GoToCell(mCellTarget);
+				SetCellTarget(nullptr);
 			}
+		}
+		else
+		{
+			mIsNoPath = false;
 		}
 	}
 	virtual void Destroy() {}
@@ -53,6 +59,11 @@ public:
 	virtual void CollisionStay() {}
 	virtual void CollisionExit() {}
 
+	void SetIsNoPath(bool isNoPath) { mIsNoPath = isNoPath; }
+	bool GetIsNoPath() { return mIsNoPath; }
+
+	void SetCellTarget(Cell* cellTarget) { mCellTarget = cellTarget; }
+	Cell* GetCellTarget() { return mCellTarget; }
 
 	void SetWorldPosition(gce::Vector3f32 position) { mAgent->SetWorldPosition(position); }
 	gce::Vector3f32 GetWorldPosition() { return mAgent->GetWorldPosition(); }

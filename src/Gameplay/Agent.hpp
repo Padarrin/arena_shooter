@@ -10,11 +10,12 @@ DECLARE_SCRIPT(ScriptAgent, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag:
 
 protected:
 	PathFinding<Cell> mPathFinding;
+	gce::Vector3f32 mOffsetOfGrid;
 
 public:
 	ScriptCharacter* mCharacter;
 
-	virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); SetPathFinding(PathFinding<Cell>()); mPathFinding.SetGrid(nullptr);}
+	virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); SetPathFinding(PathFinding<Cell>()); mPathFinding.SetGrid(nullptr); SetOffsetOfGrid(gce::Vector3f32(0.f, 1.f, 0.f)); }
 	virtual void Start() { mCharacter->Start(); SetPaths(Queue_<Cell, ComparePath<Cell>>()); }
 	virtual void Update() { UpdatePath(); }
 	virtual void Destroy() {}
@@ -40,7 +41,7 @@ public:
 		paths->Pop();
 
 		gce::Vector3f32 positionCurrenteCell = mPathFinding.GetGrid()->GetPosOfCell(currentNode->GetData());
-		mCharacter->GoToPosition(positionCurrenteCell, mCharacter->GetSpeed());
+		mCharacter->GoToPosition(gce::Vector3f32(positionCurrenteCell.x, positionCurrenteCell.y + GetOffsetOfGrid().y, positionCurrenteCell.z), mCharacter->GetSpeed());
 
 
 	}
@@ -48,10 +49,7 @@ public:
 	bool GoToCell(Cell* cellEnd)
 	{
 		ScriptGrid* grid = mPathFinding.GetGrid();
-		gce::Vector2i32 indexRowCol = cellEnd->GetRowCol();
-		std::vector<Node<Cell>*>* allNodes = grid->GetAllNodes();
-		int lengthCell = grid->GetSizeTabCell();
-		Node<Cell>* endNode = grid->GetNodeInTab((int)indexRowCol.x, (int)indexRowCol.y, lengthCell, allNodes);
+		Node<Cell>* endNode = grid->GetNode(cellEnd);
 		if (endNode != nullptr)
 		{
 			return GoToNode(endNode);
@@ -92,6 +90,9 @@ public:
 		return false;
 	}
 	bool GoToNode(Node<Cell>* startNode, Node<Cell>* endNode) { mPathFinding.Find(startNode, endNode, this); return true; }
+
+	void SetOffsetOfGrid(gce::Vector3f32 offsetOfGrid) { mOffsetOfGrid = offsetOfGrid; }
+	gce::Vector3f32 GetOffsetOfGrid() { return mOffsetOfGrid; }
 
 	void SetPathFinding(PathFinding<Cell> pathFinding) { mPathFinding = pathFinding; }
 	PathFinding<Cell>* GetPathFinding() { return &mPathFinding; }

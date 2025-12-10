@@ -34,7 +34,7 @@ public:
 		std::vector<Node<Cell>*> mAllNodes;
 		std::vector<std::vector<Cell*>> mAllCells;
 
-		mCellSize = 50;
+		mCellSize = 1;
 
 		SetCenterOfGrid(gce::Vector3f32(0.f, 0.f, 0.f));
 	}
@@ -81,7 +81,7 @@ public:
 	}
 
 	// SetScale et lance InitTab
-	void SetSizeTabCell(gce::Vector2i32 sizeTabCell) { m_pOwner->transform.SetWorldScale(gce::Vector3f32((float)sizeTabCell.x, 0.1f, (float)sizeTabCell.y)); InitTab(sizeTabCell); }
+	void SetSizeTabCell(gce::Vector2i32 sizeTabCell) { m_pOwner->transform.SetWorldScale(gce::Vector3f32((float)sizeTabCell.x * mCellSize, 0.1f, (float)sizeTabCell.y * mCellSize)); InitTab(sizeTabCell); }
 	gce::Vector2i32 GetSizeTabCell() { return gce::Vector2i32(mAllCells.size(), mAllCells[0].size()); }
 
 	std::vector<std::vector<Cell*>>* GetAllCells() { return &mAllCells; }
