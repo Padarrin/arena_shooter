@@ -64,22 +64,16 @@ void CreateFloor(gce::Scene& scene, D12PipelineObject* pso)
 	///////////////////////////////////////////////////////////
 	// Map json
 	JsonLoader::LoadMap("C:/Users/jvincent/Documents/GitHub/arena_shooter/res/Gameplay/Json/map_test.json", &scene, pso);
-
-	/*gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, floorTest);
-	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
-	entity->SetWorldPosition({ 0.f ,-1.f ,0.f });
-	entity->SetWorldScale({ 50.f,0.2f,50.f });*/
-
 	///////////////////////////////////////////////////////////
 
-	gce::GameObject& floorObject;
-	floorObject.AddComponent<gce::BoxCollider>()->SetActive(true);
-	floorObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
-	floorObject.SetName("Floor");
+	//gce::GameObject& floorObject;
+	//floorObject.AddComponent<gce::BoxCollider>()->SetActive(true);
+	//floorObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
+	//floorObject.SetName("Floor");
 
-	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
-	entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
-	entity->SetWorldScale({ 50.f,16.f,50.f });
+	//ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
+	//entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
+	//entity->SetWorldScale({ 50.f,16.f,50.f });
 
 }
 

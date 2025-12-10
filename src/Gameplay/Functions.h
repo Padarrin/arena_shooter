@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <math.h>
+#include "GameObject.h"
 
 #define RACINE std::sqrt(2)
 #define DEFAULTCOLOR gce::Vector4(1.f, 1.f, 1.f, 1.f)

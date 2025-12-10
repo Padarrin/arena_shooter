@@ -40,8 +40,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			//	ColliderBall(other);
 			//}
 		}
-		virtual void CollisionStay(GameObject* other) {}
-		virtual void CollisionExit(GameObject* other) {}
+		virtual void CollisionStay(gce::GameObject* other) {}
+		virtual void CollisionExit(gce::GameObject* other) {}
 		
 		void InputMove(float deltaTime)
 		{

@@ -37,7 +37,7 @@ struct JsonLoader
         for (int i = 0; i < jObjects.size(); ++i)
         {
             json currObject = jObjects[i];
-            GameObject& gameObject = GameObject::Create(*pScene);
+            gce::GameObject& gameObject = gce::GameObject::Create(*pScene);
             MeshRenderer& mesh = *gameObject.AddComponent<MeshRenderer>();
             mesh.pGeometry = GeometryFactory::LoadJsonGeometry(currObject);
             mesh.pPso = pso;
@@ -88,16 +88,16 @@ struct JsonLoader
 
             if (currObject.contains("parent") && currObject["parent"].is_string())
             {
-                std::pair<GameObject*, String> el;
+                std::pair<gce::GameObject*, String> el;
                 el.first = &gameObject;
                 el.second = currObject["parent"].get<std::string>();
                 objects.insert(el);
             }
         }
 
-        for (std::pair<GameObject*, String> el : objects)
+        for (std::pair<gce::GameObject*, String> el : objects)
         {
-            for (std::pair<GameObject*, String> el2 : objects)
+            for (std::pair<gce::GameObject*, String> el2 : objects)
             {
                 if (el.first == el2.first) continue;
                 if (el.second == el2.first->GetName())
