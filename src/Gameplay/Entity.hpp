@@ -19,7 +19,7 @@ public:
 	}
 	virtual void Start() {}
 	virtual void Update() {}
-	virtual void Destroy() {}
+	virtual void Destroy() { m_pOwner->SetActive(false); }
 
 	virtual void CollisionEnter(gce::GameObject* other) {}
 	virtual void CollisionStay(GameObject* other) {}

@@ -9,20 +9,24 @@ protected:
 
 public:
 	ScriptShootable* mShootable;
+	cstr mName;
 
 	virtual void Initia() { mShootable = m_pOwner->AddScript<ScriptShootable>(); mShootable->Initia(); }
-	virtual void Start() {}
+	virtual void Start() { mName = mShootable->mObject->mEntity->GetGameObject()->GetName(); }
 	virtual void Update() {}
-	virtual void Destroy() {}
+	virtual void Destroy() { m_pOwner->RemoveComponent< gce::BoxCollider >();  m_pOwner->RemoveComponent< gce::PhysicComponent >(); }
 
 	virtual void CollisionEnter(gce::GameObject* other) 
 	{ 
 		ScriptCharacter* character = other->GetScript<ScriptCharacter>();
 		if (character != nullptr)
 		{
-			character->Damage(mShootable->GetDamage());
+			if (/*mName == "EnemyBall" && other->GetName() == "Player" ||*/ mName == "PlayerBall" && other->GetName() == "Enemy")
+			{
+				character->Damage(mShootable->GetDamage());
+				m_pOwner->SetActive(false);
+			}
 		}
-		m_pOwner->Destroy();
 	}
 	virtual void CollisionStay(GameObject* other) {}
 	virtual void CollisionExit(GameObject* other) {}
@@ -48,9 +52,10 @@ public:
 	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, int damage, gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture, gce::Vector4 color)
 	{
 		gce::GameObject& gameBall = CreateGameObject<ScriptBall>(scene, geometry, texture,color);
-		gameBall.SetName(name);
-		gameBall.transform.SetWorldScale(gce::Vector3f32{ 0.125f,0.125f,0.125f });
 		gameBall.AddComponent<gce::BoxCollider>()->SetActive(true);
+		gameBall.AddComponent<gce::PhysicComponent>()->SetActive(false);
+		gameBall.SetName(name);
+		gameBall.transform.SetWorldScale(gce::Vector3f32{ 1.f,1.f,1.f });
 		ScriptBall* ball = gameBall.GetScript<ScriptBall>();
 		ball->mShootable->SetShootable(ball->mShootable, pos, dir, speed, damage);
 		return ball;

@@ -62,7 +62,7 @@ public:
 			}
 		}
 	}
-	virtual void Destroy() {}
+	virtual void Destroy() { mEntity->Destroy(); }
 
 	virtual void CollisionEnter(gce::GameObject* other) {}
 	virtual void CollisionStay(GameObject* other) {}
@@ -88,7 +88,7 @@ public:
 	void Damage(int damage) 
 	{ 
 		mLife -= damage; 
-		if (mLife < 1) { mEntity->GetGameObject()->Destroy(); } 
+		if (mLife < 1) { mEntity->Destroy(); } 
 	}
 	void Heal(int heal) 
 	{ 
@@ -116,7 +116,7 @@ public:
 	{ 
 		mLife = life; 
 		if (mLife > mMaxLife) { mLife = mMaxLife; } 
-		else if (mLife < 1) { mEntity->GetGameObject()->Destroy(); }
+		else if (mLife < 1) { mEntity->Destroy(); }
 	}
 	int GetLife() 
 	{ 
