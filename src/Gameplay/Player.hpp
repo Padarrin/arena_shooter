@@ -28,9 +28,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			TurnCamera();
 
 			if (mCharacter->GetLife() <= 0)
-			{
 				m_pOwner->Destroy();
-			}
 		}
 
 		virtual void Destroy() {}
@@ -43,11 +41,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 				ColliderFloor();
 
 			if (other->GetName() == "Ball")
-			{
-				std::cout << "ball" << std::endl;
-				mCharacter->Damage(5);
-				other->Destroy();
-			}
+				ColliderBall(other);
 		}
 		virtual void CollisionStay(GameObject* other) 
 		{ 
@@ -104,6 +98,11 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			mGamePlayer->GetComponent<gce::PhysicComponent>()->SetVelocity(mVelocity);
 			mIsJumping = false;
 		}
+		void ColliderBall(gce::GameObject* other)
+		{
+			mCharacter->Damage(5);
+			other->Destroy();
+		}
 
 		void SetCamera(gce::GameObject& cameraObject) { mObjectCamera = &cameraObject; }
 		void SetPlayer(gce::GameObject& gamePlayer) { mGamePlayer = &gamePlayer; }
@@ -117,7 +116,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		void SetWorldVelocity(gce::Vector3f32 velocity) { mVelocity = velocity; }
 		gce::Vector3f32 GetWorldVelocity() { return mVelocity; }
-		void AddVelocity(gce::Vector3f32 velocity) { mVelocity + velocity; }
+		void AddVelocity(gce::Vector3f32 velocity) { mVelocity += velocity; }
 		void ResetVelocity() { mVelocity = gce::Vector3f32(0.f, 0.f, 0.f); }
 
 		void SetIsJumping(bool isJumping) { mIsJumping = isJumping; }

@@ -12,7 +12,7 @@ public:
 	virtual void Update() {}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter(gce::GameObject* other) { mShootable->CollisionEnter(other); }
+	virtual void CollisionEnter(gce::GameObject* other) { mShootable->CollisionEnter(other); if (other->GetName() == "Floor") m_pOwner->Destroy(); }
 	virtual void CollisionStay(GameObject* other) { mShootable->CollisionStay(other); }
 	virtual void CollisionExit(GameObject* other) { mShootable->CollisionExit(other); }
 
