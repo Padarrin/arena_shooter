@@ -11,7 +11,7 @@
 
 gce::GameObject& CreateCamera(gce::Scene& scene)
 {
-		gce::GameObject& cameraObject = gce::GameObject::Create(scene);
+	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
 	cameraObject.transform.LocalTranslate({ 0, 0, 0 });
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
 	camera.SetMainCamera();
@@ -22,6 +22,33 @@ gce::GameObject& CreateCamera(gce::Scene& scene)
 	camera.perspective.aspectRatio = 600.0f / 400.0f;
 	camera.perspective.up = { 0.0f, 1.0f, 0.0f };
 	return cameraObject;
+}
+
+void CreateButton(gce::Scene& scene)
+{
+	gce::ColorBrush redBrush{ gce::Color::Red,     1.0f };
+	gce::ColorBrush greenBrush{ gce::Color::Green,   1.0f };
+	gce::ColorBrush blueBrush{ gce::Color::Blue,    1.0f };
+	gce::ColorBrush yellowBrush{ gce::Color::Yellow,  1.0f };
+
+	gce::BitMapBrush buttonBrush{ "res/Testing/Button/Button.png" };
+	gce::BitMapBrush button2Brush{ "res/Testing/Button/Button2.png" };
+	gce::BitMapBrush test1Brush{ "res/Textures/Test1.png" };
+	gce::BitMapBrush roundButtonBrush{ "res/Testing/Button/roundButton.png" };
+	gce::BitMapBrush roundButton2Brush{ "res/Testing/Button/roundButton2.png" };
+
+	// ===== Initiating Objects ===== //
+
+	// First Button
+	gce::GameObject& object = gce::GameObject::Create(scene);
+	object.transform.LocalTranslate({ 200.0f, 50.0f, 0.0f });
+	object.transform.LocalScale({ 216.0f, 69.0f, 1.0f });
+	gce::UIButton& button = *object.AddComponent<gce::UIButton>();
+
+	button.AddListener();
+
+	button.pBitMapBrush = &buttonBrush;
+	button.pHoverBitMapBrush = &button2Brush;
 }
 
 ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
@@ -65,19 +92,8 @@ ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vect
 	return grid;
 }
 
-
-BEGIN_TEST( Game )
-
-	gce::GameManager::Create();
-	gce::Scene& scene = gce::Scene::Create();
-
-	gce::GameObject& cameraObject = CreateCamera(scene);
-
-	gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
-	gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
-	directionalLight.DefaultDirectionLight();
-	directionalLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-
+void Start()
+{
 	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
 	gce::Vector3f32 posPlayer = player->GetWorldPosition();
 	gce::Vector2f32 sizeGrid = gce::Vector2f32(20.f, 40.f);
@@ -93,6 +109,22 @@ BEGIN_TEST( Game )
 	//geometry = 
 	//texture = 
 	//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
+}
+
+
+BEGIN_TEST( Game )
+
+	gce::GameManager::Create();
+	gce::Scene& scene = gce::Scene::Create();
+
+	gce::GameObject& cameraObject = CreateCamera(scene);
+
+	gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
+	gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
+	directionalLight.DefaultDirectionLight();
+	directionalLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+	CreateButton(scene);
 
 	gce::WindowParam windowParam;
 	gce::GameManager::Run(windowParam);
