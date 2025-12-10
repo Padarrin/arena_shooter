@@ -16,10 +16,10 @@ public:
 	Queue_(std::priority_queue<Node<T>*, std::vector<Node<T>*>, COMPARE> queue) { mQueue = queue; }
 
 	Node<T>* Top() { return mQueue.top(); };
-	Node<T>* Pop() { return mQueue.pop(); };
+	void Pop() { mQueue.pop(); };
 	int Size() { return mQueue.size(); };
 
-	void Puch(Node<T> node) { mQueue.puch(node); };
+	void Push(Node<T>* node) { mQueue.push(node); };
 	bool IsEmpty() { return mQueue.empty(); };
 	void Clear() { mQueue = std::priority_queue<Node<T>*, std::vector<Node<T>*>, COMPARE>(); };
 

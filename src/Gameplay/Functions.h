@@ -38,9 +38,29 @@ gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gc
 template<typename T>
 gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture, gce::Vector4 color);
 
-bool Normalize(gce::Vector3f32& vector);
+bool Normalize(gce::Vector3f32& vector)
+{
+    float magnitude = std::sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
 
-float GetDistance(gce::Vector3f32 pos1, gce::Vector3f32 pos2);
+    if (magnitude != 0)
+    {
+        vector.x /= magnitude;
+        vector.y /= magnitude;
+        vector.z /= magnitude;
+        return true;
+    }
+
+    return false;
+}
+
+float GetDistance(gce::Vector3f32 pos1, gce::Vector3f32 pos2)
+{
+    int x = pos2.x - pos1.x;
+    int y = pos2.y - pos1.y;
+    int z = pos2.z - pos1.z;
+
+    return std::sqrt(x * x + y * y + z * z);
+}
 
 //template<typename T>
 //T* GetCell(gce::Vector3f32 pos, Grid* grid);
@@ -61,7 +81,10 @@ Entity* GetNearestAgent(gce::Vector3f32 pos);
 template<typename T>
 T* GetEntityNearest(gce::Vector3f32 pos, float minDis);
 
-float DisManhattan(gce::Vector3f32 currentPos, gce::Vector3f32 endPos, int sizeCell);
+float DisManhattan(gce::Vector3f32 currentPos, gce::Vector3f32 endPos, int sizeCell)
+{
+    return (abs(currentPos.x - endPos.x) + abs(currentPos.y - endPos.y)) / sizeCell;
+}
 
 //gce::Vector2f32 GetCellInPos(gce::Vector3f32 pos, int sizeCell);
 

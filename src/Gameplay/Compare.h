@@ -42,7 +42,7 @@ struct ComparePath
             {
                 return true;
             }
-            prevA = a->GetCallMe();
+            prevA = prevA->GetCallMe();
         }
         return false;
     }
