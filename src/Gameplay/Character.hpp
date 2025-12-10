@@ -36,10 +36,7 @@ public:
 	}
 	virtual void Start() 
 	{ 
-		mEntity->Start();
-
 		SetTargetIsSet(false);
-		
 	}
 	virtual void Update() 
 	{
@@ -49,43 +46,43 @@ public:
 		if (mTarget.isSet) 
 		{
 			gce::Vector3f32 pos = mEntity->GetWorldPosition();
+			gce::Vector3f32 otherPosition = mTarget.position;
 
-			float x1 = pos.x;
-			float y1 = pos.y;
-			float z1 = pos.z;
-
+			gce::Vector3f32 direction = otherPosition - pos;
+			direction = direction.Normalize();
+			
 			mTarget.distance -= distance;
+			gce::Vector3f32 translate = direction * distance;
+			mEntity->WorldTranslate(translate);
 
 			if (mTarget.distance <= 0.f)
 			{
-				mEntity->SetWorldPosition(mTarget.position);
+				mEntity->SetWorldPosition(otherPosition);
 				mTarget.isSet = false;
 			}
 		}
 	}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter(gce::GameObject* other) { mEntity->CollisionEnter(other); }
-	virtual void CollisionStay(GameObject* other) { mEntity->CollisionStay(other); }
-	virtual void CollisionExit(GameObject* other) { mEntity->CollisionExit(other); }
+	virtual void CollisionEnter(gce::GameObject* other) {}
+	virtual void CollisionStay(GameObject* other) {}
+	virtual void CollisionExit(GameObject* other) {}
 
 	template<typename T>
-	static void CreateBallInFront(cstr name, float speed, gce::Geometry* geometry, ScriptEntity* entityGiveInformation)
+	static void CreateBallInFront(cstr name, float speed, int damage, gce::Geometry* geometry, ScriptEntity* entityGiveInformation)
 	{
 		gce::Quaternion rot = entityGiveInformation->GetWorldRotate();
-		T* ball = T::CreateBall(name, entityGiveInformation->GetWorldPosition() + entityGiveInformation->GetWorldForward(), entityGiveInformation->GetWorldForward(), speed, *entityGiveInformation->GetScene(), geometry);
+		T* ball = T::CreateBall(name, entityGiveInformation->GetWorldPosition() + entityGiveInformation->GetWorldForward(), entityGiveInformation->GetWorldForward(), speed, damage, *entityGiveInformation->GetScene(), geometry);
 		ball->mShootable->mObject->mEntity->SetWorldRotate(gce::Vector3f32(rot.GetX(), rot.GetY(), rot.GetZ()));
 	}
 
-	bool GoToPosition(gce::Vector3f32 pos, float speed)
+	void GoToPosition(gce::Vector3f32 pos, float speed)
 	{
 		gce::Vector3f32 position = mEntity->GetWorldPosition();
 
 		mTarget.position = pos;
 		mTarget.distance = GetDistance(position, pos);
 		mTarget.isSet = true;
-
-		return true;
 	}
 
 	void Damage(int damage) 

@@ -3,11 +3,17 @@
 #include "Compare.h"
 #include "Functions.h"
 
+#include "Grid.hpp"
+#include "Node.h"
+#include "Agent.hpp"
+//#include "PathFinding.inl"
+//#include "Queue.hpp"
+//#include "Compare.h"
+
 template<typename T>
 class Node;
 
-class Grid;
-
+class ScriptGrid;
 class ScriptAgent;
 
 
@@ -16,47 +22,49 @@ class PathFinding
 {
 protected:
 	Queue_<T, ComparePath<T>> mPath;
+	ScriptGrid* mGrid;
 public:
 	PathFinding() { Start(); }
 
-	void Start() { SetPaths(Queue_<T, ComparePath<T>>()); }
-
-	void Find(Node<T>* startNode, Node<T>* endNode, Grid* grid, ScriptAgent* owner) { FindPath(startNode, endNode, grid, GetPaths(), owner); }
+	void Start() { SetPaths(Queue_<T, ComparePath<T>>()); SetGrid(nullptr);  }
+	void Find(Node<T>* startNode, Node<T>* endNode, ScriptAgent* owner) { FindPath(startNode, endNode, GetPaths(), owner); }
 
 	void SetPaths(Queue_<T, ComparePath<T>> path) { mPath = path; }
-	Queue_<T, ComparePath<T>>* GetPaths();
-
-	~PathFinding()
-	{
-		mPath.Clear();
+	void AddPaths(Queue_<T, ComparePath<T>> path) 
+	{ 
+		while (!path.IsEmpty())
+		{
+			Node<T>* node = path.Top();
+			path.Pop();
+			mPath.Push(node);
+		}
 	}
-protected:
-	static void FindPath(Node<T>* startNode, Node<T>* endNode, Grid* grid, Queue_<T, ComparePath<T>>* allFormerPaths, ScriptAgent* owner);
-	//static void CreatePath(bool isfinish, Node<T>* startNode, Node<T>* endNode, std::vector<Node<T>*>* allFormerPaths);
-	static void ResetNodes(Grid* grid);
-
-#include "Grid.h"
-#include "Node.h"
-#include "Agent.hpp"
-
-	template<typename T>
-	inline Queue_<T, ComparePath<T>>* GetPaths()
+	Queue_<T, ComparePath<T>>* GetPaths()
 	{
 		if (mPath.Size() > 0) { return &mPath; }
 		else { mPath.Clear(); return &mPath; }
 	}
 
+	void SetGrid(ScriptGrid* grid) { mGrid = grid; }
+	ScriptGrid* GetGrid() { return mGrid; }
 
-	template<typename T>
-	inline void FindPath(Node<T>* startNode, Node<T>* endNode, Grid* grid, Queue_<T, ComparePath<T>>* allFormerPaths, ScriptAgent* owner)
+	~PathFinding()
 	{
-		ResetNodes<T>(grid);
-		Queue<Node<T>> queue;
-		startNode->SetDisStart(0.f);
-		startNode->SetDisEnd(DisManhattan(startNode->GetData()->GetPosition(), endNode->GetData()->GetPosition()));
-		queue.push(startNode);
+		mPath.Clear();
+	}
 
-		while (queue.empty() == false)
+protected:
+	void FindPath(Node<T>* startNode, Node<T>* endNode, Queue_<T, ComparePath<T>>* allFormerPaths, ScriptAgent* owner)
+	{
+		ResetNodes();
+		int cellSize = mGrid->GetCellSize();
+
+		Queue_<T, CompareASTAR<T>> queue;
+		startNode->SetDisStart(0.f);
+		startNode->SetDisEnd(DisManhattan({100.f, 10.f, 1.f}, { 100.f, 1.f, 1.f }, 10));//mGrid->GetPosOfCell(startNode->GetData()), mGrid->GetPosOfCell(endNode->GetData()), cellSize
+		queue.Push(startNode);
+
+		while (queue.IsEmpty() == false)
 		{
 			Node<T>* nodeCurrent = queue.Top();
 			queue.Pop();
@@ -84,13 +92,20 @@ protected:
 
 			if (nodeCurrent == endNode)
 			{
-				CreatePath(false, startNode, endNode, allFormerPaths);
+				Queue_<T, ComparePath<T>> path = Queue_<T, ComparePath<T>>();
+				while (endNode != startNode)
+				{
+					path.Push(endNode);
+					endNode = endNode->GetCallMe();
+				}
+				path.Swap(path);
+				AddPaths(path);
 				return;
 			}
 
 			nodeCurrent->SetVisited(true);
 
-			gce::Vector3f32 endPosition = endNode->GetData()->GetPosition();
+			gce::Vector3f32 endPosition = mGrid->GetPosOfCell(endNode->GetData());
 
 			for (NeighborsCost<T>& nodeNC : nodeCurrent->GetNeighborsCost())
 			{
@@ -103,10 +118,10 @@ protected:
 				if (minimalDist < nodeN->GetDisStart())
 				{
 					nodeN->SetDisStart(minimalDist);
-					nodeN->SetDisEnd(DisManhattan(nodeN->GetData()->GetPosition(), endPosition));
+					nodeN->SetDisEnd(DisManhattan(mGrid->GetPosOfCell(nodeN->GetData()), endPosition, cellSize));
 					nodeN->SetCallMe(nodeCurrent);
 
-					queue.push(nodeN);
+					queue.Push(nodeN);
 				}
 			}
 		}
@@ -114,44 +129,16 @@ protected:
 		allFormerPaths->Clear();
 	}
 
-
-	/*template<typename T>
-	void PathFinding<T>::CreatePath(bool isfinish, Node<T>* startNode, Node<T>* endNode, std::vector<Node<T>*>* allFormerPaths)
+	void ResetNodes()
 	{
-		std::vector<Node<T>*> allPathEnds = std::vector<Node<T>*>();
-		while (endNode != startNode)
-		{
-			allPathEnds.push_back(endNode);
-			endNode = endNode->GetCallMe();
-		}
-
-		std::vector<Node<T>*>* allPathStarts = allFormerPaths;
-		if (isfinish)
-		{
-			*allPathStarts = std::vector<Node<T>*>();
-		}
-
-		int lenghtAllPathEnds = allPathEnds.size() - 1;
-		for (int i = lenghtAllPathEnds; i > -1; i--)
-		{
-			allPathStarts->push_back(allPathEnds[i]);
-		}
-	}*/
-
-	template<typename T>
-	void ResetNodes(Grid* grid)
-	{
-		std::vector<Node<T>*> allNodes = grid->GetAllNodes();
-		int lenght = allNodes.size();
+		std::vector<Node<T>*>* allNodes = mGrid->GetAllNodes();
+		int lenght = allNodes->size();
 		for (int i = 0; i < lenght; i++)
 		{
-			allNodes[i]->SetDisStart(INT_MAX);
-			allNodes[i]->SetVisited(false);
-			allNodes[i]->SetCallMe(nullptr);
+			Node<T>* node = (*allNodes)[i];
+			node->SetDisStart(INT_MAX);
+			node->SetVisited(false);
+			node->SetCallMe(nullptr);
 		}
-	}
+	}	
 };
-
-//#include "PathFinding.inl"
-//#include "Queue.hpp"
-//#include "Compare.h"

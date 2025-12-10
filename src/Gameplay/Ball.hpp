@@ -1,5 +1,8 @@
 #pragma once
 #include "Shootable.hpp"
+#include "Character.hpp"
+
+#define DEFAULT_BALL_DAMAGE 5
 
 DECLARE_SCRIPT(ScriptBall, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 protected:
@@ -8,13 +11,21 @@ public:
 	ScriptShootable* mShootable;
 
 	virtual void Initia() { mShootable = m_pOwner->AddScript<ScriptShootable>(); mShootable->Initia(); }
-	virtual void Start() { mShootable->Start(); }
+	virtual void Start() {}
 	virtual void Update() {}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter(gce::GameObject* other) { mShootable->CollisionEnter(other); if (other->GetName() == "Floor") m_pOwner->Destroy(); }
-	virtual void CollisionStay(GameObject* other) { mShootable->CollisionStay(other); }
-	virtual void CollisionExit(GameObject* other) { mShootable->CollisionExit(other); }
+	virtual void CollisionEnter(gce::GameObject* other) 
+	{ 
+		ScriptCharacter* character = other->GetScript<ScriptCharacter>();
+		if (character != nullptr)
+		{
+			character->Damage(mShootable->GetDamage());
+		}
+		m_pOwner->Destroy();
+	}
+	virtual void CollisionStay(GameObject* other) {}
+	virtual void CollisionExit(GameObject* other) {}
 
 
 
@@ -23,22 +34,25 @@ public:
 
 
 
-	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Scene& scene) { return CreateBall(name, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, nullptr, nullptr); }
-	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Scene& scene, gce::Texture* texture) { return CreateBall(name, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, nullptr, texture); }
-	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Scene& scene, gce::Geometry* geometry) { return CreateBall(name, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, geometry, nullptr); }
-	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture) { return CreateBall(name, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, geometry, texture); }
-	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene) { return CreateBall(name, pos, dir, speed, scene, nullptr, nullptr); }
-	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene, gce::Texture* texture) { return CreateBall(name, pos, dir, speed, scene, nullptr, texture); }
-	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene, gce::Geometry* geometry) { return CreateBall(name, pos, dir, speed, scene, geometry, nullptr); }
+	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, int damage, gce::Scene& scene) { return CreateBall(name, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, damage, scene, nullptr, nullptr, DEFAULTCOLOR); }
+	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, int damage, gce::Scene& scene, gce::Texture* texture) { return CreateBall(name, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, damage, scene, nullptr, texture, DEFAULTCOLOR); }
+	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, int damage, gce::Scene& scene, gce::Geometry* geometry) { return CreateBall(name, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, damage, scene, geometry, nullptr, DEFAULTCOLOR); }
+	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, int damage, gce::Scene& scene, gce::Geometry* geometry, gce::Vector4 color) { return CreateBall(name, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, damage, scene, geometry, nullptr, color); }
+	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, int damage, gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture) { return CreateBall(name, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, damage, scene, geometry, texture, DEFAULTCOLOR); }
+	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, int damage, gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture, gce::Vector4 color) { return CreateBall(name, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, damage, scene, geometry, texture, color); }
+	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, int damage, gce::Scene& scene) { return CreateBall(name, pos, dir, speed, damage, scene, nullptr, nullptr, DEFAULTCOLOR); }
+	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, int damage, gce::Scene& scene, gce::Texture* texture) { return CreateBall(name, pos, dir, speed, damage, scene, nullptr, texture, DEFAULTCOLOR); }
+	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, int damage, gce::Scene& scene, gce::Geometry* geometry) { return CreateBall(name, pos, dir, speed, damage, scene, geometry, nullptr, DEFAULTCOLOR); }
+	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, int damage, gce::Scene& scene, gce::Geometry* geometry, gce::Vector4 color) { return CreateBall(name, pos, dir, speed, damage, scene, geometry, nullptr, color); }
 
-	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture)
+	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, int damage, gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture, gce::Vector4 color)
 	{
-		gce::GameObject& gameBall = CreateGameObject<ScriptBall>(scene, geometry, texture);
-		gameBall.transform.SetWorldScale({ 0.5f,0.5f,0.5f });
+		gce::GameObject& gameBall = CreateGameObject<ScriptBall>(scene, geometry, texture,color);
 		gameBall.SetName(name);
+		gameBall.transform.SetWorldScale(gce::Vector3f32{ 0.125f,0.125f,0.125f });
 		gameBall.AddComponent<gce::BoxCollider>()->SetActive(true);
 		ScriptBall* ball = gameBall.GetScript<ScriptBall>();
-		ball->mShootable->SetShootable(ball->mShootable, pos, dir, speed);
+		ball->mShootable->SetShootable(ball->mShootable, pos, dir, speed, damage);
 		return ball;
 	}
 
