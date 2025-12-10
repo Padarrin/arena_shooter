@@ -13,7 +13,7 @@
 using json = nlohmann::json;
 using namespace gce;
 
-struct MapLoader
+struct JsonLoader
 {
     static void LoadMap(String const& path, Scene* pScene, D12PipelineObject* pso)
     {

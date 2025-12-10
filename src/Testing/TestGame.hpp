@@ -52,7 +52,7 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 void CreateFloor(gce::Scene& scene, D12PipelineObject* pso)
 {
 	//Geometry* floorTest = gce::GeometryFactory::LoadJsonGeometry(RES_PATH"res/Gameplay/Obj/map_test.json");
-	MapLoader::LoadMap(RES_PATH"res/Gameplay/Obj/map_test.json", &scene, pso);
+	JsonLoader::LoadMap(RES_PATH"res/Gameplay/Obj/map_test.json", &scene, pso);
 
 	/*gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, floorTest);
 	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
