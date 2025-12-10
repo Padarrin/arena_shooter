@@ -70,7 +70,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			}
 
 			if(gce::GetButtonDown( gce::Mouse::Button::LEFT))
-				mCharacter->CreateBallInFront<ScriptBall>("PlayerBall", 100.f, gce::SHAPES.CUBE, mCharacter->mEntity);
+				mCharacter->CreateBallInFront<ScriptBall>("PlayerBall", 100.f, gce::SHAPES.CUBE, mCharacter->mEntity, mObjectCamera);
 		}
 
 		void TurnCamera()
@@ -111,6 +111,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		}
 
 		void SetCamera(gce::GameObject& cameraObject) { mObjectCamera = &cameraObject; }
+		gce::GameObject* GetCamera() { return mObjectCamera; }
+
 		void SetPlayer(gce::GameObject& gamePlayer) { mGamePlayer = &gamePlayer; }
 
 		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
