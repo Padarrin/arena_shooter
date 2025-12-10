@@ -40,8 +40,11 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			if (other->GetName() == "Floor")
 				ColliderFloor();
 
-			if (other->GetName() == "Ball")
+			if (other->GetName() == "EnemyBall")
 				ColliderBall(other);
+
+			if (other->GetName() == "PlayerBall")
+				other->Destroy();
 		}
 		virtual void CollisionStay(GameObject* other) 
 		{ 
@@ -65,6 +68,9 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			{
 				Jump(mJump, deltaTime);
 			}
+
+			if(gce::GetButtonDown( gce::Mouse::Button::LEFT))
+				mCharacter->CreateBallInFront<ScriptBall>("PlayerBall", 100.f, gce::SHAPES.CUBE, mCharacter->mEntity);
 		}
 
 		void TurnCamera()

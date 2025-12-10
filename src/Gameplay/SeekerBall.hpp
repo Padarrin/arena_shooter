@@ -24,18 +24,18 @@ public:
 
 
 
-	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Scene& scene) { return CreateBall(pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, nullptr, nullptr); }
-	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Scene& scene, gce::Texture* texture) { return CreateBall(pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, nullptr, texture); }
-	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Scene& scene, gce::Geometry* geometry) { return CreateBall(pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, geometry, nullptr); }
-	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture) { return CreateBall(pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, geometry, texture); }
-	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene) { return CreateBall(pos, dir, speed, scene, nullptr, nullptr); }
-	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene, gce::Texture* texture) { return CreateBall(pos, dir, speed, scene, nullptr, texture); }
-	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene, gce::Geometry* geometry) { return CreateBall(pos, dir, speed, scene, geometry, nullptr); }
+	static ScriptSeekerBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Scene& scene) { return CreateBall(name, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, nullptr, nullptr); }
+	static ScriptSeekerBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Scene& scene, gce::Texture* texture) { return CreateBall(name, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, nullptr, texture); }
+	static ScriptSeekerBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Scene& scene, gce::Geometry* geometry) { return CreateBall(name, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, geometry, nullptr); }
+	static ScriptSeekerBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture) { return CreateBall(name, pos, gce::Vector3f32(0.f, 0.f, 0.f), 0.f, scene, geometry, texture); }
+	static ScriptSeekerBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene) { return CreateBall(name, pos, dir, speed, scene, nullptr, nullptr); }
+	static ScriptSeekerBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene, gce::Texture* texture) { return CreateBall(name, pos, dir, speed, scene, nullptr, texture); }
+	static ScriptSeekerBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene, gce::Geometry* geometry) { return CreateBall(name, pos, dir, speed, scene, geometry, nullptr); }
 
-	static ScriptSeekerBall* CreateBall(gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture)
+	static ScriptSeekerBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture)
 	{
 		gce::GameObject& gameBall = CreateGameObject<ScriptSeekerBall>(scene, geometry, texture);
-		gameBall.SetName("Ball");
+		gameBall.SetName(name);
 		gameBall.AddComponent<gce::BoxCollider>()->SetActive(false);
 		ScriptSeekerBall* ball = gameBall.GetScript<ScriptSeekerBall>();
 		ball->mShootable->SetShootable(ball->mShootable, pos, dir, speed);

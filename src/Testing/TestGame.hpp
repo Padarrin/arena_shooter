@@ -48,6 +48,8 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player)
 	enemyObject.SetName("Enemy");
 	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
 	enemy->SetPlayer(player);
+	enemy->SetMaxLife(20);
+	enemy->SetDamage(5);
 }
 
 void CreateFloor(gce::Scene& scene)
@@ -73,7 +75,7 @@ BEGIN_TEST( Game )
 
 	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
 
-	CreateEnemy(scene, player);
+	//CreateEnemy(scene, player);
 
 	CreateFloor(scene);
 

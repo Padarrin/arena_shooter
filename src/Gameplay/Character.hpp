@@ -70,10 +70,10 @@ public:
 	virtual void CollisionExit(GameObject* other) { mEntity->CollisionExit(other); }
 
 	template<typename T>
-	static void CreateBallInFront(float speed, gce::Geometry* geometry, ScriptEntity* entityGiveInformation)
+	static void CreateBallInFront(cstr name, float speed, gce::Geometry* geometry, ScriptEntity* entityGiveInformation)
 	{
 		gce::Quaternion rot = entityGiveInformation->GetWorldRotate();
-		T* ball = T::CreateBall(entityGiveInformation->GetWorldPosition(), entityGiveInformation->GetWorldForward(), speed, *entityGiveInformation->GetScene(), geometry);
+		T* ball = T::CreateBall(name, entityGiveInformation->GetWorldPosition() + entityGiveInformation->GetWorldForward()*2, entityGiveInformation->GetWorldForward(), speed, * entityGiveInformation->GetScene(), geometry);
 		ball->mShootable->mObject->mEntity->SetWorldRotate(gce::Vector3f32(rot.GetX(), rot.GetY(), rot.GetZ()));
 	}
 
