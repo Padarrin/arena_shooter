@@ -35,6 +35,7 @@ public:
 	{
 		gce::GameObject& gameBall = CreateGameObject<ScriptBall>(scene, geometry, texture);
 		gameBall.SetName("Ball");
+		gameBall.transform.SetWorldScale(gce::Vector3f32{ 0.5f,0.5f,0.5f });
 		gameBall.AddComponent<gce::BoxCollider>()->SetActive(true);
 		ScriptBall* ball = gameBall.GetScript<ScriptBall>();
 		ball->mShootable->SetShootable(ball->mShootable, pos, dir, speed);

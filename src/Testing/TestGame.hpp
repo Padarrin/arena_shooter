@@ -59,7 +59,7 @@ void CreateFloor(gce::Scene& scene)
 
 	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
 	entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
-	entity->SetWorldScale({ 50.f,0.2f,50.f });
+	entity->SetWorldScale({ 50.f,16.f,50.f });
 
 }
 
