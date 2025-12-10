@@ -44,6 +44,7 @@ public:
 	[[nodiscard]] static PhysicSystem& GetPhysicSystem();
 	[[nodiscard]] static UiSystem& GetUiSystem();
     [[nodiscard]] static Vector<Camera*>& GetMainCameras();
+    [[nodiscard]] static Vector<Scene*>& GetScenes();
 
     GameManager();
     ~GameManager();

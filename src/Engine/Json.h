@@ -1,11 +1,14 @@
 #ifndef CORE_JSON_H_INCLUDED
 #define CORE_JSON_H_INCLUDED
 
+#include "nlohmann.hpp"
 #include <Containers/Vector.hpp>
 #include "define.h"
 #include "Maths/Vector2.hpp" 
 #include "Maths/Vector3.h" 
 #include "MtlParser.h"
+
+using json = nlohmann::json;
 
 namespace gce
 {

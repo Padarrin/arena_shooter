@@ -22,5 +22,9 @@ void MeshRenderer::UpdateWorld( uint8 const dirty )
     objData.world.Transpose();
 }
 
+void MeshRenderer::SetGeometry(Geometry* geo)
+{
+    pGeometry = geo;
+}
 
 }

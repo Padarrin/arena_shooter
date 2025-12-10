@@ -43,13 +43,12 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 	ScriptEnemy* enemy = cameraObject.GetScript<ScriptEnemy>();
 	enemy->SetPlayer(player);
 
-	//Geometry* lampe = gce::GeometryFactory::LoadGeometry(RES_PATH"res/Gameplay/Obj/Lampe.obj");
-	//Texture* texture = new Texture("res/Test/Texture/Lamp1_2D_View.png.png");
 }
 
 void CreateFloor(gce::Scene& scene)
 {
-	gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, gce::SHAPES.CUBE);
+	Geometry* floorTest = gce::GeometryFactory::LoadJsonGeometry(RES_PATH"res/Gameplay/Obj/map_test.json");
+	gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, floorTest);
 	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
 	entity->SetWorldPosition({ 0.f ,-1.f ,0.f });
 	entity->SetWorldScale({ 50.f,0.2f,50.f });
