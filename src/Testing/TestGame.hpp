@@ -7,13 +7,15 @@
 #include "../Gameplay/Grid.hpp"
 #include "../Engine/Components/MeshRenderer.h"
 #include "../Engine/Components/Light.h"
+#include "../Engine/Components/ColliderBase3D.h"
+#include "../Engine/Components/BoxCollider.h"
 #include "define.h"
 #include "JsonLoader.hpp"
 using namespace gce;
 
 gce::GameObject& CreateCamera(gce::Scene& scene)
 {
-		gce::GameObject& cameraObject = gce::GameObject::Create(scene);
+	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
 	cameraObject.transform.LocalTranslate({ 0, 0, 0 });
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
 	camera.SetMainCamera();
@@ -29,19 +31,27 @@ gce::GameObject& CreateCamera(gce::Scene& scene)
 ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 {
 	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
-
+	gamePlayer.AddComponent<gce::BoxCollider>()->SetActive(true);
+	gamePlayer.AddComponent<gce::PhysicComponent>()->SetActive(false);
+	gamePlayer.SetName("Player");
 	gamePlayer.AddChild(cameraObject);
+
+	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
 	player->SetCamera(cameraObject);
 	player->WorldTranslate(gce::Vector3f32(30.f, 10.f, 0.f));
-	player->mCharacter->SetSpeed(90);
+	player->mCharacter->SetSpeed(9);
+	player->SetJump(6.f);
+
 	return player;
 }
 
 void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
-	gce::GameObject& cameraObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
-	ScriptEnemy* enemy = cameraObject.GetScript<ScriptEnemy>();
+	//Life = 20 a 200, Damage = 1 a 5
+	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE); 
+	enemyObject.SetName("Enemy");
+	
+	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
 	enemy->SetPlayer(player);
 	enemy->mAgent->mCharacter->SetSpeed(5.f);
 	enemy->mAgent->GetPathFinding()->SetGrid(grid);
@@ -51,12 +61,26 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 
 void CreateFloor(gce::Scene& scene, D12PipelineObject* pso)
 {
+	///////////////////////////////////////////////////////////
+	// Map json
 	JsonLoader::LoadMap("C:/Users/jvincent/Documents/GitHub/arena_shooter/res/Gameplay/Json/map_test.json", &scene, pso);
 
 	/*gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, floorTest);
 	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
 	entity->SetWorldPosition({ 0.f ,-1.f ,0.f });
 	entity->SetWorldScale({ 50.f,0.2f,50.f });*/
+
+	///////////////////////////////////////////////////////////
+
+	gce::GameObject& floorObject;
+	floorObject.AddComponent<gce::BoxCollider>()->SetActive(true);
+	floorObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
+	floorObject.SetName("Floor");
+
+	ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
+	entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
+	entity->SetWorldScale({ 50.f,16.f,50.f });
+
 }
 
 ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vector3f32 positionCenter, int sizeCell)

@@ -16,13 +16,13 @@ public:
 	ScriptCharacter* mCharacter;
 
 	virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); SetPathFinding(PathFinding<Cell>()); mPathFinding.SetGrid(nullptr); SetOffsetOfGrid(gce::Vector3f32(0.f, 1.f, 0.f)); }
-	virtual void Start() { mCharacter->Start(); SetPaths(Queue_<Cell, ComparePath<Cell>>()); }
+	virtual void Start() { SetPaths(Queue_<Cell, ComparePath<Cell>>());  }
 	virtual void Update() { UpdatePath(); }
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter() {}
-	virtual void CollisionStay() {}
-	virtual void CollisionExit() {}
+	virtual void CollisionEnter(gce::GameObject* other) {}
+	virtual void CollisionStay(GameObject* other) {}
+	virtual void CollisionExit(GameObject* other) {}
 
 	void UpdatePath()
 	{
