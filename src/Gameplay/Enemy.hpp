@@ -12,8 +12,8 @@ protected:
 	Cell* mCellTarget;
 	bool mIsNoPath;
 
-	using mClock = std::chrono::steady_clock;
-	mClock::time_point mPreviousTime = mClock::now();
+	/*using mClock = std::chrono::steady_clock;
+	mClock::time_point mPreviousTime = mClock::now();*/
 
 public:
 	ScriptAgent* mAgent;
@@ -53,14 +53,14 @@ public:
 			mIsNoPath = false;
 		}
 
-		auto currentTime = mClock::now();
+		/*auto currentTime = mClock::now();
 		auto elapsed = currentTime - mPreviousTime;
 
 		if (elapsed >= std::chrono::seconds(1))
 		{
 			mAgent->mCharacter->CreateBallInFront<ScriptBall>("EnemyBall", 100.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, myParentEntity);
 			mPreviousTime = currentTime;
-		}
+		}*/
 	}
 	virtual void Destroy() {}
 
