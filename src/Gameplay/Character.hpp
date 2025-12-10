@@ -36,10 +36,7 @@ public:
 	}
 	virtual void Start() 
 	{ 
-		mEntity->Start();
-
 		SetTargetIsSet(false);
-		
 	}
 	virtual void Update() 
 	{
@@ -65,15 +62,15 @@ public:
 	}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter(gce::GameObject* other) { mEntity->CollisionEnter(other); }
-	virtual void CollisionStay(GameObject* other) { mEntity->CollisionStay(other); }
-	virtual void CollisionExit(GameObject* other) { mEntity->CollisionExit(other); }
+	virtual void CollisionEnter(gce::GameObject* other) {}
+	virtual void CollisionStay(GameObject* other) {}
+	virtual void CollisionExit(GameObject* other) {}
 
 	template<typename T>
-	static void CreateBallInFront(float speed, gce::Geometry* geometry, ScriptEntity* entityGiveInformation)
+	static void CreateBallInFront(float speed, int damage, gce::Geometry* geometry, ScriptEntity* entityGiveInformation)
 	{
 		gce::Quaternion rot = entityGiveInformation->GetWorldRotate();
-		T* ball = T::CreateBall(entityGiveInformation->GetWorldPosition(), entityGiveInformation->GetWorldForward(), speed, *entityGiveInformation->GetScene(), geometry);
+		T* ball = T::CreateBall(entityGiveInformation->GetWorldPosition() + entityGiveInformation->GetWorldForward(), entityGiveInformation->GetWorldForward(), speed, damage, *entityGiveInformation->GetScene(), geometry);
 		ball->mShootable->mObject->mEntity->SetWorldRotate(gce::Vector3f32(rot.GetX(), rot.GetY(), rot.GetZ()));
 	}
 

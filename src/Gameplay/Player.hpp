@@ -5,10 +5,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 	protected:
 		gce::GameObject* mObjectCamera;
-		gce::GameObject* mGamePlayer;
 		gce::Window* mWindow;
-
-		gce::Vector3f32 mVelocity;
 		float mJump;
 
 		bool mIsJumping;
@@ -16,8 +13,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 	public:
 		ScriptCharacter* mCharacter;
 
-		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mVelocity = gce::Vector3f32(0.f, 0.f, 0.f); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); }
-		virtual void Start() { mCharacter->Start(); mWindow = gce::GameManager::GetWindow(); mIsJumping = true; gce::HideMouseCursor(); }
+		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); }
+		virtual void Start() { mWindow = gce::GameManager::GetWindow(); mIsJumping = true; gce::HideMouseCursor(); }
 
 		virtual void Update()
 		{ 
@@ -35,22 +32,17 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		virtual void CollisionEnter(gce::GameObject* other) 
 		{ 
-			mCharacter->CollisionEnter(other);
-
 			if (other->GetName() == "Floor")
+			{
 				ColliderFloor();
-
-			if (other->GetName() == "Ball")
-				ColliderBall(other);
+			}
+			//if (other->GetName() == "Ball")
+			//{
+			//	ColliderBall(other);
+			//}
 		}
-		virtual void CollisionStay(GameObject* other) 
-		{ 
-			mCharacter->CollisionStay(other);
-		}
-		virtual void CollisionExit(GameObject* other) 
-		{ 
-			mCharacter->CollisionExit(other);
-		}
+		virtual void CollisionStay(GameObject* other) {}
+		virtual void CollisionExit(GameObject* other) {}
 		
 		void InputMove(float deltaTime)
 		{
@@ -84,9 +76,10 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		{
 			if (mIsJumping == false)
 			{
-				mVelocity.y = strength;
-				mGamePlayer->GetComponent<gce::PhysicComponent>()->SetVelocity(mVelocity);
-				WorldTranslate({ 0.f, mVelocity.y * deltaTime, 0.f });
+				gce::PhysicComponent* physique = m_pOwner->GetComponent<gce::PhysicComponent>();
+				gce::Vector3f32 velocity = physique->GetVelocity();
+				velocity.y = strength;
+				physique->SetVelocity(velocity);
 				mIsJumping = true;
 			}
 		}
@@ -94,18 +87,20 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		void ColliderFloor()
 		{
 			//Regarde si il est dans les airs pour qu'il puisse saute
-			mVelocity.y = 0.f;
-			mGamePlayer->GetComponent<gce::PhysicComponent>()->SetVelocity(mVelocity);
+			gce::PhysicComponent* physique = m_pOwner->GetComponent<gce::PhysicComponent>();
+			gce::Vector3f32 velocity = physique->GetVelocity();
+			velocity.y = 0.f;
+			physique->SetVelocity(velocity);
 			mIsJumping = false;
 		}
+
 		void ColliderBall(gce::GameObject* other)
 		{
-			mCharacter->Damage(5);
-			other->Destroy();
+			
 		}
 
 		void SetCamera(gce::GameObject& cameraObject) { mObjectCamera = &cameraObject; }
-		void SetPlayer(gce::GameObject& gamePlayer) { mGamePlayer = &gamePlayer; }
+		gce::GameObject* GetCamera() { return mObjectCamera; }
 
 		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
 		gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }
@@ -113,11 +108,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		void SetJump(float jump) { mJump = jump; }
 		float GetJump() { return mJump; }
-
-		void SetWorldVelocity(gce::Vector3f32 velocity) { mVelocity = velocity; }
-		gce::Vector3f32 GetWorldVelocity() { return mVelocity; }
-		void AddVelocity(gce::Vector3f32 velocity) { mVelocity += velocity; }
-		void ResetVelocity() { mVelocity = gce::Vector3f32(0.f, 0.f, 0.f); }
 
 		void SetIsJumping(bool isJumping) { mIsJumping = isJumping; }
 		bool GetIsJumping() { return mIsJumping; }

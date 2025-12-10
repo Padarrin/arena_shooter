@@ -14,13 +14,13 @@ public:
 	ScriptCharacter* mCharacter;
 
 	virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); void SetPathFinding(PathFinding<Cell>()); }
-	virtual void Start() { mCharacter->Start(); void SetPaths(Queue_<Cell, ComparePath<Cell>>()); }
+	virtual void Start() { void SetPaths(Queue_<Cell, ComparePath<Cell>>()); }
 	virtual void Update() {}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter(gce::GameObject* other) { mCharacter->CollisionEnter(other); }
-	virtual void CollisionStay(GameObject* other) { mCharacter->CollisionStay(other); }
-	virtual void CollisionExit(GameObject* other) { mCharacter->CollisionExit(other); }
+	virtual void CollisionEnter(gce::GameObject* other) {}
+	virtual void CollisionStay(GameObject* other) {}
+	virtual void CollisionExit(GameObject* other) {}
 
 	void SetPathFinding(PathFinding<Cell> pathFinding) { mPathFinding = pathFinding; }
 	PathFinding<Cell>* GetPathFinding() { return &mPathFinding; }

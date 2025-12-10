@@ -16,7 +16,7 @@ public:
 	ScriptAgent* mAgent;
 
 	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); mPlayer = nullptr;}
-	virtual void Start() { mAgent->Start(); }
+	virtual void Start() {}
 	virtual void Update() 
 	{ 
 		WorldTranslate(gce::Vector3f32(0.f, 0.f, 0.01f)); // temp deplacement
@@ -30,17 +30,17 @@ public:
 		auto currentTime = mClock::now();
 		auto elapsed = currentTime - mPreviousTime;
 
-		if (elapsed >= std::chrono::seconds(3))
+		if (elapsed >= std::chrono::seconds(1))
 		{
-			mAgent->mCharacter->CreateBallInFront<ScriptBall>(100.f, gce::SHAPES.CUBE, myParentEntity);
+			mAgent->mCharacter->CreateBallInFront<ScriptBall>(100.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, myParentEntity);
 			mPreviousTime = currentTime;
 		}
 	}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter(gce::GameObject* other) { mAgent->CollisionEnter(other); }
-	virtual void CollisionStay(GameObject* other) { mAgent->CollisionStay(other); }
-	virtual void CollisionExit(GameObject* other) { mAgent->CollisionExit(other); }
+	virtual void CollisionEnter(gce::GameObject* other){}
+	virtual void CollisionStay(GameObject* other) {}
+	virtual void CollisionExit(GameObject* other) {}
 
 
 	void SetWorldPosition(gce::Vector3f32 position) { mAgent->SetWorldPosition(position); }

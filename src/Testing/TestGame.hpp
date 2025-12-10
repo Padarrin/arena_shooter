@@ -27,13 +27,12 @@ ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 {
 	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE);
 	gamePlayer.AddComponent<gce::BoxCollider>()->SetActive(true);
-	gamePlayer.AddComponent<gce::PhysicComponent>()->SetActive(true);
+	gamePlayer.AddComponent<gce::PhysicComponent>()->SetActive(false);
 	gamePlayer.SetName("Player");
 	gamePlayer.AddChild(cameraObject);
 
 	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
 	player->SetCamera(cameraObject);
-	player->SetPlayer(gamePlayer);
 	player->WorldTranslate(gce::Vector3f32(-3.f, 0.f, 0.f));
 	player->mCharacter->SetSpeed(10);
 	player->SetJump(6.f);

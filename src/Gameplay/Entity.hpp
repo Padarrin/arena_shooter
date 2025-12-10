@@ -17,16 +17,13 @@ public:
 		SetLocalRotate(gce::Vector3f32(0.f, 0.f, 0.f));
 		SetLocalScale(gce::Vector3f32(1.f, 1.f, 1.f));
 	}
-	virtual void Start() 
-	{ 
-
-	}
+	virtual void Start() {}
 	virtual void Update() {}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter(gce::GameObject* other) { }
-	virtual void CollisionStay(GameObject* other) { }
-	virtual void CollisionExit(GameObject* other) { }
+	virtual void CollisionEnter(gce::GameObject* other) {}
+	virtual void CollisionStay(GameObject* other) {}
+	virtual void CollisionExit(GameObject* other) {}
 
 	static void FocusEntity(ScriptEntity* entityGiveInformation, ScriptEntity* entityTarget)
 	{
