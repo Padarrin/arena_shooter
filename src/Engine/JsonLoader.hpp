@@ -8,12 +8,14 @@
 #include "Core/nlohmann.hpp"
 #include "Core/Maths/Quaternion.h"
 
+#include "GameObject.h"
+
 //#include "Health.hpp"
 
 using json = nlohmann::json;
 using namespace gce;
 
-struct JsonLoader
+struct MapLoader
 {
     static void LoadMap(String const& path, Scene* pScene, D12PipelineObject* pso)
     {
@@ -37,7 +39,7 @@ struct JsonLoader
         for (int i = 0; i < jObjects.size(); ++i)
         {
             json currObject = jObjects[i];
-            gce::GameObject& gameObject = gce::GameObject::Create(*pScene);
+            GameObject& gameObject = GameObject::Create(*pScene);
             MeshRenderer& mesh = *gameObject.AddComponent<MeshRenderer>();
             mesh.pGeometry = GeometryFactory::LoadJsonGeometry(currObject);
             mesh.pPso = pso;
@@ -55,7 +57,7 @@ struct JsonLoader
 
             if (currObject.contains("texture") && currObject["texture"].is_string())
             {
-                std::string texturePath = "";
+                std::string texturePath = RES_PATH;
                 texturePath.append("res/Textures/");
                 texturePath.append(currObject["texture"].get<std::string>());
                 Texture* texture = new Texture(texturePath);
@@ -88,16 +90,16 @@ struct JsonLoader
 
             if (currObject.contains("parent") && currObject["parent"].is_string())
             {
-                std::pair<gce::GameObject*, String> el;
+                std::pair<GameObject*, String> el;
                 el.first = &gameObject;
                 el.second = currObject["parent"].get<std::string>();
                 objects.insert(el);
             }
         }
 
-        for (std::pair<gce::GameObject*, String> el : objects)
+        for (std::pair<GameObject*, String> el : objects)
         {
-            for (std::pair<gce::GameObject*, String> el2 : objects)
+            for (std::pair<GameObject*, String> el2 : objects)
             {
                 if (el.first == el2.first) continue;
                 if (el.second == el2.first->GetName())

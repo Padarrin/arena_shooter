@@ -63,7 +63,7 @@ void CreateFloor(gce::Scene& scene, D12PipelineObject* pso)
 {
 	///////////////////////////////////////////////////////////
 	// Map json
-	JsonLoader::LoadMap("C:/Users/jvincent/Documents/GitHub/arena_shooter/res/Gameplay/Json/map_test.json", &scene, pso);
+	JsonLoader::LoadMap("../../res/Gameplay/Json/map_test.json", &scene, pso);
 	///////////////////////////////////////////////////////////
 
 	//gce::GameObject& floorObject;
