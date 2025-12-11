@@ -17,7 +17,7 @@ protected:
 
 public:
 
-    virtual void Initia() { mCurrentBullets = mMaxBullets; mIsNotEmpty = true; mShootTime = Time(1.f); mReloadTime = Time(1.f); }
+    virtual void Initia() { mMaxBullets = 1; mCurrentBullets = mMaxBullets; mIsNotEmpty = true; mShootTime = Time(1.f); mReloadTime = Time(1.f); }
     virtual void Start() {}
     virtual void Update() 
     {
@@ -26,6 +26,12 @@ public:
         float deltatime = gce::GameManager::DeltaTime();
         mShootTime.Update(deltatime);
         mReloadTime.Update(deltatime);
+
+        if (mReloadTime.GetIsFinishNow())
+        {
+            PutMaxCurrentBullets();
+            mIsNotEmpty = true;
+        }
     }
     virtual void Destroy() {}
 
@@ -48,8 +54,6 @@ public:
     {
         if (mIsNotEmpty == false && mReloadTime.IsFinish())
         {
-            SetCurrentBullets(GetMaxBullets());
-            mIsNotEmpty = true;
             mReloadTime.Reset();
         }
     }
@@ -76,6 +80,7 @@ public:
     int GetMaxBullets() { return mMaxBullets; }
 
     int GetCurrentBullets() { return mCurrentBullets; }
+    void PutMaxCurrentBullets() { mCurrentBullets = mMaxBullets; }
     void SetCurrentBullets(int diff) { mCurrentBullets += diff; }
 
 END_SCRIPT

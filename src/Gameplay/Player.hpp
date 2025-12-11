@@ -3,6 +3,15 @@
 #include "Character.hpp"
 #include "SubMachineGun.hpp"
 
+enum WEAPON_ORDER
+{
+	ANGLEGRINGER,
+	SUBMACHINEGUN,
+	BAZOOKA,
+
+	count,
+};
+
 DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
 	protected:
@@ -66,11 +75,14 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		void InputShoot(float deltaTime)
 		{
-			float actionOnWeapon = gce::GetKeyDown(gce::Keyboard::Key::ENTER);
-			if (mCurrentWeapon != nullptr)
+			bool actionOnWeapon = gce::GetButton(gce::Mouse::LEFT);
+			if (actionOnWeapon)
 			{
-				ScriptSubMachineGun* weapon = mCurrentWeapon->GetChildWeapon<ScriptSubMachineGun>();
-				weapon->Action();
+				if (mCurrentWeapon != nullptr)
+				{
+					ScriptSubMachineGun* weapon = mCurrentWeapon->GetChildWeapon<ScriptSubMachineGun>();
+					weapon->Action();
+				}
 			}
 		}
 
@@ -127,7 +139,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		void SetIsJumping(bool isJumping) { mIsJumping = isJumping; }
 		bool GetIsJumping() { return mIsJumping; }
 
-		void SetCurrentWeapon(ScriptWeapons* currentWeapon) { mCurrentWeapon = currentWeapon; }
+		void SetCurrentWeapon(WEAPON_ORDER tag) { mCurrentWeapon = mAllWeapons[tag]; }
 		ScriptWeapons* GetCurrentWeapon() { return mCurrentWeapon; }
 
 		void AddWeapon(ScriptWeapons* currentWeapon) { mAllWeapons.push_back(currentWeapon); }

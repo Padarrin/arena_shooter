@@ -21,7 +21,7 @@ gce::GameObject& CreateCamera(gce::Scene& scene, gce::GameObject& weaponParent)
 	cameraObject.AddChild(weaponParent);
 
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
-	camera.SetMainCamera();p
+	camera.SetMainCamera();
 	camera.SetType(gce::PERSPECTIVE);
 	camera.perspective.fov = XM_PIDIV4;
 	camera.perspective.nearPlane = 0.001f;
@@ -31,7 +31,7 @@ gce::GameObject& CreateCamera(gce::Scene& scene, gce::GameObject& weaponParent)
 	return cameraObject;
 }
 
-ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject, ScriptSubMachineGun* subMachine)
+ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject)
 {
 	gce::GameObject& playerObject = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	playerObject.AddComponent<gce::BoxCollider>()->SetActive(true);
@@ -90,6 +90,23 @@ ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vect
 	return grid;
 }
 
+void CreateAngleGringer(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
+{
+	gce::GameObject& angleGringerObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
+	angleGringerObject.SetName("Enemy");
+
+	weaponParent.AddChild(angleGringerObject);
+
+	ScriptSubMachineGun* angleGringer = angleGringerObject.GetScript<ScriptSubMachineGun>();
+	angleGringer->mWeapons->mMagazine->SetMaxBullets(30);
+	angleGringer->mWeapons->mMagazine->SetShootTime(0.1f);
+	angleGringer->mWeapons->mMagazine->SetReloadTime(2.5f);
+	angleGringer->mWeapons->mEntity->SetLocalPosition(gce::Vector3f32(2.f, 0.f, 3.f));
+
+	player->AddWeapon(angleGringer->mWeapons);
+
+}
+
 void CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 {
 	gce::GameObject& subMachineGunObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
@@ -98,10 +115,30 @@ void CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObjec
 	weaponParent.AddChild(subMachineGunObject);
 
 	ScriptSubMachineGun* subMachineGun = subMachineGunObject.GetScript<ScriptSubMachineGun>();
-	subMachineGun->mWeapons->SetPlayer(player);
-	subMachineGun->mWeapons->mMagazine->SetShootTime(0.5f);
+	subMachineGun->mWeapons->mMagazine->SetMaxBullets(30);
+	subMachineGun->mWeapons->mMagazine->SetShootTime(0.1f);
 	subMachineGun->mWeapons->mMagazine->SetReloadTime(2.5f);
 	subMachineGun->mWeapons->mEntity->SetLocalPosition(gce::Vector3f32(2.f, 0.f, 3.f));
+
+	player->AddWeapon(subMachineGun->mWeapons);//2
+
+}
+
+void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
+{
+	gce::GameObject& bazookaObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
+	bazookaObject.SetName("Enemy");
+
+	weaponParent.AddChild(bazookaObject);
+
+	ScriptSubMachineGun* bazooka = bazookaObject.GetScript<ScriptSubMachineGun>();
+	bazooka->mWeapons->mMagazine->SetMaxBullets(30);
+	bazooka->mWeapons->mMagazine->SetShootTime(0.1f);
+	bazooka->mWeapons->mMagazine->SetReloadTime(2.5f);
+	bazooka->mWeapons->mEntity->SetLocalPosition(gce::Vector3f32(2.f, 0.f, 3.f));
+
+	player->AddWeapon(bazooka->mWeapons);
+
 }
 
 BEGIN_TEST( Game )
@@ -131,7 +168,11 @@ BEGIN_TEST( Game )
 
 	CreateFloor(scene, pso);
 
+	CreateAngleGringer(scene, player, weaponParent);
 	CreateSubmachineGun(scene, player, weaponParent);
+	CreateBazooka(scene, player, weaponParent);
+
+	player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
 
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 	//geometry = 
