@@ -17,7 +17,7 @@ BEGIN_TEST( Obj )
 
     Geometry* pCustomGeo1 = GeometryFactory::LoadGeometry(RES_PATH"res/Test/Obj/Lampe.obj");
 
-    Texture* texture = new Texture("res/Test/Texture/Lamp1_2D_View.png.png");
+    Texture* texture = new Texture("res/Test/Texture/Lamp1_2D_View.png");
 
     GameObject& lightObject = GameObject::Create(scene);
     Light* light = lightObject.AddComponent<Light>();
