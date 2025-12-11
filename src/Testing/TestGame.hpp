@@ -9,6 +9,8 @@
 #include "../Engine/Components/Light.h"
 #include "define.h"
 
+gce::GameObject* gCameraObject;
+
 gce::GameObject& CreateCamera(gce::Scene& scene)
 {
 	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
@@ -24,40 +26,30 @@ gce::GameObject& CreateCamera(gce::Scene& scene)
 	return cameraObject;
 }
 
-void CreateButton(gce::Scene& scene)
+void/*gce::UIButton&*/ CreateButtonStart(gce::Scene& scene)
 {
-	gce::ColorBrush redBrush{ gce::Color::Red,     1.0f };
-	gce::ColorBrush greenBrush{ gce::Color::Green,   1.0f };
-	gce::ColorBrush blueBrush{ gce::Color::Blue,    1.0f };
-	gce::ColorBrush yellowBrush{ gce::Color::Yellow,  1.0f };
-
-	gce::BitMapBrush buttonBrush{ "res/Testing/Button/Button.png" };
-	gce::BitMapBrush button2Brush{ "res/Testing/Button/Button2.png" };
-	gce::BitMapBrush test1Brush{ "res/Textures/Test1.png" };
-	gce::BitMapBrush roundButtonBrush{ "res/Testing/Button/roundButton.png" };
-	gce::BitMapBrush roundButton2Brush{ "res/Testing/Button/roundButton2.png" };
-
-	// ===== Initiating Objects ===== //
+	gce::BitMapBrush imageButtonStart{ "res/Testing/Button/Button.png" };
+	gce::BitMapBrush imageButtonStartCollide{ "res/Testing/Button/Button2.png" };
 
 	// First Button
 	gce::GameObject& object = gce::GameObject::Create(scene);
 	object.transform.LocalTranslate({ 200.0f, 50.0f, 0.0f });
 	object.transform.LocalScale({ 216.0f, 69.0f, 1.0f });
-	gce::UIButton& button = *object.AddComponent<gce::UIButton>();
 
-	button.AddListener();
-
-	button.pBitMapBrush = &buttonBrush;
-	button.pHoverBitMapBrush = &button2Brush;
+	gce::UIButton& buttonStart = *object.AddComponent<gce::UIButton>();
+	buttonStart.AddListener(Start);
+	buttonStart.pBitMapBrush = &imageButtonStart;
+	buttonStart.pHoverBitMapBrush = &imageButtonStartCollide;
+	//return buttonStart;
 }
 
-ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
+ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject* cameraObject)
 {
 	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
 
-	gamePlayer.AddChild(cameraObject);
-	player->SetCamera(cameraObject);
+	gamePlayer.AddChild(*cameraObject);
+	player->SetCamera(*cameraObject);
 	player->WorldTranslate(gce::Vector3f32(30.f, 10.f, 0.f));
 	player->mCharacter->SetSpeed(90);
 	return player;
@@ -94,7 +86,11 @@ ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vect
 
 void Start()
 {
-	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
+	gce::GameObject* cameraObject = gCameraObject;
+	gce::Scene& scene = (*gCameraObject->m_pScene);
+
+	ScriptPlayer* player = CreatePlayer(scene, cameraObject);
+
 	gce::Vector3f32 posPlayer = player->GetWorldPosition();
 	gce::Vector2f32 sizeGrid = gce::Vector2f32(20.f, 40.f);
 	gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z);
@@ -117,14 +113,19 @@ BEGIN_TEST( Game )
 	gce::GameManager::Create();
 	gce::Scene& scene = gce::Scene::Create();
 
-	gce::GameObject& cameraObject = CreateCamera(scene);
+	gCameraObject = &CreateCamera(scene);
 
 	gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
 	gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
 	directionalLight.DefaultDirectionLight();
 	directionalLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-	CreateButton(scene);
+	gce::ColorBrush redBrush{ gce::Color::Red,     1.0f };
+	gce::ColorBrush greenBrush{ gce::Color::Green,   1.0f };
+	gce::ColorBrush blueBrush{ gce::Color::Blue,    1.0f };
+	gce::ColorBrush yellowBrush{ gce::Color::Yellow,  1.0f };
+
+	CreateButtonStart(scene);
 
 	gce::WindowParam windowParam;
 	gce::GameManager::Run(windowParam);
