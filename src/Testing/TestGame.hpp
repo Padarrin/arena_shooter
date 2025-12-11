@@ -71,7 +71,7 @@ void CreateFloor(gce::Scene& scene, D12PipelineObject* pso)
 {
 	///////////////////////////////////////////////////////////
 	// Map json
-	JsonLoader::LoadMap("../../res/Gameplay/Json/map_test.json", &scene, pso);
+	JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/map_test.json", &scene, pso);
 	///////////////////////////////////////////////////////////
 
 	//gce::GameObject& floorObject;
@@ -166,8 +166,8 @@ directionalLight.color = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 ScriptPlayer* player = CreatePlayer(scene, cameraObject);
 gce::Vector3f32 posPlayer = player->GetWorldPosition();
-gce::Vector2f32 sizeGrid = gce::Vector2f32(20.f, 40.f);
-gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z);
+gce::Vector2f32 sizeGrid = gce::Vector2f32(10.f, 10.f);
+gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 2.5f), posPlayer.z + 20.f);
 
 D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
 
