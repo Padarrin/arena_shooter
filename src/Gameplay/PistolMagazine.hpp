@@ -22,6 +22,10 @@ public:
     virtual void Update() 
     {
         IsEmpty();
+
+        float deltatime = gce::GameManager::DeltaTime();
+        mShootTime.Update(deltatime);
+        mReloadTime.Update(deltatime);
     }
     virtual void Destroy() {}
 
@@ -29,25 +33,9 @@ public:
     virtual void CollisionStay() {}
     virtual void CollisionExit() {}
 
-    void Action()
+    bool CanShoot()
     {
-        if (mShootTime.IsFinish())
-        {
-            if (Shoot() == true)
-            {
-                return;
-            }
-        }
-
-        if(mIsNotEmpty == false && mReloadTime.IsFinish())
-        {
-            Reload();
-        }
-    }
-
-    bool Shoot()
-    {
-        if (mIsNotEmpty == true)
+        if (mIsNotEmpty == true && mShootTime.IsFinish())
         {
             mCurrentBullets--;
             mShootTime.Reset();
@@ -56,11 +44,14 @@ public:
         return false;
     }
 
-    void Reload()
+    void CanReload()
     {
-        SetCurrentBullets(GetMaxBullets());
-        mIsNotEmpty = true;
-        mReloadTime.Reset();
+        if (mIsNotEmpty == false && mReloadTime.IsFinish())
+        {
+            SetCurrentBullets(GetMaxBullets());
+            mIsNotEmpty = true;
+            mReloadTime.Reset();
+        }
     }
 
     bool IsEmpty()

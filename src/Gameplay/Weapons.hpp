@@ -16,22 +16,20 @@ public:
     ScriptEntity* mEntity;
     ScriptPistolMagazine* mMagazine;
 
-    virtual void Initia() { mEntity = m_pOwner->AddScript<ScriptEntity>(); mEntity->Initia(); mMagazine = m_pOwner->AddScript<ScriptPistolMagazine>(); mMagazine->Initia(); }
+    virtual void Initia() { mEntity = m_pOwner->AddScript<ScriptEntity>(); mEntity->Initia(); mMagazine = m_pOwner->AddScript<ScriptPistolMagazine>(); mMagazine->Initia(); SetPlayer(nullptr); mEntity->SetLocalPosition(gce::Vector3f32(0.f, 0.f, 0.f)); }
     virtual void Start() { mEntity->Start(); mMagazine->Start(); }
-    virtual void Update() 
-    {
-        mEntity->SetWorldPosition(mPlayer->GetWorldPosition());
-    }
+    virtual void Update() {}
     virtual void Destroy() {}
 
     virtual void CollisionEnter() {}
     virtual void CollisionStay() {}
     virtual void CollisionExit() {}
 
-    static void ShootBall(ScriptWeapons* weapons)
+    template<typename T>
+    static void ShootBall(ScriptWeapons* weapons, float speed, int damage)
     {
         ScriptEntity* myParentEntity = weapons->mEntity;
-        CreateBallInFront<ScriptBall>(100.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, myParentEntity);
+        CreateBallInFront<T>(speed, damage, gce::SHAPES.CUBE, myParentEntity);
     }
 
     template<typename T>
@@ -44,5 +42,9 @@ public:
 
     void SetPlayer(ScriptPlayer* player) { mPlayer = player; }
     ScriptPlayer* GetPlayer() { return mPlayer; }
+
+    template<typename T>
+    T* GetChildWeapon() { return mEntity->GetGameObject()->GetScript<T>(); }
+
 
 END_SCRIPT

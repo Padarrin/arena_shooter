@@ -9,7 +9,7 @@ public:
 	Time() { SetTime(0.f); }
 	Time(float time) { SetTime(time); }
 
-	void Update(float timeElapsed) { mCurrenteTime -= timeElapsed; }
+	void Update(float deltatime) { mCurrenteTime -= deltatime; }
 
 	void Reset() { mCurrenteTime = mTime; }
 

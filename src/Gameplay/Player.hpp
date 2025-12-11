@@ -1,5 +1,7 @@
+#pragma once
 #include "../Engine/GameManager.h"
 #include "Character.hpp"
+#include "SubMachineGun.hpp"
 
 DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
@@ -9,6 +11,10 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		float mJump;
 
 		bool mIsJumping;
+
+		ScriptWeapons* mCurrentWeapon;
+
+		std::vector<ScriptWeapons*> mAllWeapons;
 
 	public:
 		ScriptCharacter* mCharacter;
@@ -21,6 +27,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			float deltaTime = gce::GameManager::DeltaTime();
 
 			InputMove(deltaTime);
+			InputShoot(deltaTime);
 			TurnCamera();
 
 			if (mCharacter->GetLife() <= 0)
@@ -54,6 +61,16 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			if (gce::GetKeyDown(gce::Keyboard::Key::SPACE))
 			{
 				Jump(mJump, deltaTime);
+			}
+		}
+
+		void InputShoot(float deltaTime)
+		{
+			float actionOnWeapon = gce::GetKeyDown(gce::Keyboard::Key::ENTER);
+			if (mCurrentWeapon != nullptr)
+			{
+				ScriptSubMachineGun* weapon = mCurrentWeapon->GetChildWeapon<ScriptSubMachineGun>();
+				weapon->Action();
 			}
 		}
 
@@ -109,5 +126,11 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		void SetIsJumping(bool isJumping) { mIsJumping = isJumping; }
 		bool GetIsJumping() { return mIsJumping; }
+
+		void SetCurrentWeapon(ScriptWeapons* currentWeapon) { mCurrentWeapon = currentWeapon; }
+		ScriptWeapons* GetCurrentWeapon() { return mCurrentWeapon; }
+
+		void AddWeapon(ScriptWeapons* currentWeapon) { mAllWeapons.push_back(currentWeapon); }
+		std::vector<ScriptWeapons*>* GetAllWeapons() { return &mAllWeapons; }
 
 END_SCRIPT

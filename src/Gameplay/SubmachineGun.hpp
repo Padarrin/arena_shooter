@@ -3,56 +3,55 @@
 
 DECLARE_SCRIPT(ScriptSubMachineGun, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 protected:
-    float mShootSpeed = 0.5f;
-    float mReloadTime = 2.5f;
-    float mTimer = mReloadTime;
 
 public:
     ScriptWeapons* mWeapons;
 
-    virtual void Initia() { mWeapons = m_pOwner->AddScript<ScriptWeapons>(); mWeapons->Initia(); }
-    virtual void Start() { mWeapons->Start(); }
-    virtual void Update() 
-    {
-        float deltatime = gce::GameManager::DeltaTime();
-        
-        mWeapons->Update();
-
-        InputShoot(deltatime);
-        
-    }
+    virtual void Initia() { mWeapons = m_pOwner->AddScript<ScriptWeapons>(); mWeapons->Initia(); mWeapons->mMagazine->SetShootTime(0.5f); mWeapons->mMagazine->SetReloadTime(2.5f); }
+    virtual void Start() {}
+    virtual void Update() {}
     virtual void Destroy() {}
 
     virtual void CollisionEnter() {}
     virtual void CollisionStay() {}
     virtual void CollisionExit() {}
 
-    
-
-    void Shoot()
+    void Action()
     {
-        if (GetPistolMagazine()->IsEmpty() == false && )
+        if (ShootScriptBall(100.f, DEFAULT_BALL_DAMAGE) == false)
         {
-            GetPistolMagazine()->Shoot();
+            if (ReloadPistolMagazine() == false)
+            {
+                //rien ou autre action
+            }
         }
     }
 
-    void Reload()
+    bool ShootScriptBall(int speed, int damage)
+    {
+        if (GetPistolMagazine()->IsEmpty() == false)
+        {
+            //pas vide
+            bool isExecute = GetPistolMagazine()->CanShoot();
+            //si une ball a été utiliser
+            if (isExecute)
+            {
+                //tirer une ball
+                ScriptWeapons::ShootBall<ScriptBall>(mWeapons, speed, damage);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool ReloadPistolMagazine()
     {
         if (GetPistolMagazine()->IsEmpty() == true)
         {
-            GetPistolMagazine()->Reload();
+            GetPistolMagazine()->CanReload();
+            return true;
         }
-    }
-
-    void InputShoot(float deltatime)
-    {
-        float horizontalInput = gce::GetKey(gce::Keyboard::Key::D) - gce::GetKey(gce::Keyboard::Key::Q);
-        float verticalInput = gce::GetKey(gce::Keyboard::Key::Z) - gce::GetKey(gce::Keyboard::Key::S);
-
-        gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * verticalInput;
-
-        mWeapons->mEntity->SetWorldPosition(mWeapons->mEntity->GetWorldPosition() + direction * mShootSpeed * deltatime);
+        return false;
     }
 
     ScriptPistolMagazine* GetPistolMagazine()
