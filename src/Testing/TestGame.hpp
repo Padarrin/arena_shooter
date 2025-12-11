@@ -3,6 +3,7 @@
 
 #include <Render.h>
 #include <Engine.h>
+#include "../Gameplay/UI.hpp"
 #include "../Gameplay/Enemy.hpp"
 #include "../Gameplay/Grid.hpp"
 #include "../Gameplay/SubMachineGun.hpp"
@@ -102,7 +103,7 @@ ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vect
 void CreateAngleGringer(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 {
 	gce::GameObject& angleGringerObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
-	angleGringerObject.SetName("Enemy");
+	angleGringerObject.SetName("AngleGringer");
 
 	weaponParent.AddChild(angleGringerObject);
 
@@ -119,7 +120,7 @@ void CreateAngleGringer(gce::Scene& scene, ScriptPlayer* player, gce::GameObject
 void CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 {
 	gce::GameObject& subMachineGunObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
-	subMachineGunObject.SetName("Enemy");
+	subMachineGunObject.SetName("SubmachineGun");
 
 	weaponParent.AddChild(subMachineGunObject);
 
@@ -136,7 +137,7 @@ void CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObjec
 void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 {
 	gce::GameObject& bazookaObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
-	bazookaObject.SetName("Enemy");
+	bazookaObject.SetName("Bazooka");
 
 	weaponParent.AddChild(bazookaObject);
 

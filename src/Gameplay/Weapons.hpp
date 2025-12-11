@@ -25,19 +25,20 @@ public:
     virtual void CollisionExit() {}
 
     template<typename T>
-    static void ShootBall(ScriptWeapons* weapons, float speed, int damage)
+    static void ShootBall(cstr name, ScriptWeapons* weapons, float speed, int damage)
     {
         ScriptEntity* myParentEntity = weapons->mEntity;
-        CreateBallInFront<T>(speed, damage, gce::SHAPES.CUBE, myParentEntity);
+        CreateBallInFront<T>(name, speed, damage, gce::SHAPES.CUBE, myParentEntity);
     }
 
     template<typename T>
-    static void CreateBallInFront(float speed, int damage, gce::Geometry* geometry, ScriptEntity* entityGiveInformation)
+    static void CreateBallInFront(cstr name, float speed, int damage, gce::Geometry* geometry, ScriptEntity* entityGiveInformation)
     {
         gce::Quaternion rot = entityGiveInformation->GetWorldRotate();
-        T* ball = T::CreateBall(entityGiveInformation->GetWorldPosition() + entityGiveInformation->GetWorldForward(), entityGiveInformation->GetWorldForward(), speed, damage, *entityGiveInformation->GetScene(), geometry);
+        T* ball = T::CreateBall(name, entityGiveInformation->GetWorldPosition() + entityGiveInformation->GetWorldForward(), entityGiveInformation->GetWorldForward(), speed, damage, *entityGiveInformation->GetScene(), geometry);
         ball->mShootable->mObject->mEntity->SetWorldRotate(gce::Vector3f32(rot.GetX(), rot.GetY(), rot.GetZ()));
     }
+
 
     template<typename T>
     T* GetChildWeapon() { return mEntity->GetGameObject()->GetScript<T>(); }

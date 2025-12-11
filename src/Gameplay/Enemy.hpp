@@ -58,7 +58,7 @@ public:
 
 		if (elapsed >= std::chrono::seconds(1))
 		{
-			mAgent->mCharacter->CreateBallInFront<ScriptBall>("EnemyBall", 100.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, myParentEntity);
+			//mAgent->mCharacter->CreateBallInFront<ScriptBall>("EnemyBall", 100.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, myParentEntity);
 			mPreviousTime = currentTime;
 		}
 	}
