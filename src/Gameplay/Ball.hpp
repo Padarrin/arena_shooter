@@ -21,10 +21,15 @@ public:
 		ScriptCharacter* character = other->GetScript<ScriptCharacter>();
 		if (character != nullptr)
 		{
-			if (/*mName == "EnemyBall" && other->GetName() == "Player" ||*/ mName == "PlayerBall" && other->GetName() == "Enemy")
+			if ((mName == "EnemyBall" && other->GetName() == "Player") || (mName == "PlayerBall" && other->GetName() == "Enemy"))
 			{
 				character->Damage(mShootable->GetDamage());
-				m_pOwner->SetActive(false);
+				mShootable->mObject->mEntity->DestroyEntity();
+			}
+			if (mName == "EnemyBall" && other->GetName() == "PlayerBall")
+			{
+				mShootable->mObject->mEntity->DestroyEntity();
+				other->SetActive(false);
 			}
 		}
 	}

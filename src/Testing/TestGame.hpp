@@ -49,12 +49,13 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 	enemyObject.AddComponent<gce::BoxCollider>()->SetActive(true);
 	enemyObject.SetName("Enemy");
+
 	
 	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
 	enemy->SetWorldPosition({ 10,-8,10 });
 	enemy->SetPlayer(player);
 	enemy->SetMaxLife(20);
-	enemy->SetDamage(5);
+	enemy->SetDamage(10);
 	enemy->mAgent->mCharacter->SetSpeed(5.f);
 	enemy->mAgent->GetPathFinding()->SetGrid(grid);
 	enemy->SetCellTarget(grid->GetCell(player->GetWorldPosition()));
