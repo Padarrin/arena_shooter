@@ -8,6 +8,8 @@
 #include "Core/nlohmann.hpp"
 #include "Core/Maths/Quaternion.h"
 
+#include "GameObject.h"
+
 //#include "Health.hpp"
 
 using json = nlohmann::json;
@@ -37,7 +39,7 @@ struct JsonLoader
         for (int i = 0; i < jObjects.size(); ++i)
         {
             json currObject = jObjects[i];
-            gce::GameObject& gameObject = gce::GameObject::Create(*pScene);
+            GameObject& gameObject = GameObject::Create(*pScene);
             MeshRenderer& mesh = *gameObject.AddComponent<MeshRenderer>();
             mesh.pGeometry = GeometryFactory::LoadJsonGeometry(currObject);
             mesh.pPso = pso;
@@ -55,12 +57,11 @@ struct JsonLoader
 
             if (currObject.contains("texture") && currObject["texture"].is_string())
             {
-                std::string texturePath = "";
-                texturePath.append("res/Textures/");
+                std::string texturePath = "res/Textures/";
                 texturePath.append(currObject["texture"].get<std::string>());
                 Texture* texture = new Texture(texturePath);
                 mesh.pMaterial->albedoTextureID = texture->GetTextureID();
-                mesh.pMaterial->useTextureAlbedo = 1;
+                mesh.pMaterial->useTextureAlbedo = true;
                 mesh.pMaterial->subsurface = 0.2f;
             }
 
@@ -88,16 +89,16 @@ struct JsonLoader
 
             if (currObject.contains("parent") && currObject["parent"].is_string())
             {
-                std::pair<gce::GameObject*, String> el;
+                std::pair<GameObject*, String> el;
                 el.first = &gameObject;
                 el.second = currObject["parent"].get<std::string>();
                 objects.insert(el);
             }
         }
 
-        for (std::pair<gce::GameObject*, String> el : objects)
+        for (std::pair<GameObject*, String> el : objects)
         {
-            for (std::pair<gce::GameObject*, String> el2 : objects)
+            for (std::pair<GameObject*, String> el2 : objects)
             {
                 if (el.first == el2.first) continue;
                 if (el.second == el2.first->GetName())

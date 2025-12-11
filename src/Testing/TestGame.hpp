@@ -12,6 +12,7 @@
 #include "../Engine/Components/BoxCollider.h"
 #include "define.h"
 #include "JsonLoader.hpp"
+
 using namespace gce;
 
 gce::GameObject& CreateCamera(gce::Scene& scene, gce::GameObject& weaponParent)
@@ -41,7 +42,7 @@ ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject, Scr
 
 	ScriptPlayer* player = playerObject.GetScript<ScriptPlayer>();
 	player->SetCamera(cameraObject);
-	player->WorldTranslate(gce::Vector3f32(30.f, 10.f, 0.f));
+	player->WorldTranslate(gce::Vector3f32(0.f, 2.5f, 0.f));
 	player->mCharacter->SetSpeed(9);
 	player->SetJump(6.f);
 
@@ -68,15 +69,6 @@ void CreateFloor(gce::Scene& scene, D12PipelineObject* pso)
 	// Map json
 	JsonLoader::LoadMap("../../res/Gameplay/Json/map_test.json", &scene, pso);
 	///////////////////////////////////////////////////////////
-
-	//gce::GameObject& floorObject;
-	//floorObject.AddComponent<gce::BoxCollider>()->SetActive(true);
-	//floorObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
-	//floorObject.SetName("Floor");
-
-	//ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
-	//entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
-	//entity->SetWorldScale({ 50.f,16.f,50.f });
 
 }
 
@@ -114,16 +106,16 @@ BEGIN_TEST( Game )
 	gce::GameObject& cameraObject = CreateCamera(scene, weaponParent);
 
 	gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
-	gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
-	directionalLight.DefaultDirectionLight();
-	directionalLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	directionalLightObject.AddComponent<Light>()->DefaultDirectionLight();
+	//directionalLight.DefaultDirectionLight();
+	//directionalLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	ScriptPlayer* player = CreatePlayer(scene, cameraObject);
 	gce::Vector3f32 posPlayer = player->GetWorldPosition();
 	gce::Vector2f32 sizeGrid = gce::Vector2f32(20.f, 40.f);
 	gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z);
 
-	D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
+	D12PipelineObject* pso = new D12PipelineObject(SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE);
 
 	/*ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 

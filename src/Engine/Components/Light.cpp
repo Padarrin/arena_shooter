@@ -25,7 +25,7 @@ namespace gce
     Light& Light::DefaultDirectionLight()
     {
         type = LightType::DIRECTIONAL;
-        direction = { 0.0f, 0.0f, 1.0f };
+        direction = { 0.0f, -1.0f, 0.0f };
         color = { 1.0f, 1.0f, 1.0f, 1.0f };
         intensity = 1.0f;
         strength = { 1.0f, 1.0f, 1.0f };
