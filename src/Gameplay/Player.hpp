@@ -51,7 +51,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		
 		void InputMove(float deltaTime)
 		{
-			float verticalInput = gce::GetLeftTrigger();
+			float horizontalInput = gce::GetKey(gce::Keyboard::Key::D) - gce::GetKey(gce::Keyboard::Key::Q);
+			float verticalInput = gce::GetKey(gce::Keyboard::Key::Z) - gce::GetKey(gce::Keyboard::Key::S);
 
 			gce::Vector3f32 direction = m_pOwner->transform.GetWorldForward() * verticalInput;
 

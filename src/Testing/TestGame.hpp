@@ -39,7 +39,6 @@ ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 	gamePlayer.AddChild(cameraObject);
 
 	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
-	player->SetCamera(cameraObject);
 	player->WorldTranslate(gce::Vector3f32(0.f, 2.5f, 0.f));
 	player->mCharacter->SetSpeed(9);
 	player->SetJump(6.f);
@@ -72,6 +71,8 @@ void CreateFloor(gce::Scene& scene, D12PipelineObject* pso)
 	// Map json
 	JsonLoader::LoadMap("../../res/Gameplay/Json/map_test.json", &scene, pso);
 	///////////////////////////////////////////////////////////
+
+	
 
 }
 
