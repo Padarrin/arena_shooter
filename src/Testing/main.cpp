@@ -37,7 +37,7 @@
 // ===== TOOL ===== //
 // SpriteSheet
 
-#define TEST ButtonComponent
+#define TEST Game
 #define SUBTEST
 #include "Test.h"
 RUN_TEST
