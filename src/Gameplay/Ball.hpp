@@ -31,6 +31,8 @@ public:
 				mShootable->mObject->mEntity->DestroyEntity();
 				other->SetActive(false);
 			}
+			if(other->GetName() == "Floor")
+				other->SetActive(false);
 		}
 	}
 	virtual void CollisionStay(GameObject* other) {}
