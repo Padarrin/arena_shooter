@@ -5,6 +5,7 @@
 #include <Engine.h>
 #include "../Gameplay/Enemy.hpp"
 #include "../Gameplay/Grid.hpp"
+#include "../Gameplay/SubMachineGun.hpp"
 #include "../Engine/Components/MeshRenderer.h"
 #include "../Engine/Components/Light.h"
 #include "../Engine/Components/ColliderBase3D.h"
@@ -13,10 +14,12 @@
 #include "JsonLoader.hpp"
 using namespace gce;
 
-gce::GameObject& CreateCamera(gce::Scene& scene)
+gce::GameObject& CreateCamera(gce::Scene& scene, gce::GameObject& weaponParent)
 {
 	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
 	cameraObject.transform.LocalTranslate({ 0, 0, 0 });
+	cameraObject.AddChild(weaponParent);
+
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
 	camera.SetMainCamera();
 	camera.SetType(gce::PERSPECTIVE);
@@ -28,15 +31,15 @@ gce::GameObject& CreateCamera(gce::Scene& scene)
 	return cameraObject;
 }
 
-ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
+ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject, ScriptSubMachineGun* subMachine)
 {
-	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-	gamePlayer.AddComponent<gce::BoxCollider>()->SetActive(true);
-	gamePlayer.AddComponent<gce::PhysicComponent>()->SetActive(false);
-	gamePlayer.SetName("Player");
-	gamePlayer.AddChild(cameraObject);
+	gce::GameObject& playerObject = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	playerObject.AddComponent<gce::BoxCollider>()->SetActive(true);
+	playerObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
+	playerObject.SetName("Player");
+	playerObject.AddChild(cameraObject);
 
-	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
+	ScriptPlayer* player = playerObject.GetScript<ScriptPlayer>();
 	player->SetCamera(cameraObject);
 	player->WorldTranslate(gce::Vector3f32(30.f, 10.f, 0.f));
 	player->mCharacter->SetSpeed(9);
@@ -87,20 +90,35 @@ ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vect
 	return grid;
 }
 
+void CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
+{
+	gce::GameObject& subMachineGunObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
+	subMachineGunObject.SetName("Enemy");
+
+	weaponParent.AddChild(subMachineGunObject);
+
+	ScriptSubMachineGun* subMachineGun = subMachineGunObject.GetScript<ScriptSubMachineGun>();
+	subMachineGun->mWeapons->SetPlayer(player);
+	subMachineGun->mWeapons->mMagazine->SetShootTime(0.5f);
+	subMachineGun->mWeapons->mMagazine->SetReloadTime(2.5f);
+	subMachineGun->mWeapons->mEntity->SetLocalPosition(gce::Vector3f32(2.f, 0.f, 3.f));
+}
 
 BEGIN_TEST( Game )
 
 	gce::GameManager::Create();
 	gce::Scene& scene = gce::Scene::Create();
 
-	gce::GameObject& cameraObject = CreateCamera(scene);
+	gce::GameObject& weaponParent = gce::GameObject::Create(scene);
+
+	gce::GameObject& cameraObject = CreateCamera(scene, weaponParent);
 
 	gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
 	gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
 	directionalLight.DefaultDirectionLight();
 	directionalLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-	ScriptPlayer* player = CreatePlayer(cameraObject, scene);
+	ScriptPlayer* player = CreatePlayer(scene, cameraObject);
 	gce::Vector3f32 posPlayer = player->GetWorldPosition();
 	gce::Vector2f32 sizeGrid = gce::Vector2f32(20.f, 40.f);
 	gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z);
@@ -112,6 +130,8 @@ BEGIN_TEST( Game )
 	CreateEnemy(scene, player, grid);*/
 
 	CreateFloor(scene, pso);
+
+	CreateSubmachineGun(scene, player, weaponParent);
 
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 	//geometry = 
