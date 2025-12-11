@@ -18,8 +18,8 @@ gce::GameObject& CreateCamera(gce::Scene& scene, gce::GameObject& weaponParent)
 {
 	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
 	cameraObject.transform.LocalTranslate({ 0, 0, 0 });
-	cameraObject.AddChild(weaponParent);
 	cameraObject.SetName("Camera");
+	cameraObject.AddChild(weaponParent);
 
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
 	camera.SetMainCamera();
@@ -55,7 +55,7 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 	enemyObject.AddComponent<gce::BoxCollider>()->SetActive(true);
 	enemyObject.SetName("Enemy");
 
-	
+
 	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
 	enemy->SetWorldPosition({ 10,-8,10 });
 	enemy->SetPlayer(player);
@@ -82,6 +82,7 @@ void CreateFloor(gce::Scene& scene, D12PipelineObject* pso)
 	//ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
 	//entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
 	//entity->SetWorldScale({ 50.f,16.f,50.f });
+
 }
 
 ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vector3f32 positionCenter, int sizeCell)
@@ -149,50 +150,50 @@ void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& wea
 
 }
 
-BEGIN_TEST( Game )
+BEGIN_TEST(Game)
 
-	gce::GameManager::Create();
-	gce::Scene& scene = gce::Scene::Create();
+gce::GameManager::Create();
+gce::Scene& scene = gce::Scene::Create();
 
-	gce::GameObject& weaponParent = gce::GameObject::Create(scene);
+gce::GameObject& weaponParent = gce::GameObject::Create(scene);
 
-	gce::GameObject& cameraObject = CreateCamera(scene, weaponParent);
+gce::GameObject& cameraObject = CreateCamera(scene, weaponParent);
 
-	gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
-	gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
-	directionalLight.DefaultDirectionLight();
-	directionalLight.color = { 0.0f, 0.0f, 0.0f, 1.0f };
+gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
+gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
+directionalLight.DefaultDirectionLight();
+directionalLight.color = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-	ScriptPlayer* player = CreatePlayer(scene, cameraObject);
-	gce::Vector3f32 posPlayer = player->GetWorldPosition();
-	gce::Vector2f32 sizeGrid = gce::Vector2f32(20.f, 40.f);
-	gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z);
+ScriptPlayer* player = CreatePlayer(scene, cameraObject);
+gce::Vector3f32 posPlayer = player->GetWorldPosition();
+gce::Vector2f32 sizeGrid = gce::Vector2f32(20.f, 40.f);
+gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z);
 
-	D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
+D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
 
-	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
+ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-	CreateEnemy(scene, player, grid);
+CreateEnemy(scene, player, grid);
 
-	CreateFloor(scene, pso);
+CreateFloor(scene, pso);
 
-	CreateAngleGringer(scene, player, weaponParent);
-	CreateSubmachineGun(scene, player, weaponParent);
-	CreateBazooka(scene, player, weaponParent);
+CreateAngleGringer(scene, player, weaponParent);
+CreateSubmachineGun(scene, player, weaponParent);
+CreateBazooka(scene, player, weaponParent);
 
-	player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
+player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
 
-	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
-	//geometry = 
-	//texture = 
-	//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
+//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
+//geometry = 
+//texture = 
+//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
 
-	gce::WindowParam windowParam;
-	/*windowParam.height = 992;
-	windowParam.width = 1768;*/
-	gce::GameManager::Run(windowParam);
+gce::WindowParam windowParam;
+/*windowParam.height = 992;
+windowParam.width = 1768;*/
+gce::GameManager::Run(windowParam);
 
-	gce::GameManager::Destroy();
+gce::GameManager::Destroy();
 
 END_TEST_MAIN_FUNCTION()
 

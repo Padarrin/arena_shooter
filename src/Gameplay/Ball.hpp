@@ -26,15 +26,15 @@ public:
 				character->Damage(mShootable->GetDamage());
 				mShootable->mObject->mEntity->DestroyEntity();
 			}
-			if (mName == "EnemyBall" && other->GetName() == "PlayerBall")
+			else if (mName == "EnemyBall" && other->GetName() == "PlayerBall")
 			{
 				mShootable->mObject->mEntity->DestroyEntity();
 				other->SetActive(false);
 			}
 		}
 	}
-	virtual void CollisionStay(gce::GameObject* other) {}
-	virtual void CollisionExit(gce::GameObject* other) {}
+	virtual void CollisionStay(GameObject* other) {}
+	virtual void CollisionExit(GameObject* other) {}
 
 
 
@@ -57,8 +57,6 @@ public:
 	static ScriptBall* CreateBall(cstr name, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, int damage, gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture, gce::Vector4 color)
 	{
 		gce::GameObject& gameBall = CreateGameObject<ScriptBall>(scene, geometry, texture,color);
-		gameBall.SetName("Ball");
-		gameBall.transform.SetWorldScale(gce::Vector3f32{ 0.25f,0.25f,0.25f });
 		gameBall.AddComponent<gce::BoxCollider>()->SetActive(true);
 		gameBall.AddComponent<gce::PhysicComponent>()->SetActive(false);
 		gameBall.SetName(name);
