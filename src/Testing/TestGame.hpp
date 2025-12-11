@@ -157,14 +157,14 @@ BEGIN_TEST( Game )
 
 	ScriptPlayer* player = CreatePlayer(scene, cameraObject);
 	gce::Vector3f32 posPlayer = player->GetWorldPosition();
-	gce::Vector2f32 sizeGrid = gce::Vector2f32(20.f, 40.f);
+	gce::Vector2f32 sizeGrid = gce::Vector2f32(10.f, 10.f);
 	gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z);
 
 	D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
 
-	/*ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
+	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-	CreateEnemy(scene, player, grid);*/
+	CreateEnemy(scene, player, grid);
 
 	CreateFloor(scene, pso);
 
