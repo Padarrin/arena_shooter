@@ -15,6 +15,7 @@ gce::GameObject& CreateCamera(gce::Scene& scene)
 {
 	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
 	cameraObject.transform.LocalTranslate({ 0, 0, 0 });
+	cameraObject.SetName("Camera");
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
 	camera.SetMainCamera();
 	camera.SetType(gce::PERSPECTIVE);
@@ -35,7 +36,6 @@ ScriptPlayer* CreatePlayer(gce::GameObject& cameraObject, gce::Scene& scene)
 	gamePlayer.AddChild(cameraObject);
 
 	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
-	player->SetCamera(cameraObject);
 	player->SetWorldPosition(gce::Vector3f32(0.f, 10.f, 0.f));
 	player->mCharacter->SetSpeed(9);
 	player->SetJump(6.f);

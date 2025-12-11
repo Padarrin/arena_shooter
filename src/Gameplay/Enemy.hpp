@@ -36,7 +36,7 @@ public:
 		ScriptEntity* myParentEntity = mAgent->mCharacter->mEntity;
 		if (mPlayer != nullptr)
 		{
-			//myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
+			myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
 		}
 
 		if (mAgent->GetPaths()->Size() < 1)
@@ -64,12 +64,9 @@ public:
 	}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter(gce::GameObject* other) 
-	{
-
-	}
-	virtual void CollisionStay(GameObject* other) { }
-	virtual void CollisionExit(GameObject* other) { }
+	virtual void CollisionEnter(gce::GameObject* other) {}
+	virtual void CollisionStay(GameObject* other) {}
+	virtual void CollisionExit(GameObject* other) {}
 
 	void SetIsNoPath(bool isNoPath) { mIsNoPath = isNoPath; }
 	bool GetIsNoPath() { return mIsNoPath; }

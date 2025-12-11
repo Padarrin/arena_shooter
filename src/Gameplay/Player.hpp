@@ -6,7 +6,6 @@
 DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
 	protected:
-		gce::GameObject* mObjectCamera;
 		gce::Window* mWindow;
 
 		float mJump;
@@ -111,9 +110,9 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 			mPitch = gce::Clamp(mPitch, pitchMin, pitchMax);
 
-			m_pOwner->transform.SetLocalRotation(gce::Vector3f32(NULL, mYaw, NULL));
+			m_pOwner->transform.SetWorldRotation(gce::Vector3f32(mPitch, mYaw, 0.f));
 
-			m_pOwner->GetChildren()[0]->transform.SetLocalRotation(gce::Vector3f32(mPitch, NULL, NULL));
+			m_pOwner->GetChildren()[0]->transform.SetLocalRotation(gce::Vector3f32(mPitch, 0.f, 0.f));
 
 			gce::SetMousePosition(gce::Vector2i32(centerWidth, centerHeight));
 
@@ -140,9 +139,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			physique->SetVelocity(velocity);
 			mIsJumping = false;
 		}
-
-		void SetCamera(gce::GameObject& cameraObject) { mObjectCamera = &cameraObject; }
-		gce::GameObject* GetCamera() { return mObjectCamera; }
 
 		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
 		gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }
