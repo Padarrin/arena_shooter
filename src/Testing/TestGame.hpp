@@ -21,7 +21,7 @@ gce::GameObject& CreateCamera(gce::Scene& scene, gce::GameObject& weaponParent)
 	cameraObject.AddChild(weaponParent);
 
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
-	camera.SetMainCamera();
+	camera.SetMainCamera();p
 	camera.SetType(gce::PERSPECTIVE);
 	camera.perspective.fov = XM_PIDIV4;
 	camera.perspective.nearPlane = 0.001f;
@@ -31,7 +31,7 @@ gce::GameObject& CreateCamera(gce::Scene& scene, gce::GameObject& weaponParent)
 	return cameraObject;
 }
 
-ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject)
+ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject, ScriptSubMachineGun* subMachine)
 {
 	gce::GameObject& playerObject = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	playerObject.AddComponent<gce::BoxCollider>()->SetActive(true);
