@@ -19,6 +19,7 @@ gce::GameObject& CreateCamera(gce::Scene& scene, gce::GameObject& weaponParent)
 	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
 	cameraObject.transform.LocalTranslate({ 0, 0, 0 });
 	cameraObject.AddChild(weaponParent);
+	cameraObject.SetName("Camera");
 
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
 	camera.SetMainCamera();
@@ -33,15 +34,14 @@ gce::GameObject& CreateCamera(gce::Scene& scene, gce::GameObject& weaponParent)
 
 ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject)
 {
-	gce::GameObject& playerObject = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-	playerObject.AddComponent<gce::BoxCollider>()->SetActive(true);
-	playerObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
-	playerObject.SetName("Player");
-	playerObject.AddChild(cameraObject);
+	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	gamePlayer.AddComponent<gce::BoxCollider>()->SetActive(true);
+	gamePlayer.AddComponent<gce::PhysicComponent>()->SetActive(true);
+	gamePlayer.SetName("Player");
+	gamePlayer.AddChild(cameraObject);
 
-	ScriptPlayer* player = playerObject.GetScript<ScriptPlayer>();
-	player->SetCamera(cameraObject);
-	player->WorldTranslate(gce::Vector3f32(30.f, 10.f, 0.f));
+	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
+	player->SetWorldPosition(gce::Vector3f32(0.f, 10.f, 0.f));
 	player->mCharacter->SetSpeed(9);
 	player->SetJump(6.f);
 
@@ -51,11 +51,16 @@ ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject)
 void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
 	//Life = 20 a 200, Damage = 1 a 5
-	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE); 
+	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	enemyObject.AddComponent<gce::BoxCollider>()->SetActive(true);
 	enemyObject.SetName("Enemy");
+
 	
 	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
+	enemy->SetWorldPosition({ 10,-8,10 });
 	enemy->SetPlayer(player);
+	enemy->SetMaxLife(20);
+	enemy->SetDamage(10);
 	enemy->mAgent->mCharacter->SetSpeed(5.f);
 	enemy->mAgent->GetPathFinding()->SetGrid(grid);
 	enemy->SetCellTarget(grid->GetCell(player->GetWorldPosition()));
@@ -77,16 +82,19 @@ void CreateFloor(gce::Scene& scene, D12PipelineObject* pso)
 	//ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
 	//entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
 	//entity->SetWorldScale({ 50.f,16.f,50.f });
-
 }
 
 ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vector3f32 positionCenter, int sizeCell)
 {
 	gce::GameObject& gridObject = CreateGameObject<ScriptGrid>(scene, gce::SHAPES.CUBE);
+	gridObject.AddComponent<gce::BoxCollider>()->SetActive(true);
+	gridObject.SetName("Floor");
+
 	ScriptGrid* grid = gridObject.GetScript<ScriptGrid>();
 	grid->SetCellSize(sizeCell);
 	grid->SetSizeTabCell(sizeTabCell); //SetScale et lance InitTab
 	grid->SetCenterOfGrid(positionCenter);
+
 	return grid;
 }
 
@@ -153,7 +161,7 @@ BEGIN_TEST( Game )
 	gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
 	gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
 	directionalLight.DefaultDirectionLight();
-	directionalLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	directionalLight.color = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	ScriptPlayer* player = CreatePlayer(scene, cameraObject);
 	gce::Vector3f32 posPlayer = player->GetWorldPosition();
@@ -180,6 +188,8 @@ BEGIN_TEST( Game )
 	//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
 
 	gce::WindowParam windowParam;
+	/*windowParam.height = 992;
+	windowParam.width = 1768;*/
 	gce::GameManager::Run(windowParam);
 
 	gce::GameManager::Destroy();

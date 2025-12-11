@@ -12,14 +12,24 @@ enum WEAPON_ORDER
 	count,
 };
 
+#define PI  3.14159265359f
+#define SENSITIVITY_CAMERA 0.001f
+
+#define DEGREE_TO_RADIAN PI / 180.0f
+#define PITCH 89.0f * DEGREE_TO_RADIAN
+
 DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
 	protected:
-		gce::GameObject* mObjectCamera;
 		gce::Window* mWindow;
+
 		float mJump;
+		float mYaw;
+		float mPitch;
 
 		bool mIsJumping;
+		bool isWindowInitialised; 
+		bool isCursorLocked;
 
 		ScriptWeapons* mCurrentWeapon;
 
@@ -28,19 +38,25 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 	public:
 		ScriptCharacter* mCharacter;
 
-		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); }
-		virtual void Start() { mWindow = gce::GameManager::GetWindow(); mIsJumping = true; gce::HideMouseCursor(); }
+		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); mYaw = 0.f; mPitch = 0.f; isWindowInitialised = false; isCursorLocked = true; }
+		virtual void Start() 
+		{ 
+			mWindow = gce::GameManager::GetWindow(); 
+			mIsJumping = true;
+		}
 
 		virtual void Update()
 		{ 
 			float deltaTime = gce::GameManager::DeltaTime();
+
+			gce::HideMouseCursor();
 
 			InputMove(deltaTime);
 			InputShoot(deltaTime);
 			TurnCamera();
 
 			if (mCharacter->GetLife() <= 0)
-				m_pOwner->Destroy();
+				mCharacter->mEntity->DestroyEntity();
 		}
 
 		virtual void Destroy() {}
@@ -48,13 +64,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		virtual void CollisionEnter(gce::GameObject* other) 
 		{ 
 			if (other->GetName() == "Floor")
-			{
 				ColliderFloor();
-			}
-			//if (other->GetName() == "Ball")
-			//{
-			//	ColliderBall(other);
-			//}
 		}
 		virtual void CollisionStay(gce::GameObject* other) {}
 		virtual void CollisionExit(gce::GameObject* other) {}
@@ -73,6 +83,9 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			{
 				Jump(mJump, deltaTime);
 			}
+
+			if(gce::GetButtonDown( gce::Mouse::Button::LEFT))
+				mCharacter->CreateBallInFront<ScriptBall>("PlayerBall", 50.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, mCharacter->mEntity);
 		}
 
 		void InputShoot(float deltaTime)
@@ -90,15 +103,37 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		void TurnCamera()
 		{
-			if (mObjectCamera == nullptr)
+			gce::WindowParam param = gce::GameManager::GetWindowParam();
+			gce::Vector2i32 centerSizeWindow = gce::Vector2i32((int)(param.height * 0.5f), (int)(param.width * 0.5f));
+
+			if (gce::GetKeyDown(gce::Keyboard::LSHIFT)) {
+				isCursorLocked = !isCursorLocked;
+				gce::ShowMouseCursor();
+			}
+
+			if (isWindowInitialised == false)
+			{
+				//gce::HideMouseCursor();
+				gce::SetMousePosition(centerSizeWindow);
+				isWindowInitialised = true;
+			}
+
+			if (!isCursorLocked)
 				return;
 
-			uint32 width = mWindow->GetWidth();
-			uint32 height = mWindow->GetHeight();
-			float degree = 360.f / ((gce::Sqrt(width * width + height * height) * 100.f));
+			gce::HideMouseCursor();
 
-			mObjectCamera->transform.SetLocalRotation({ (float)gce::GetMousePosition().y * degree, 0.f, 0.f });
-			m_pOwner->transform.SetWorldRotation({ 0.f,(float)gce::GetMousePosition().x * degree ,0.f });
+			gce::Vector2i32 delta = gce::GetMousePosition() - centerSizeWindow;
+
+			// Rotation
+			mYaw += delta.x * SENSITIVITY_CAMERA;
+			mPitch += delta.y * SENSITIVITY_CAMERA;
+
+			mPitch = gce::Clamp(mPitch, -PITCH, PITCH);
+			m_pOwner->transform.SetWorldRotation(gce::Vector3f32(mPitch, mYaw, 0.f));
+			m_pOwner->GetChildren()[0]->transform.SetLocalRotation(gce::Vector3f32(mPitch, 0.f, 0.f));
+			gce::SetMousePosition(centerSizeWindow);
+
 		}
 
 		void Jump(float strength, float deltaTime)
@@ -122,14 +157,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			physique->SetVelocity(velocity);
 			mIsJumping = false;
 		}
-
-		void ColliderBall(gce::GameObject* other)
-		{
-			
-		}
-
-		void SetCamera(gce::GameObject& cameraObject) { mObjectCamera = &cameraObject; }
-		gce::GameObject* GetCamera() { return mObjectCamera; }
 
 		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
 		gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }

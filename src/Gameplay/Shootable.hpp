@@ -40,7 +40,7 @@ public:
 	{
 		if (mDestroyTime.IsFinish())
 		{
-			m_pOwner->Destroy();
+			mObject->mEntity->DestroyEntity();
 		}
 	}
 
