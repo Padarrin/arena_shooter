@@ -34,6 +34,10 @@ public:
 		entityGiveInformation->SetWorldRotate(gce::Vector3f32(-asin(dir.y), atan2(dir.x, dir.z), 0.f));
 	}
 
+	void DestroyEntity()
+	{
+		m_pOwner->SetActive(false);
+	}
 
 	void SetWorldPosition(gce::Vector3f32 position) { m_pOwner->transform.SetWorldPosition(position); }
 	void SetWorldRotate(gce::Vector3f32 rotation) { m_pOwner->transform.SetWorldRotation(rotation); }
@@ -57,6 +61,7 @@ public:
 	void LocalScale(gce::Vector3f32 scale) { m_pOwner->transform.LocalScale(scale); }
 
 	gce::Vector3f32 GetWorldForward() { return m_pOwner->transform.GetWorldForward(); }
+	gce::Vector3f32 GetWorldUp() { return m_pOwner->transform.GetWorldUp(); }
 
 	gce::GameObject* GetGameObject() { return m_pOwner; }
 	gce::Scene* GetScene() { return m_pOwner->m_pScene; }
