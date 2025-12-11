@@ -81,7 +81,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			}
 
 			if(gce::GetButtonDown( gce::Mouse::Button::LEFT))
-				mCharacter->CreateBallInFront<ScriptBall>("PlayerBall", 50.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, mCharacter->mEntity);
+				mCurrentWeapon->CreateBallInFront<ScriptBall>("PlayerBall", 50.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, mCharacter->mEntity);
 		}
 
 		void InputShoot(float deltaTime)

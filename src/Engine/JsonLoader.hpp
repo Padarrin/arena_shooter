@@ -5,6 +5,8 @@
 #include <fstream>
 #include <wincodec.h>
 
+#include "../Gameplay/Functions.h"
+
 #include "Core/nlohmann.hpp"
 #include "Core/Maths/Quaternion.h"
 
@@ -39,11 +41,14 @@ struct JsonLoader
         for (int i = 0; i < jObjects.size(); ++i)
         {
             json currObject = jObjects[i];
-            GameObject& gameObject = GameObject::Create(*pScene);
+            GameObject& gameObject = CreateGameObject<ScriptEntity>(*pScene, GeometryFactory::LoadJsonGeometry(currObject));
+            //GameObject& gameObject = GameObject::Create(*pScene);
             MeshRenderer& mesh = *gameObject.AddComponent<MeshRenderer>();
-            mesh.pGeometry = GeometryFactory::LoadJsonGeometry(currObject);
-            mesh.pPso = pso;
-            gameObject.SetName(currObject["name"].get<String>().c_str());
+            //mesh.pGeometry = GeometryFactory::LoadJsonGeometry(currObject);
+            //mesh.pPso = pso;
+            //gameObject.SetName(currObject["name"].get<String>().c_str());
+            //*gameObject.AddComponent<BoxCollider>();
+
 
             //if (currObject["has_collider"].get<bool>() == true)
             //{

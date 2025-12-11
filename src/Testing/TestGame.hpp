@@ -51,6 +51,7 @@ ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject)
 void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
 	//Life = 20 a 200, Damage = 1 a 5
+
 	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 	enemyObject.AddComponent<gce::BoxCollider>()->SetActive(true);
 	enemyObject.SetName("Enemy");
@@ -71,11 +72,8 @@ void CreateFloor(gce::Scene& scene, D12PipelineObject* pso)
 {
 	///////////////////////////////////////////////////////////
 	// Map json
-	JsonLoader::LoadMap("../../res/Gameplay/Json/map_test.json", &scene, pso);
+	JsonLoader::LoadMap("../../res/Gameplay/Json/Lampe.json", &scene, pso);
 	///////////////////////////////////////////////////////////
-
-	
-
 }
 
 ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vector3f32 positionCenter, int sizeCell)
@@ -157,14 +155,14 @@ BEGIN_TEST( Game )
 
 	ScriptPlayer* player = CreatePlayer(scene, cameraObject);
 	gce::Vector3f32 posPlayer = player->GetWorldPosition();
-	gce::Vector2f32 sizeGrid = gce::Vector2f32(20.f, 40.f);
-	gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z);
+	gce::Vector2f32 sizeGrid = gce::Vector2f32(50.f, 50.f);
+	gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 2.5f), posPlayer.z);
 
 	D12PipelineObject* pso = new D12PipelineObject(SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE);
 
 	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-	CreateEnemy(scene, player, grid);
+	//CreateEnemy(scene, player, grid);
 
 	CreateFloor(scene, pso);
 

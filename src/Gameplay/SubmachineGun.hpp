@@ -37,7 +37,7 @@ public:
             if (isExecute)
             {
                 //tirer une ball
-                ScriptWeapons::ShootBall<ScriptBall>(mWeapons, speed, damage);
+                ScriptWeapons::ShootBall<ScriptBall>("PlayerBall", mWeapons, speed, damage);
                 return true;
             }
         }
