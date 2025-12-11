@@ -15,7 +15,7 @@
 using json = nlohmann::json;
 using namespace gce;
 
-struct MapLoader
+struct JsonLoader
 {
     static void LoadMap(String const& path, Scene* pScene, D12PipelineObject* pso)
     {
@@ -57,7 +57,7 @@ struct MapLoader
 
             if (currObject.contains("texture") && currObject["texture"].is_string())
             {
-                std::string texturePath = RES_PATH;
+                std::string texturePath = "";
                 texturePath.append("res/Textures/");
                 texturePath.append(currObject["texture"].get<std::string>());
                 Texture* texture = new Texture(texturePath);
