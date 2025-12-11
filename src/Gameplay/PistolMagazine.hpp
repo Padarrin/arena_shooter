@@ -1,11 +1,15 @@
 #pragma once
 #include <GameObject.h>
 #include "Functions.h"
+#include "Time.h"
 
 DECLARE_SCRIPT(ScriptPistolMagazine, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 protected:
-    bool isFull;
-    bool isReloading;
+    bool mIsNotEmpty;
+    bool mIsReloading;
+
+    Time mShootTime;
+    Time mReloadTime;
 
     int mMaxBullets;
     int mCurrentBullets;
@@ -13,13 +17,20 @@ protected:
 
 public:
 
-    virtual void Initia() { mCurrentBullets = mMaxBullets; isFull = true; }
+    virtual void Initia() { mMaxBullets = 1; mCurrentBullets = mMaxBullets; mIsNotEmpty = true; mShootTime = Time(1.f); mReloadTime = Time(1.f); }
     virtual void Start() {}
     virtual void Update() 
     {
-        if (mCurrentBullets == 0)
+        IsEmpty();
+
+        float deltatime = gce::GameManager::DeltaTime();
+        mShootTime.Update(deltatime);
+        mReloadTime.Update(deltatime);
+
+        if (mReloadTime.GetIsFinishNow())
         {
-            isFull = false;
+            PutMaxCurrentBullets();
+            mIsNotEmpty = true;
         }
     }
     virtual void Destroy() {}
@@ -28,22 +39,48 @@ public:
     virtual void CollisionStay() {}
     virtual void CollisionExit() {}
 
-    void SetMaxBullets(int max)
+    bool CanShoot()
     {
-        mMaxBullets = max;
-    }
-    int GetMaxBullets()
-    {
-        return mMaxBullets;
+        if (mIsNotEmpty == true && mShootTime.IsFinish())
+        {
+            mCurrentBullets--;
+            mShootTime.Reset();
+            return true;
+        }
+        return false;
     }
 
-    int GetCurrentBullets()
+    void CanReload()
     {
-        return mCurrentBullets;
+        if (mIsNotEmpty == false && mReloadTime.IsFinish())
+        {
+            mReloadTime.Reset();
+        }
     }
-    void SetCurrentBullets(int diff)
+
+    bool IsEmpty()
     {
-        mCurrentBullets += diff;
+        if (mCurrentBullets < 1)
+        {
+            mIsNotEmpty = false;
+            return true;
+        }
+        return false;
     }
+
+    void SetShootTime(float shootTime) { mShootTime = shootTime; }
+    float GetShootCurrenteTime() { return mShootTime.GetCurrenteTime(); }
+    Time* GetShootTime() { return &mShootTime; }
+
+    void SetReloadTime(float reloadTime) { mReloadTime = reloadTime; }
+    float GetReloadCurrenteTime() { return mReloadTime.GetCurrenteTime(); }
+    Time* GetReloadTime() { return &mReloadTime; }
+
+    void SetMaxBullets(int max) { mMaxBullets = max; }
+    int GetMaxBullets() { return mMaxBullets; }
+
+    int GetCurrentBullets() { return mCurrentBullets; }
+    void PutMaxCurrentBullets() { mCurrentBullets = mMaxBullets; }
+    void SetCurrentBullets(int diff) { mCurrentBullets += diff; }
 
 END_SCRIPT

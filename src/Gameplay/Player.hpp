@@ -1,5 +1,16 @@
+#pragma once
 #include "../Engine/GameManager.h"
 #include "Character.hpp"
+#include "SubMachineGun.hpp"
+
+enum WEAPON_ORDER
+{
+	ANGLEGRINGER,
+	SUBMACHINEGUN,
+	BAZOOKA,
+
+	count,
+};
 
 #define PI  3.14159265359f
 
@@ -15,6 +26,10 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		bool mIsJumping;
 		bool isWindowInitialised; 
 		bool isCursorLocked;
+
+		ScriptWeapons* mCurrentWeapon;
+
+		std::vector<ScriptWeapons*> mAllWeapons;
 
 	public:
 		ScriptCharacter* mCharacter;
@@ -33,6 +48,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			gce::HideMouseCursor();
 
 			InputMove(deltaTime);
+			InputShoot(deltaTime);
 			TurnCamera();
 
 			if (mCharacter->GetLife() <= 0)
@@ -54,8 +70,9 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			float horizontalInput = gce::GetKey(gce::Keyboard::Key::D) - gce::GetKey(gce::Keyboard::Key::Q);
 			float verticalInput = gce::GetKey(gce::Keyboard::Key::Z) - gce::GetKey(gce::Keyboard::Key::S);
 
-			gce::Vector3f32 direction = m_pOwner->transform.GetWorldForward() * verticalInput;
+			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * verticalInput;
 
+			//SetWorldPosition(GetWorldPosition() + direction * mCharacter->GetSpeed() * deltaTime);
 			WorldTranslate(direction * mCharacter->GetSpeed() * deltaTime);
 
 			if (gce::GetKeyDown(gce::Keyboard::Key::SPACE))
@@ -65,6 +82,19 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 			if(gce::GetButtonDown( gce::Mouse::Button::LEFT))
 				mCharacter->CreateBallInFront<ScriptBall>("PlayerBall", 50.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, mCharacter->mEntity);
+		}
+
+		void InputShoot(float deltaTime)
+		{
+			bool actionOnWeapon = gce::GetButton(gce::Mouse::LEFT);
+			if (actionOnWeapon)
+			{
+				if (mCurrentWeapon != nullptr)
+				{
+					ScriptSubMachineGun* weapon = mCurrentWeapon->GetChildWeapon<ScriptSubMachineGun>();
+					weapon->Action();
+				}
+			}
 		}
 
 		void TurnCamera()
@@ -148,5 +178,11 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		void SetIsJumping(bool isJumping) { mIsJumping = isJumping; }
 		bool GetIsJumping() { return mIsJumping; }
+
+		void SetCurrentWeapon(WEAPON_ORDER tag) { mCurrentWeapon = mAllWeapons[tag]; }
+		ScriptWeapons* GetCurrentWeapon() { return mCurrentWeapon; }
+
+		void AddWeapon(ScriptWeapons* currentWeapon) { mAllWeapons.push_back(currentWeapon); }
+		std::vector<ScriptWeapons*>* GetAllWeapons() { return &mAllWeapons; }
 
 END_SCRIPT
