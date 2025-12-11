@@ -1,5 +1,6 @@
 #pragma once
 #include "Object.hpp"
+#include "Time.h"
 
 DECLARE_SCRIPT(ScriptShootable, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
@@ -10,17 +11,19 @@ protected:
 	gce::Vector3f32 mDisToDestroy;
 
 	int mDamage;
+
+	Time mDestroyTime;
 public:
 	ScriptObject* mObject;
 
-	virtual void Initia() { mObject = m_pOwner->AddScript<ScriptObject>(); mObject->Initia(); SetStartPos(GetWorldPosition()); SetDisToDestroy(gce::Vector3f32(25.f, 25.f, 25.f));  SetDamage(0);}
-	virtual void Start() { SetStartPos(GetWorldPosition()); }
-	virtual void Update() { UpdateDirection(); UpdateOutArea(); }
+	virtual void Initia() { mObject = m_pOwner->AddScript<ScriptObject>(); mObject->Initia(); mDestroyTime = Time(5);  SetDamage(0); }
+	virtual void Start() { }
+	virtual void Update() { UpdateDirection(); UpdateOutTime(); }
 	virtual void Destroy() {}
 
 	virtual void CollisionEnter(gce::GameObject* other) {}
-	virtual void CollisionStay(GameObject* other) {}
-	virtual void CollisionExit(GameObject* other) {}
+	virtual void CollisionStay(gce::GameObject* other) {}
+	virtual void CollisionExit(gce::GameObject* other) {}
 
 	void UpdateDirection()
 	{
@@ -33,10 +36,9 @@ public:
 		}
 	}
 
-	void UpdateOutArea()
+	void UpdateOutTime()
 	{
-		gce::Vector3f32 pos = GetWorldPosition();
-		if (abs(mStartPos.x + mDisToDestroy.x) < pos.x || abs(mStartPos.y + mDisToDestroy.y) < pos.y || abs(mStartPos.z + mDisToDestroy.z) < pos.z)
+		if (mDestroyTime.IsFinish())
 		{
 			mObject->mEntity->DestroyEntity();
 		}
@@ -86,11 +88,8 @@ public:
 	void SetSpeed(float speed) { mSpeed = speed; }
 	float GetSpeed() { return mSpeed; }
 
-	void SetStartPos(gce::Vector3f32 startPos) { mStartPos = startPos; }
-	gce::Vector3f32 GetStartPos() { return mStartPos; }
-
-	void SetDisToDestroy(gce::Vector3f32 disToDestroy) { mDisToDestroy = disToDestroy; }
-	gce::Vector3f32 GetDisToDestroy() { return mDisToDestroy; }
+	void SetDestroyTime(Time destroyTime) { mDestroyTime = destroyTime; }
+	Time* GetDestroyTime() { return &mDestroyTime; }
 
 	void SetDamage(int damage) { mDamage = damage; }
 	int GetDamage() { return mDamage; }

@@ -2,6 +2,8 @@
 #include <GameObject.h>
 #include "Functions.h"
 
+using namespace gce;
+
 DECLARE_SCRIPT(ScriptEntity, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
 protected:
@@ -22,8 +24,8 @@ public:
 	virtual void Destroy() {}
 
 	virtual void CollisionEnter(gce::GameObject* other) {}
-	virtual void CollisionStay(GameObject* other) {}
-	virtual void CollisionExit(GameObject* other) {}
+	virtual void CollisionStay(gce::GameObject* other) {}
+	virtual void CollisionExit(gce::GameObject* other) {}
 
 	static void FocusEntity(ScriptEntity* entityGiveInformation, ScriptEntity* entityTarget)
 	{

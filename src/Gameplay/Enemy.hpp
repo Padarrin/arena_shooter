@@ -64,9 +64,9 @@ public:
 	}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter(gce::GameObject* other) {}
-	virtual void CollisionStay(GameObject* other) {}
-	virtual void CollisionExit(GameObject* other) {}
+	virtual void CollisionEnter(gce::GameObject* other){}
+	virtual void CollisionStay(gce::GameObject* other) {}
+	virtual void CollisionExit(gce::GameObject* other) {}
 
 	void SetIsNoPath(bool isNoPath) { mIsNoPath = isNoPath; }
 	bool GetIsNoPath() { return mIsNoPath; }

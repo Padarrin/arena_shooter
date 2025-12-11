@@ -35,8 +35,8 @@ public:
 				other->SetActive(false);
 		}
 	}
-	virtual void CollisionStay(GameObject* other) {}
-	virtual void CollisionExit(GameObject* other) {}
+	virtual void CollisionStay(gce::GameObject* other) {}
+	virtual void CollisionExit(gce::GameObject* other) {}
 
 
 
@@ -62,7 +62,7 @@ public:
 		gameBall.AddComponent<gce::BoxCollider>()->SetActive(true);
 		gameBall.AddComponent<gce::PhysicComponent>()->SetActive(false);
 		gameBall.SetName(name);
-		gameBall.transform.SetWorldScale(gce::Vector3f32{ 1.f,1.f,1.f });
+		gameBall.transform.SetWorldScale(gce::Vector3f32{  0.25f,0.25f,0.25f });
 		ScriptBall* ball = gameBall.GetScript<ScriptBall>();
 		ball->mShootable->SetShootable(ball->mShootable, pos, dir, speed, damage);
 		return ball;
