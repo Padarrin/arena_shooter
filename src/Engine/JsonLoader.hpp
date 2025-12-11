@@ -57,12 +57,11 @@ struct JsonLoader
 
             if (currObject.contains("texture") && currObject["texture"].is_string())
             {
-                std::string texturePath = "";
-                texturePath.append("res/Textures/");
+                std::string texturePath = "res/Textures/";
                 texturePath.append(currObject["texture"].get<std::string>());
                 Texture* texture = new Texture(texturePath);
                 mesh.pMaterial->albedoTextureID = texture->GetTextureID();
-                mesh.pMaterial->useTextureAlbedo = 1;
+                mesh.pMaterial->useTextureAlbedo = true;
                 mesh.pMaterial->subsurface = 0.2f;
             }
 
