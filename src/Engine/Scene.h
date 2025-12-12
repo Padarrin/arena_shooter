@@ -13,6 +13,7 @@ class Scene final
 public:
     static Scene& Create();
 
+    UnorderedMap<uint32, GameObject*>* GetGameObject() { return &m_gameObjects; }
 private:
     Scene() = default;
     ~Scene() = default;
