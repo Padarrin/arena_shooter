@@ -7,6 +7,7 @@
 #include "../Gameplay/Enemy.hpp"
 #include "../Gameplay/Grid.hpp"
 #include "../Gameplay/SubMachineGun.hpp"
+#include "../Gameplay/Ball.hpp"
 #include "../Engine/Components/MeshRenderer.h"
 #include "../Engine/Components/Light.h"
 #include "../Engine/Components/ColliderBase3D.h"
@@ -37,7 +38,7 @@ ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject)
 {
 	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	gamePlayer.AddComponent<gce::BoxCollider>()->SetActive(true);
-	gamePlayer.AddComponent<gce::PhysicComponent>()->SetActive(true);
+	gamePlayer.AddComponent<gce::PhysicComponent>()->SetActive(false);
 	gamePlayer.SetName("Player");
 	gamePlayer.AddChild(cameraObject);
 
@@ -117,7 +118,7 @@ void CreateAngleGringer(gce::Scene& scene, ScriptPlayer* player, gce::GameObject
 
 }
 
-void CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
+ScriptSubMachineGun* CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 {
 	gce::GameObject& subMachineGunObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
 	subMachineGunObject.SetName("SubmachineGun");
@@ -132,6 +133,7 @@ void CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObjec
 
 	player->AddWeapon(subMachineGun->mWeapons);//2
 
+	return subMachineGun;
 }
 
 void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
@@ -149,6 +151,24 @@ void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& wea
 
 	player->AddWeapon(bazooka->mWeapons);
 
+}
+
+std::vector<ScriptBall*> CreateBall(gce::Scene& scene)
+{
+	int maxBall = 10;
+	float x = 0;
+
+	std::vector<ScriptBall*> balls;
+
+	while (maxBall != 0)
+	{
+		ScriptBall* ball = ScriptBall::CreateBall("PlayerBall", { x,-50,0 }, {0,0,0}, 0, DEFAULT_BALL_DAMAGE, scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+		balls.push_back(ball);
+		maxBall--;
+		x += 3;
+	}
+
+	return balls;
 }
 
 BEGIN_TEST( Game )
@@ -179,7 +199,10 @@ BEGIN_TEST( Game )
 	CreateFloor(scene, pso);
 
 	CreateAngleGringer(scene, player, weaponParent);
-	CreateSubmachineGun(scene, player, weaponParent);
+
+	ScriptSubMachineGun* weapon = CreateSubmachineGun(scene, player, weaponParent);
+	weapon->SetBall(CreateBall(scene));
+
 	CreateBazooka(scene, player, weaponParent);
 
 	player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);

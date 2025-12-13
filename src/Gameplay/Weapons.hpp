@@ -32,6 +32,14 @@ public:
     }
 
     template<typename T>
+    static void TPBall(cstr name, ScriptWeapons* weapons, float speed, int damage, ScriptBall* ball)
+    {
+        ball->mShootable->SetWorldPosition(weapons->mEntity->GetWorldPosition() + weapons->mEntity->GetWorldForward());
+        ball->mShootable->SetDirection(weapons->mEntity->GetWorldForward(), speed);
+        ball->mShootable->SetDamage(damage);
+    }
+
+    template<typename T>
     static void CreateBallInFront(cstr name, float speed, int damage, gce::Geometry* geometry, ScriptEntity* entityGiveInformation)
     {
         gce::Quaternion rot = entityGiveInformation->GetWorldRotate();

@@ -70,23 +70,20 @@ public:
 		if (gce::GetKeyDown(gce::Keyboard::Key::_1) && mName != "AngleGringer")
 		{
 			mPlayer->SetCurrentWeapon(ANGLEGRINGER);
-			mCurrentWeapon = mPlayer->GetCurrentWeapon();
-			mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 		}
 
 		else if (gce::GetKeyDown(gce::Keyboard::Key::_2) && mName != "SubmachineGun")
 		{
 			mPlayer->SetCurrentWeapon(SUBMACHINEGUN);
-			mCurrentWeapon = mPlayer->GetCurrentWeapon();
-			mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 		}
 
 		else if (gce::GetKeyDown(gce::Keyboard::Key::_3) && mName != "Bazooka")
 		{
 			mPlayer->SetCurrentWeapon(BAZOOKA);
-			mCurrentWeapon = mPlayer->GetCurrentWeapon();
-			mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 		}
+
+		mCurrentWeapon = mPlayer->GetCurrentWeapon();
+		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 	}
 
 	void SetPlayer(ScriptPlayer* player) { mPlayer = player; }
