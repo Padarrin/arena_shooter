@@ -29,6 +29,7 @@ BEGIN_TEST( Game )
 	directionalLight.DefaultDirectionLight();
 	directionalLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
+	ScriptPlayer* player = CreatePlayer(scene, gCameraObject);
 	
 	//	//	//	//	 Menu   //	//	//	//
 	/*gce::GameObject& menuObject = CreateGameObject<ScriptMenu>(scene);
@@ -193,7 +194,7 @@ public:
 		ScriptPlayer* player = CreatePlayer(scene, cameraObject);
 
 		gce::Vector3f32 posPlayer = player->GetWorldPosition();
-		gce::Vector2f32 sizeGrid = gce::Vector2f32(5.f, 1.f);
+		gce::Vector2f32 sizeGrid = gce::Vector2f32(40.f, 80.f);
 		gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z);
 
 		ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
@@ -206,8 +207,9 @@ public:
 		//geometry = 
 		//texture = 
 		//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
-
 		std::cout << " " << gCameraObject->transform.GetWorldPosition().x << " " << gCameraObject->transform.GetWorldPosition().y << " " << gCameraObject->transform.GetWorldPosition().z << std::endl;
+		std::cout << " " << grid->GetGameObject()->transform.GetWorldPosition().x << " " << grid->GetGameObject()->transform.GetWorldPosition().y << " " << grid->GetGameObject()->transform.GetWorldPosition().z << std::endl;
+		
 	}
 
 	static void Quit()
