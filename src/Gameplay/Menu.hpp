@@ -30,21 +30,38 @@ struct Button
     INTERFACE_SHOW GetInterfaceShow() { return mShow; }
 };
 
+struct Image
+{
+    gce::GameObject* mImageObjet;
+    INTERFACE_SHOW mShow;
+
+    Image() { mImageObjet = nullptr; mShow = NOTHING; }
+    Image(gce::GameObject* buttonObjet, INTERFACE_SHOW show) { mImageObjet = buttonObjet; mShow = show; }
+
+    void SetAll(gce::GameObject* buttonObjet, INTERFACE_SHOW show) { mImageObjet = buttonObjet; mShow = show; }
+
+    void SetImageObjet(gce::GameObject* buttonObjet) { mImageObjet = buttonObjet; }
+    gce::GameObject* GetImageObjet() { return mImageObjet; }
+
+    void SetInterfaceShow(INTERFACE_SHOW show) { mShow = show; }
+    INTERFACE_SHOW GetInterfaceShow() { return mShow; }
+};
+
 DECLARE_SCRIPT(ScriptMenu, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 protected:
     std::vector<Button*> mAllButtons;
+    std::vector<Image*> mAllImages;
     INTERFACE_SHOW mInterfaceShow;
     bool mShowMenu;
 public:
 
-    virtual void Initia() { mAllButtons = std::vector<Button*>(); mInterfaceShow = NOTHING; mShowMenu = false; }
+    virtual void Initia() { mAllButtons = std::vector<Button*>(); mAllImages = std::vector<Image*>(); mInterfaceShow = NOTHING; mShowMenu = false; }
     virtual void Start() {}
     virtual void Update()
     {
         if (gce::GetKey(gce::Keyboard::ENTER) || gce::GetKey(gce::Keyboard::ESCAPE))
         {
             ShowMenu(PAUSE_MENU);
-
         }
 
         if (mShowMenu)
@@ -54,10 +71,16 @@ public:
     }
     virtual void Destroy()
     {
-        int lenght = (int)mAllButtons.size();
-        for (int i = lenght; i > -1; i--)
+        int lenghtB = (int)mAllButtons.size();
+        for (int i = lenghtB; i > -1; i--)
         {
             delete mAllButtons[i];
+        }
+
+        int lenghtI = (int)mAllImages.size();
+        for (int i = lenghtI; i > -1; i--)
+        {
+            delete mAllImages[i];
         }
     }
 
@@ -65,9 +88,9 @@ public:
     virtual void CollisionStay() {}
     virtual void CollisionExit() {}
 
-    std::vector<Button*> ShowMenu() { mShowMenu = true; return ActiveButton(mInterfaceShow); }
-    std::vector<Button*> ShowMenu(INTERFACE_SHOW interfaceShow) { mShowMenu = true; mInterfaceShow = interfaceShow; return ActiveButton(interfaceShow); }
-    void HideMenu() { mShowMenu = true; DeactiveAllButton(); }
+    std::vector<Button*> ShowMenu() { mShowMenu = true; /*ActiveImage(mInterfaceShow);*/ return ActiveButton(mInterfaceShow); }
+    std::vector<Button*> ShowMenu(INTERFACE_SHOW interfaceShow) { mShowMenu = true; mInterfaceShow = interfaceShow; /*ActiveImage(interfaceShow);*/ return ActiveButton(interfaceShow); }
+    void HideMenu() { mShowMenu = true; DeactiveAllImage(); DeactiveAllButton(); }
 
     std::vector<Button*> ActiveButton(INTERFACE_SHOW interfaceShow)
     {
@@ -98,6 +121,35 @@ public:
         }
     }
 
+    std::vector<Image*> ActiveImage(INTERFACE_SHOW interfaceShow)
+    {
+        std::vector<Image*> allActiveImage;
+        int lenght = (int)mAllImages.size();
+        for (int i = 0; i < lenght; i++)
+        {
+            Image* image = mAllImages[i];
+            if (image->GetInterfaceShow() == interfaceShow)
+            {
+                image->GetImageObjet()->SetActive(true);
+                allActiveImage.push_back(image);
+            }
+            else
+            {
+                image->GetImageObjet()->SetActive(false);
+            }
+        }
+        return allActiveImage;
+    }
+
+    void DeactiveAllImage()
+    {
+        int lenght = (int)mAllImages.size();
+        for (int i = 0; i < lenght; i++)
+        {
+            mAllImages[i]->GetImageObjet()->SetActive(false);
+        }
+    }
+
     bool GetShowMenu() { return mShowMenu; }
 
     std::vector<Button*> SetInterfaceShow(INTERFACE_SHOW interfaceShow) { mInterfaceShow = interfaceShow; if (mShowMenu) { return ActiveButton(interfaceShow); } return std::vector<Button*>(); }
@@ -107,6 +159,10 @@ public:
     void AddButton(Button* button) { mAllButtons.push_back(button); }
     void AddButton(gce::GameObject* buttonObject, INTERFACE_SHOW show) { mAllButtons.push_back(new Button(buttonObject, show)); }
     std::vector<Button*>* GetAllButtons() { return &mAllButtons; }
+
+    void AddImage(Image* image) { mAllImages.push_back(image); }
+    void AddImage(gce::GameObject* imageObject, INTERFACE_SHOW show) { mAllImages.push_back(new Image(imageObject, show)); }
+    std::vector<Image*>* GetAllImages() { return &mAllImages; }
 
     END_SCRIPT
 

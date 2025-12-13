@@ -3,11 +3,15 @@
 
 #include <Render.h>
 #include <Engine.h>
+#include "../Engine/Components/MeshRenderer.h"
+#include "../Engine/Components/Light.h"
+
 #include "../Gameplay/Enemy.hpp"
 #include "../Gameplay/Grid.hpp"
 #include "../Gameplay/Menu.hpp"
-#include "../Engine/Components/MeshRenderer.h"
-#include "../Engine/Components/Light.h"
+
+#include "../Gameplay/Functions.h"
+
 #include "define.h"
 
 gce::GameObject* gCameraObject;
@@ -33,54 +37,74 @@ BEGIN_TEST( Game )
 	//Image
 	gce::BitMapBrush imageButtonStart{ "res/Testing/Button/Button.png" };
 	gce::BitMapBrush imageCollideButtonStart{ "res/Testing/Button/Button2.png" };
+	gce::BitMapBrush imageBackgroundButtonStart{ "res/Testing/Button/Button2.png" };
 	gce::BitMapBrush imageButtonQuit{ "res/Testing/Button/Button.png" };
 	gce::BitMapBrush imageCollideButtonQuit{ "res/Testing/Button/Button2.png" };
+	gce::BitMapBrush imageBackgroundButtonQuit{ "res/Testing/Button/Button2.png" };
 
 	//Start Button
 	gce::Vector3f32 posButtonStart = gce::Vector3f32(600.0f, 300.0f, 0.0f);
 	gce::Vector3f32 scaleButtonStart = gce::Vector3f32(216.0f, 69.0f, 1.0f);
+	gce::Vector3f32 scaleImageStart = gce::Vector3f32(1.f, 1.f, 1.f);
 	gce::GameObject& buttonStartObject = gce::GameObject::Create(scene);buttonStartObject.transform.LocalTranslate(posButtonStart);buttonStartObject.transform.LocalScale(scaleButtonStart);
 	gce::UIButton* buttonStart = buttonStartObject.AddComponent<gce::UIButton>();buttonStart->AddListener(TestGame::Start);buttonStart->pBitMapBrush = &imageButtonStart;buttonStart->pHoverBitMapBrush = &imageCollideButtonStart;
+	gce::GameObject& imageStartObject = gce::GameObject::Create(scene); imageStartObject.transform.SetWorldScale(scaleImageStart); AddMeshRenderer(imageStartObject, gce::SHAPES.CUBE, (gce::Texture*)&imageBackgroundButtonStart);
 
 	//Quit Button
 	gce::Vector3f32 posButtonQuit = gce::Vector3f32(600.0f, 500.0f, 0.0f);
 	gce::Vector3f32 scaleButtonQuit = gce::Vector3f32(216.0f, 69.0f, 1.0f);
+	gce::Vector3f32 scaleImageQuit = gce::Vector3f32(1.f, 1.f, 1.f);
 	gce::GameObject& buttonQuitObject = gce::GameObject::Create(scene);buttonQuitObject.transform.LocalTranslate(posButtonQuit);buttonQuitObject.transform.LocalScale(scaleButtonQuit);
 	gce::UIButton* buttonQuit = buttonQuitObject.AddComponent<gce::UIButton>();buttonQuit->AddListener(TestGame::Quit);buttonQuit->pBitMapBrush = &imageButtonQuit;buttonQuit->pHoverBitMapBrush = &imageCollideButtonQuit;
+	gce::GameObject& imageQuitObject = gce::GameObject::Create(scene); imageQuitObject.transform.SetWorldScale(scaleImageQuit); AddMeshRenderer(imageQuitObject, gce::SHAPES.CUBE, (gce::Texture*)&imageBackgroundButtonQuit);
 
 	////Pause Menu////
 	//Image
 	gce::BitMapBrush imageButtonResume{ "res/Testing/Button/Button.png" };
 	gce::BitMapBrush imageCollideButtonResume{ "res/Testing/Button/Button2.png" };
+	gce::BitMapBrush imageBackgroundButtonResume{ "res/Testing/Button/Button2.png" };
 	gce::BitMapBrush imageButtonRestart{ "res/Testing/Button/Button.png" };
 	gce::BitMapBrush imageCollideButtonRestart{ "res/Testing/Button/Button2.png" };
+	gce::BitMapBrush imageBackgroundButtonRestart{ "res/Testing/Button/Button2.png" };
 	gce::BitMapBrush imageButtonExit{ "res/Testing/Button/Button.png" };
 	gce::BitMapBrush imageCollideButtonExit{ "res/Testing/Button/Button2.png" };
+	gce::BitMapBrush imageBackgroundButtonExit{ "res/Testing/Button/Button2.png" };
 
 	//Resume Button
 	gce::Vector3f32 posButtonResume = gce::Vector3f32(600.0f, 200.0f, 0.0f);
 	gce::Vector3f32 scaleButtonResume = gce::Vector3f32(216.0f, 69.0f, 1.0f);
+	gce::Vector3f32 scaleImageResume = gce::Vector3f32(1.f, 1.f, 1.f);
 	gce::GameObject& buttonResumeObject = gce::GameObject::Create(scene); buttonResumeObject.transform.LocalTranslate(posButtonResume); buttonResumeObject.transform.LocalScale(scaleButtonResume);
 	gce::UIButton* buttonResume = buttonResumeObject.AddComponent<gce::UIButton>(); buttonResume->AddListener(TestGame::Resume); buttonResume->pBitMapBrush = &imageButtonResume; buttonResume->pHoverBitMapBrush = &imageCollideButtonResume;
+	gce::GameObject& imageResumeObject = gce::GameObject::Create(scene); imageResumeObject.transform.SetWorldScale(scaleImageResume); AddMeshRenderer(imageResumeObject, gce::SHAPES.CUBE, (gce::Texture*)&imageBackgroundButtonResume);
 
 	//Restart Button
 	gce::Vector3f32 posButtonRestart = gce::Vector3f32(600.0f, 400.0f, 0.0f);
 	gce::Vector3f32 scaleButtonRestart = gce::Vector3f32(216.0f, 69.0f, 1.0f);
+	gce::Vector3f32 scaleImageRestart = gce::Vector3f32(1.f, 1.f, 1.f);
 	gce::GameObject& buttonRestartObject = gce::GameObject::Create(scene); buttonRestartObject.transform.LocalTranslate(posButtonRestart); buttonRestartObject.transform.LocalScale(scaleButtonRestart);
 	gce::UIButton* buttonRestart = buttonRestartObject.AddComponent<gce::UIButton>(); buttonRestart->AddListener(TestGame::Restart); buttonRestart->pBitMapBrush = &imageButtonRestart; buttonRestart->pHoverBitMapBrush = &imageCollideButtonRestart;
+	gce::GameObject& imageRestartObject = gce::GameObject::Create(scene); imageRestartObject.transform.SetWorldScale(scaleImageRestart); AddMeshRenderer(imageRestartObject, gce::SHAPES.CUBE, (gce::Texture*)&imageBackgroundButtonRestart);
 
 	//Exit Button
 	gce::Vector3f32 posButtonExit = gce::Vector3f32(600.0f, 600.0f, 0.0f);
 	gce::Vector3f32 scaleButtonExit = gce::Vector3f32(216.0f, 69.0f, 1.0f);
+	gce::Vector3f32 scaleImageExit = gce::Vector3f32(1.f, 1.f, 1.f);
 	gce::GameObject& buttonExitObject = gce::GameObject::Create(scene); buttonExitObject.transform.LocalTranslate(posButtonExit); buttonExitObject.transform.LocalScale(scaleButtonExit);
 	gce::UIButton* buttonExit = buttonExitObject.AddComponent<gce::UIButton>(); buttonExit->AddListener(TestGame::Exit); buttonExit->pBitMapBrush = &imageButtonExit; buttonExit->pHoverBitMapBrush = &imageCollideButtonExit;
+	gce::GameObject& imageExitObject = gce::GameObject::Create(scene); imageExitObject.transform.SetWorldScale(scaleImageExit); AddMeshRenderer(imageExitObject, gce::SHAPES.CUBE, (gce::Texture*)&imageBackgroundButtonExit);
 
 	menu->AddButton(&buttonStartObject, MAIN_MENU);
 	menu->AddButton(&buttonQuitObject, MAIN_MENU);
+	menu->AddImage(&imageStartObject, MAIN_MENU);
+	menu->AddImage(&imageQuitObject, MAIN_MENU);
 
 	menu->AddButton(&buttonResumeObject, PAUSE_MENU);
 	menu->AddButton(&buttonRestartObject, PAUSE_MENU);
 	menu->AddButton(&buttonExitObject, PAUSE_MENU);
+	menu->AddImage(&imageResumeObject, PAUSE_MENU);
+	menu->AddImage(&imageStartObject, PAUSE_MENU);
+	menu->AddImage(&imageExitObject, PAUSE_MENU);
 
 	menu->ShowMenu(MAIN_MENU);
 	gMenuObject = &menuObject;
@@ -124,6 +148,8 @@ public:
 		//geometry = 
 		//texture = 
 		//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
+
+		std::cout << " " << gCameraObject->transform.GetWorldPosition().x << " " << gCameraObject->transform.GetWorldPosition().y << " " << gCameraObject->transform.GetWorldPosition().z << std::endl;
 	}
 
 	static void Quit()
