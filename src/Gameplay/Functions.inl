@@ -94,6 +94,7 @@ inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geome
 	T* ob = object.AddScript<T>();
 	ob->T::Initia();
 
+	AddMeshRenderer(object, geometry, texture);
 	
 	gce::Light* light = object.AddComponent<gce::Light>();
 	light->color = color;
