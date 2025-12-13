@@ -2,7 +2,7 @@
 #include <GameObject.h>
 #include <InputsMethods.h>
 
-enum INTERFACE_SHOW
+/*enum INTERFACE_SHOW
 {
     NOTHING,
     MAIN_MENU,
@@ -88,8 +88,8 @@ public:
     virtual void CollisionStay() {}
     virtual void CollisionExit() {}
 
-    std::vector<Button*> ShowMenu() { mShowMenu = true; /*ActiveImage(mInterfaceShow);*/ return ActiveButton(mInterfaceShow); }
-    std::vector<Button*> ShowMenu(INTERFACE_SHOW interfaceShow) { mShowMenu = true; mInterfaceShow = interfaceShow; /*ActiveImage(interfaceShow);*/ return ActiveButton(interfaceShow); }
+    std::vector<Button*> ShowMenu() { mShowMenu = true; /*ActiveImage(mInterfaceShow);*/ /*return ActiveButton(mInterfaceShow); }
+    std::vector<Button*> ShowMenu(INTERFACE_SHOW interfaceShow) { mShowMenu = true; mInterfaceShow = interfaceShow; /*ActiveImage(interfaceShow);*/ /*return ActiveButton(interfaceShow); }
     void HideMenu() { mShowMenu = true; DeactiveAllImage(); DeactiveAllButton(); }
 
     std::vector<Button*> ActiveButton(INTERFACE_SHOW interfaceShow)
@@ -163,6 +163,6 @@ public:
     void AddImage(Image* image) { mAllImages.push_back(image); }
     void AddImage(gce::GameObject* imageObject, INTERFACE_SHOW show) { mAllImages.push_back(new Image(imageObject, show)); }
     std::vector<Image*>* GetAllImages() { return &mAllImages; }
-
+    */
     END_SCRIPT
 
