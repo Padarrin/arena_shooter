@@ -242,7 +242,7 @@ protected:
 				//gce::Vector3f32 setCellPos = gce::Vector3f32(c * (cellSize + space), MIN_HEIGHT, -r * (cellSize + space));
 				int setHeight = 1;
 				bool isInacessible = false;
-				GameObject* haveObject = nullptr;
+				gce::GameObject* haveObject = nullptr;
 
 				Cell* cell = new Cell();
 				cell->SetAll(setHeight, gce::Vector2i32(r, c), isInacessible, haveObject);

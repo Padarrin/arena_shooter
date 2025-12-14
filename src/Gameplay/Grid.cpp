@@ -1,4 +1,4 @@
-#include "Grid.h"
+#include "Grid.hpp"
 
 #include <define.h>
 #include <Maths/Vector2.hpp>

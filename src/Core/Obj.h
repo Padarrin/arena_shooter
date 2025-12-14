@@ -6,6 +6,9 @@
 #include "Maths/Vector2.hpp" 
 #include "Maths/Vector3.h" 
 #include "MtlParser.h"
+#include "Core/nlohmann.hpp"
+
+using json = nlohmann::json;
 
 namespace gce
 {
@@ -40,6 +43,7 @@ namespace gce
 		~Obj();
 
 		void LoadObj();
+		void LoadJsonObj(json const& object);
 		UnorderedMap<String, MtlMaterial> LoadMtl(String& path);
 
 		Vector<Mesh> meshs;

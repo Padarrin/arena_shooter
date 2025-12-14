@@ -188,6 +188,47 @@ namespace gce {
 			meshs[0].indices = indices;
 		}
 	}
+
+	void Obj::LoadJsonObj(json const& object)
+	{
+		json mesh = object["mesh"];
+		json vVertices = mesh["vertices"];
+		json indices = mesh["indices"];
+		json uvs = mesh["uvs"];
+
+		int nVertices = (int)vVertices.size() / 3;
+
+		for (int i = 0; i < indices.size(); i++)
+		{
+			int vIndex = indices[i].get<int>();
+
+			// Position from vertex index
+			Vector3f32 pos;
+			pos.x = vVertices[vIndex * 3 + 0].get<float>();
+			pos.y = vVertices[vIndex * 3 + 2].get<float>();
+			pos.z = vVertices[vIndex * 3 + 1].get<float>();
+
+			// UV from loop index
+			Vector2f32 texCoord;
+			texCoord.x = uvs[i * 2 + 0].get<float>();
+			texCoord.y = uvs[i * 2 + 1].get<float>();
+
+			// Normals not exported yet
+			Vector3f32 normal = { 0,0,0 };
+
+			vertices.PushBack(obj::Vertex(pos, normal, texCoord));
+		}
+
+		Mesh m;
+
+		for (int i = 0; i < indices.size(); i++)
+		{
+			m.indices.PushBack(i);
+		}
+
+		meshs.PushBack(m);
+	}
+
 	UnorderedMap<String, MtlMaterial> Obj::LoadMtl(String& path)
 	{
 		//load mtl if exists in the same directory as the obj

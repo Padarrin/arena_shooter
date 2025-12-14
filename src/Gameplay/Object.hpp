@@ -9,12 +9,12 @@ public:
 	ScriptEntity* mEntity;
 
 	virtual void Initia() { mEntity = m_pOwner->AddScript<ScriptEntity>(); mEntity->Initia(); }
-	virtual void Start() { mEntity->Start(); }
+	virtual void Start() {}
 	virtual void Update() {}
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter() {}
-	virtual void CollisionStay() {}
-	virtual void CollisionExit() {}
+	virtual void CollisionEnter(gce::GameObject* other) {}
+	virtual void CollisionStay(gce::GameObject* other) {}
+	virtual void CollisionExit(gce::GameObject* other) {}
 
 END_SCRIPT

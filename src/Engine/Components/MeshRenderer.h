@@ -22,6 +22,10 @@ protected:
 
     void UpdateWorld( uint8 dirty );
 
+public:
+    void SetGeometry(Geometry* geo);
+
+protected:
     friend class RenderSystem;
 };
 

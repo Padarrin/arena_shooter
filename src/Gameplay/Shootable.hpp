@@ -1,5 +1,6 @@
 #pragma once
 #include "Object.hpp"
+#include "Time.h"
 
 DECLARE_SCRIPT(ScriptShootable, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
@@ -8,17 +9,21 @@ protected:
 	gce::Vector3f32 mDirection;
 	gce::Vector3f32 mStartPos;
 	gce::Vector3f32 mDisToDestroy;
+
+	int mDamage;
+
+	Time mDestroyTime;
 public:
 	ScriptObject* mObject;
 
-	virtual void Initia() { mObject = m_pOwner->AddScript<ScriptObject>(); mObject->Initia(); SetDisToDestroy(gce::Vector3f32(20.f, 20.f, 20.f)); }
-	virtual void Start() { mObject->Start(); SetStartPos(GetWorldPosition()); }
-	virtual void Update() { UpdateDirection(); UpdateOutArea(); }
+	virtual void Initia() { mObject = m_pOwner->AddScript<ScriptObject>(); mObject->Initia(); mDestroyTime = Time(5);  SetDamage(0); }
+	virtual void Start() { }
+	virtual void Update() { UpdateDirection(); UpdateOutTime(); }
 	virtual void Destroy() {}
 
-	virtual void CollisionEnter() {}
-	virtual void CollisionStay() {}
-	virtual void CollisionExit() {}
+	virtual void CollisionEnter(gce::GameObject* other) {}
+	virtual void CollisionStay(gce::GameObject* other) {}
+	virtual void CollisionExit(gce::GameObject* other) {}
 
 	void UpdateDirection()
 	{
@@ -31,12 +36,11 @@ public:
 		}
 	}
 
-	void UpdateOutArea()
+	void UpdateOutTime()
 	{
-		gce::Vector3f32 pos = GetWorldPosition();
-		if (abs(mStartPos.x + mDisToDestroy.x - pos.x) < 0.f || abs(mStartPos.y + mDisToDestroy.y - pos.y) < 0.f || abs(mStartPos.z + mDisToDestroy.z - pos.z) < 0.f)
+		if (mDestroyTime.IsFinish())
 		{
-			m_pOwner->Destroy();
+			mObject->mEntity->DestroyEntity();
 		}
 	}
 
@@ -59,10 +63,11 @@ public:
 		return true;
 	}
 
-	static void SetShootable(ScriptShootable* shootable, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed)
+	static void SetShootable(ScriptShootable* shootable, gce::Vector3f32 pos, gce::Vector3f32 dir, float speed, int damage)
 	{
 		shootable->SetWorldPosition(pos);
 		shootable->SetDirection(dir, speed);
+		shootable->SetDamage(damage);
 	}
 
 	void SetDirection(float x, float y, float z, float speed)
@@ -83,11 +88,11 @@ public:
 	void SetSpeed(float speed) { mSpeed = speed; }
 	float GetSpeed() { return mSpeed; }
 
-	void SetStartPos(gce::Vector3f32 startPos) { mStartPos = startPos; }
-	gce::Vector3f32 GetStartPos() { return mStartPos; }
+	void SetDestroyTime(Time destroyTime) { mDestroyTime = destroyTime; }
+	Time* GetDestroyTime() { return &mDestroyTime; }
 
-	void SetDisToDestroy(gce::Vector3f32 disToDestroy) { mDisToDestroy = disToDestroy; }
-	gce::Vector3f32 GetDisToDestroy() { return mDisToDestroy; }
+	void SetDamage(int damage) { mDamage = damage; }
+	int GetDamage() { return mDamage; }
 
 	void SetWorldPosition(gce::Vector3f32 position) { mObject->mEntity->SetWorldPosition(position); }
 	gce::Vector3f32 GetWorldPosition(){ return mObject->mEntity->GetWorldPosition(); }
