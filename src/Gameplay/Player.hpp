@@ -16,9 +16,11 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		virtual void Update()
 		{ 
 			float deltaTime = gce::GameManager::DeltaTime();
-
-			InputMove(deltaTime);
-			TurnCamera();
+			if (deltaTime > 0.f)
+			{
+				InputMove(deltaTime);
+				TurnCamera();
+			}
 		}
 
 		virtual void Destroy() {}
@@ -34,7 +36,11 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * verticalInput;
 
-			SetWorldPosition(GetWorldPosition() + direction * mCharacter->GetSpeed() * deltaTime);
+			WorldTranslate(direction * mCharacter->GetSpeed() * deltaTime);
+
+			if (mObjectCamera == nullptr)
+				return;
+			mObjectCamera->transform.SetWorldPosition(gce::Vector3f32(0.f, 0.f, 0.f));
 		}
 
 		void TurnCamera()
@@ -46,8 +52,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			uint32 height = mWindow->GetHeight();
 			float degree = 360.f / ((gce::Sqrt(width * width + height * height) * 100.f));
 
-			mObjectCamera->transform.SetLocalRotation({ (float)gce::GetMousePosition().y * degree, 0.f, 0.f });
-			m_pOwner->transform.SetWorldRotation({ 0.f,(float)gce::GetMousePosition().x * degree ,0.f });
+			mObjectCamera->transform.SetLocalRotation(gce::Vector3f32((float)gce::GetMousePosition().y * degree, 0.f, 0.f));
+			m_pOwner->transform.SetWorldRotation(gce::Vector3f32(0.f,(float)gce::GetMousePosition().x * degree ,0.f));
 		}
 
 		void SetCamera(gce::GameObject& cameraObject) { mObjectCamera = &cameraObject; }

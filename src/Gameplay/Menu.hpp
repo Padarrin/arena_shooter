@@ -58,9 +58,12 @@ protected:
 public:
 
     virtual void Initia() { mAllButtons = std::vector<Button*>(); mAllImages = std::vector<Image*>(); mInterfaceShow = NOTHING; mShowMenu = false; }
-    virtual void Start() {}
+    virtual void Start() { }
     virtual void Update()
     {
+        float32 &deltatime = gce::GameManager::s_pInstance->m_deltaTime;
+        std::cout << " " << deltatime << " " << mShowMenu << std::endl;
+
         if (gce::GetKey(gce::Keyboard::ENTER) || gce::GetKey(gce::Keyboard::ESCAPE))
         {
             ShowMenu(PAUSE_MENU);
@@ -70,10 +73,18 @@ public:
         {
             if (mObjectCamera != nullptr)
             {
+                gce::Vector3f32 currentPosition = mObjectCamera->transform.GetWorldPosition();
                 mObjectCamera->transform.SetWorldPosition(mCameraPositionInMenu);
-                mObjectCamera->transform.SetLocalRotation(gce::Vector3f32(0.f, 0.f, 0.f));
+                mObjectCamera->transform.SetWorldRotation(gce::Vector3f32(0.f, 0.f, 0.f));
             }
-            gce::GameManager::s_pInstance->m_deltaTime = 0.f;
+            deltatime = -1.f;
+        }
+        else
+        {
+            if (deltatime == -1.f)
+            {
+                deltatime = 0.f;
+            }
         }
     }
     virtual void Destroy()
@@ -97,7 +108,7 @@ public:
 
     std::vector<Button*> ShowMenu() { mShowMenu = true; ActiveImage(mInterfaceShow); return ActiveButton(mInterfaceShow); }
     std::vector<Button*> ShowMenu(INTERFACE_SHOW interfaceShow) { mShowMenu = true; mInterfaceShow = interfaceShow; ActiveImage(interfaceShow); return ActiveButton(interfaceShow); }
-    void HideMenu() { mShowMenu = true; DeactiveAllImage(); DeactiveAllButton(); }
+    void HideMenu() { mShowMenu = false; DeactiveAllImage(); DeactiveAllButton(); }
 
     std::vector<Button*> ActiveButton(INTERFACE_SHOW interfaceShow)
     {

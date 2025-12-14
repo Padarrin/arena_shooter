@@ -149,9 +149,6 @@ public:
 		//geometry = 
 		//texture = 
 		//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
-		std::cout << " " << gCameraObject->transform.GetWorldPosition().x << " " << gCameraObject->transform.GetWorldPosition().y << " " << gCameraObject->transform.GetWorldPosition().z << std::endl;
-		std::cout << " " << grid->GetGameObject()->transform.GetWorldPosition().x << " " << grid->GetGameObject()->transform.GetWorldPosition().y << " " << grid->GetGameObject()->transform.GetWorldPosition().z << std::endl;
-		
 	}
 
 	static void Quit()
@@ -177,32 +174,6 @@ public:
 		ScriptMenu* menu = gMenuObject->GetScript<ScriptMenu>();
 		DeleteGameObject();
 		menu->ShowMenu(MAIN_MENU);
-	}
-
-	static void DeleteGameObject()
-	{
-		auto* mapGameObject = gMenuObject->m_pScene->GetGameObject();
-		for (auto& [id, gameObject] : *mapGameObject) 
-		{ 
-			if (gameObject->GetScript<ScriptEntity>() != nullptr) 
-			{
-				gameObject->SetActive(false);
-			} 
-		}
-		/*for (auto it = mapGameObject->begin(); it != mapGameObject->end(); )
-		{
-			gce::GameObject* gameObject = it->second;
-			if (gameObject->GetScript<ScriptEntity>() != nullptr)
-			{
-				//gameObject->Destroy();
-				//delete gameObject;
-				//it = mapGameObject->erase(it);
-			}
-			else
-			{
-				++it;
-			}
-		}*/
 	}
 
 	static gce::GameObject* CreateCamera(gce::Scene& scene)
@@ -262,7 +233,7 @@ public:
 
 	static void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 	{
-		gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+		gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 		ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
 		enemy->SetPlayer(player);
 		enemy->mAgent->mCharacter->SetSpeed(5.f);
@@ -287,6 +258,40 @@ public:
 		grid->SetSizeTabCell(sizeTabCell); //SetScale et lance InitTab
 		grid->SetCenterOfGrid(positionCenter);
 		return grid;
+	}
+
+	static void DeleteGameObject()
+	{
+		auto* mapGameObject = gMenuObject->m_pScene->GetGameObject();
+		/*for (auto& [id, gameObject] : *mapGameObject)
+		{
+			if (gameObject->GetScript<ScriptEntity>() != nullptr || gameObject->GetScript<ScriptGrid>() != nullptr)
+			{
+				gameObject->SetActive(false);
+			}
+		}*/
+		for (auto it = mapGameObject->begin(); it != mapGameObject->end(); )
+		{
+			gce::GameObject* gameObject = it->second;
+			if (gameObject->GetScript<ScriptEntity>() != nullptr || gameObject->GetScript<ScriptGrid>() != nullptr)
+			{
+				if (gameObject->HasChildren())
+				{
+					gce::Vector<gce::GameObject*> child = gameObject->GetChildren();
+					int lenght = (int)child.Size() - 1;
+					for (int i = lenght; i > -1; i--)
+					{
+						gameObject->RemoveChild(*child[i]);
+					}
+				}
+				gameObject->Destroy();
+				it = mapGameObject->erase(it);
+			}
+			else
+			{
+				++it;
+			}
+		}
 	}
 
 
