@@ -131,12 +131,12 @@ public:
 	static ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject* cameraObject)
 	{
 		gce::GameObject& playerObject = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-		gamePlayer.AddComponent<gce::BoxCollider>()->SetActive(true);
-		gamePlayer.AddComponent<gce::PhysicComponent>()->SetActive(true);
-		gamePlayer.SetName("Player");
-		playerObject.AddChild(cameraObject);
+		playerObject.AddComponent<gce::BoxCollider>()->SetActive(true);
+		playerObject.AddComponent<gce::PhysicComponent>()->SetActive(true);
+		playerObject.SetName("Player");
+		playerObject.AddChild(*cameraObject);
 
-		ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
+		ScriptPlayer* player = playerObject.GetScript<ScriptPlayer>();
 		player->SetCamera(*cameraObject);
 		player->SetWorldPosition(gce::Vector3f32(0.f, 10.f, 0.f));
 		player->mCharacter->SetSpeed(9);
@@ -181,7 +181,7 @@ public:
 		//entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
 		//entity->SetWorldScale({ 50.f,16.f,50.f });
 
-	}*
+	}
 	static ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vector3f32 positionCenter, int sizeCell)
 	{
 		gce::GameObject& gridObject = CreateGameObject<ScriptGrid>(scene, gce::SHAPES.CUBE);
