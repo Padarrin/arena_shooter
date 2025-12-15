@@ -81,7 +81,47 @@ void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
 	///////////////////////////////////////////////////////////
 	// Map json
-	
+	std::vector<gce::GameObject&> gameObjectLoad = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/map_test.json", &scene);
+
+	int lenghtLoad = (int)gameObjectLoad.size();
+	for (int i = 0; i < lenghtLoad; i++)
+	{
+		gce::GameObject& currentGameObject = gameObjectLoad[i];
+
+		//////////////////////Enemy///////////////////////
+		if (currentGameObject.GetName() == "Nail")
+		{
+			currentGameObject.SetName("Enemy");
+			SetNail(currentGameObject, player, grid);
+		}
+		else if (currentGameObject.GetName() == "Bot")
+		{
+			currentGameObject.SetName("Bot");
+			//SetNail(currentGameObject, player, grid);
+		}
+		//////////////////////Enemy Fin///////////////////////
+		//////////////////////Item///////////////////////
+		else if (currentGameObject.GetName() == "Item")
+		{
+			currentGameObject.SetName("Item");
+			//SetNail(currentGameObject, player, grid);
+		}
+		//////////////////////Item Fin///////////////////////
+		//////////////////////Furniture///////////////////////
+		else if (currentGameObject.GetName() == "Box")
+		{
+			currentGameObject.SetName("Box");
+			//SetNail(currentGameObject, player, grid);
+		}
+		//////////////////////Furniture Fin///////////////////////
+		//////////////////////Floor///////////////////////
+		else
+		{
+			currentGameObject.SetName("Floor");
+			SetFloor(currentGameObject);
+		}
+		//////////////////////Floor Fin///////////////////////
+	}
 	///////////////////////////////////////////////////////////
 
 	//gce::GameObject& floorObject;
