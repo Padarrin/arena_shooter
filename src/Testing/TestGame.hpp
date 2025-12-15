@@ -172,6 +172,24 @@ void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& wea
 //	return balls;
 //}
 
+void CreateUI(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& cameraObject)
+{
+	gce::GameObject& uiObject = CreateGameObject<ScriptUI>(scene);
+	cameraObject.AddChild(uiObject);
+	ScriptUI* ui = uiObject.GetScript<ScriptUI>();
+
+	gce::BitMapBrush imageSubMachine{ "res/Textures/test1.png" };
+
+	gce::Vector3f32 posImageSubMachine = gce::Vector3f32(0.f, 0.f, 5.f);
+	gce::Vector3f32 scaleImageSubMachine = gce::Vector3f32(1.5f, 1.5f, 0.1f);
+	gce::GameObject& imageSubMachineObject = gce::GameObject::Create(scene); imageSubMachineObject.transform.LocalTranslate(posImageSubMachine); imageSubMachineObject.transform.SetWorldScale(scaleImageSubMachine); imageSubMachineObject.transform.SetWorldScale(scaleImageSubMachine); AddMeshRenderer(imageSubMachineObject, gce::SHAPES.CUBE);
+
+	ui->AddImage(&imageSubMachineObject);
+	ui->ShowMenu();
+
+	ui->SetPlayer(player);
+}
+
 BEGIN_TEST( Game )
 
 	gce::GameManager::Create();
@@ -195,17 +213,7 @@ BEGIN_TEST( Game )
 
 	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-	gce::GameObject& uiObject = CreateGameObject<ScriptUI>(scene);
-	ScriptUI* ui = uiObject.GetScript<ScriptUI>();
-
-	gce::BitMapBrush imageSubMachine{ "res/Textures/test1.png" };
-
-	gce::Vector3f32 posImageSubMachine = gce::Vector3f32(0.f, 0.f, 5.f);
-	gce::Vector3f32 scaleImageSubMachine = gce::Vector3f32(0.5f, 0.5f, 0.1f);
-	gce::GameObject& imageSubMachineObject = gce::GameObject::Create(scene); imageSubMachineObject.transform.LocalTranslate(posImageSubMachine); imageSubMachineObject.transform.SetWorldScale(scaleImageSubMachine); imageSubMachineObject.transform.SetWorldScale(scaleImageSubMachine); AddMeshRenderer(imageSubMachineObject, gce::SHAPES.CUBE);
-	imageSubMachineObject.SetActive(true);
-
-	ui->SetPlayer(player);
+	CreateUI(scene, player, cameraObject);
 
 	CreateEnemy(scene, player, grid);
 
