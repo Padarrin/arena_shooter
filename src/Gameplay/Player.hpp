@@ -131,8 +131,9 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 			mPitch = gce::Clamp(mPitch, -PITCH, PITCH);
 			m_pOwner->transform.SetWorldRotation(gce::Vector3f32(mPitch, mYaw, 0.f));
-			m_pOwner->GetChildren()[0]->transform.SetLocalRotation(gce::Vector3f32(mPitch, 0.f, 0.f));
+			mObjectCamera->transform.SetLocalRotation(gce::Vector3f32(mPitch, 0.f, 0.f));
 			gce::SetMousePosition(centerSizeWindow);
+
 		}
 
 		void Jump(float strength, float deltaTime)
