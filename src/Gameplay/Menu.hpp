@@ -73,7 +73,6 @@ public:
         {
             if (mObjectCamera != nullptr)
             {
-                gce::Vector3f32 currentPosition = mObjectCamera->transform.GetWorldPosition();
                 mObjectCamera->transform.SetWorldPosition(mCameraPositionInMenu);
                 mObjectCamera->transform.SetWorldRotation(gce::Vector3f32(0.f, 0.f, 0.f));
             }

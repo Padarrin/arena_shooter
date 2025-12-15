@@ -83,6 +83,7 @@ BEGIN_TEST(Game)
 	menu->AddButton(&buttonRestartObject, PAUSE_MENU);
 	menu->AddButton(&buttonExitObject, PAUSE_MENU);
 
+	menu->SetCamera(gCameraObject);
 	menu->ShowMenu(MAIN_MENU);
 	gMenuObject = &menuObject;
 	//	//	//	//	 Menu Fin   //	//	//	//
@@ -97,9 +98,10 @@ BEGIN_TEST(Game)
 END_TEST_MAIN_FUNCTION()
 
 public:
-	static gce::GameObject* CreateCamera(gce::Scene& scene, gce::GameObject& weaponParent)
+	static gce::GameObject* CreateCamera(gce::Scene& scene)
 	{
 		gce::GameObject& cameraObject = gce::GameObject::Create(scene);
+		cameraObject.AddComponent<gce::Camera>();
 		cameraObject.transform.LocalTranslate({ 0, 0, 0 });
 		cameraObject.SetName("Camera");
 		
@@ -163,7 +165,7 @@ public:
 		enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
 	}
 
-	void CreateFloor(gce::Scene& scene)
+	static void CreateFloor(gce::Scene& scene)
 	{
 		
 		D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
@@ -195,7 +197,7 @@ public:
 		return grid;
 	}
 
-	void CreateAngleGringer(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
+	static void CreateAngleGringer(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 	{
 		gce::GameObject& angleGringerObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
 		angleGringerObject.SetName("Enemy");
@@ -210,7 +212,7 @@ public:
 
 	}
 
-	void CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
+	static void CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 	{
 		gce::GameObject& subMachineGunObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
 		subMachineGunObject.SetName("Enemy");
@@ -227,7 +229,7 @@ public:
 
 	}
 
-	void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
+	static void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 	{
 		gce::GameObject& bazookaObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
 		bazookaObject.SetName("Enemy");
@@ -263,7 +265,7 @@ public:
 		directionalLight.color = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 		gce::GameObject& weaponParent = gce::GameObject::Create(scene);
-		cameraObject.AddChild(weaponParent);
+		cameraObject->AddChild(weaponParent);
 
 		ScriptPlayer* player = CreatePlayer(scene, cameraObject);
 		gce::Vector3f32 posPlayer = player->GetWorldPosition();

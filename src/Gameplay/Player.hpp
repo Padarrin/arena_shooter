@@ -21,6 +21,7 @@ enum WEAPON_ORDER
 DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
 	protected:
+		gce::GameObject* mObjectCamera;
 		gce::Window* mWindow;
 
 		float mJump;
@@ -50,11 +51,11 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			float deltaTime = gce::GameManager::DeltaTime();
 			gce::HideMouseCursor();
 
-			if (deltaTime > 0.f)
+			if (deltaTime > -0.001f)
 			{
 				InputMove(deltaTime);
 				
-			InputShoot(deltaTime);
+				InputShoot(deltaTime);
 				TurnCamera();
 			}
 			if (mCharacter->GetLife() <= 0)
@@ -123,7 +124,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 				isWindowInitialised = true;
 			}
 
-			if (!isCursorLocked)
+			if (isCursorLocked)
 			{
 				gce::HideMouseCursor();
 
@@ -161,6 +162,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			physique->SetVelocity(velocity);
 			mIsJumping = false;
 		}
+
+		void SetCamera(gce::GameObject& cameraObject) { mObjectCamera = &cameraObject; }
 
 		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
 		gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }
