@@ -4,54 +4,57 @@
 #include <Containers/Vector.hpp>
 #include "define.h"
 
-using OnBegin = std::function<void()>;
-using OnUpdate = std::function<void()>;
-using OnEnd = std::function<void()>;
-
-struct StateMachine
+namespace gce
 {
-	struct Condition
+	using OnBegin = std::function<void()>;
+	using OnUpdate = std::function<void()>;
+	using OnEnd = std::function<void()>;
+
+	struct StateMachine
 	{
-		std::function<bool()> condition;
+		struct Condition
+		{
+			std::function<bool()> condition;
+		};
+
+		struct Transition
+		{
+			gce::Vector<Condition> conditions;
+			String from;
+			String target;
+		};
+
+		struct Action
+		{
+			OnBegin onBegin;
+			OnUpdate onUpdate;
+			OnEnd onEnd;
+
+			gce::Vector<Transition> m_transitions;
+		};
+
+		void AddAction(String& name, Action action = {});
+		void AddAction(String& name, OnBegin pOnBegin = nullptr, OnUpdate pOnUpdate = nullptr, OnEnd pOnEnd = nullptr);
+
+		void SetOnBeginAction(String& name, OnBegin pOnBegin);
+		void SetOnUpdateAction(String& name, OnUpdate pOnUpdate);
+		void SetOnEndAction(String& name, OnEnd pOnEnd);
+
+		void AddTransition(Transition transition);
+		void AddTransition(gce::Vector<Condition>& conditions, String& from, String& to);
+
+		void Update();
+
+		void Transit(String& target);
+
+		String actualAction;
+
+	private:
+
+		String m_actualAction;
+
+		UnorderedMap< String, Action> m_actions;
 	};
-
-	struct Transition
-	{
-		gce::Vector<Condition> conditions;
-		String from;
-		String target;
-	};
-
-	struct Action
-	{
-		OnBegin onBegin;
-		OnUpdate onUpdate;
-		OnEnd onEnd;
-
-		gce::Vector<Transition> m_transitions;
-	};
-
-	void AddAction(String& name, Action action = {});
-	void AddAction(String& name, OnBegin pOnBegin = nullptr, OnUpdate pOnUpdate = nullptr, OnEnd pOnEnd = nullptr);
-
-	void SetOnBeginAction(String& name, OnBegin pOnBegin);
-	void SetOnUpdateAction(String& name, OnUpdate pOnUpdate);
-	void SetOnEndAction(String& name, OnEnd pOnEnd);
-
-	void AddTransition(Transition transition);
-	void AddTransition(gce::Vector<Condition>& conditions, String& from, String& to);
-
-	void Update();
-
-	void Transit(String& target);
-
-	String actualAction;
-
-private :
-
-	String m_actualAction;
-
-	UnorderedMap< String, Action> m_actions;
-};
+}
 
 #endif

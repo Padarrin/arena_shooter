@@ -4,7 +4,9 @@
 #include "Player.hpp"
 #include "Grid.hpp"
 #include <chrono>
-#include "../Core/StateMachine/StateMachine.h"
+#include <Engine.h>
+#include <Render.h>
+#include "StateMachine/StateMachine.h"
 
 using namespace gce;
 
@@ -19,27 +21,31 @@ protected:
 	mClock::time_point mPreviousTime = mClock::now();
 
 	// StateMachine
-	gce::StateMachine* mStateMachine;
+	StateMachine* mStateMachine;
 
+	String idle = "Idle";
 	String running = "Running";
 	String attack = "Attack";
 	String hit = "Hit";
 	String die = "Die";
 
-	inline static bool isChasingPlayer = true;
+	inline static bool isNotMooving = true;
+	inline static bool isChasingPlayer = false;
 	inline static bool isAttacking = false;
 	inline static bool tookDamage = false;
 	inline static bool isDead = false;
 
-	gce::StateMachine::Condition condition2{ IsChasingPlayer };
-	gce::StateMachine::Condition condition3{ IsAttacking };
-	gce::StateMachine::Condition condition4{ TookDamage };
-	gce::StateMachine::Condition condition5{ IsDead };
+	StateMachine::Condition condition1{ [this] {return this->IsNotMooving(); } };
+	StateMachine::Condition condition2{ [this] {return this->IsChasingPlayer(); } };
+	StateMachine::Condition condition3{ [this] {return this->IsAttacking(); } };
+	StateMachine::Condition condition4{ [this] {return this->TookDamage(); } };
+	StateMachine::Condition condition5{ [this] {return this->IsDead(); } };
 
-	Vector<gce::StateMachine::Condition> conditionRun{ condition2 };
-	Vector<gce::StateMachine::Condition> condittionAttack{ condition3 };
-	Vector<gce::StateMachine::Condition> conditionHit{ condition4 };
-	Vector<gce::StateMachine::Condition> conditionDie{ condition5 };
+	Vector<StateMachine::Condition> conditionIdle{ condition1 };
+	Vector<StateMachine::Condition> conditionRun{ condition2 };
+	Vector<StateMachine::Condition> condittionAttack{ condition3 };
+	Vector<StateMachine::Condition> conditionHit{ condition4 };
+	Vector<StateMachine::Condition> conditionDie{ condition5 };
 
 
 public:
@@ -47,7 +53,7 @@ public:
 
 	// Fonctions
 	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); mAgent->mCharacter->SetMaxLife(100); mAgent->mCharacter->SetDamage(5); }
-	virtual void Start() 
+	virtual void Start()
 	{
 		ScriptGrid* grid = GetGrid();
 		Cell* nearestCell = grid->GetNearestCell(GetWorldPosition());
@@ -59,18 +65,19 @@ public:
 
 		SetIsNoPath(false);
 
-		statemachine = GameManager::GetStatesSystem().CreateStateMachine(m_pOwner);
+		mStateMachine = GameManager::GetStatesSystem().CreateStateMachine(m_pOwner);
 
 		// StateMachine
+		mStateMachine->AddAction(idle, OnBeginIdle, OnUpdateIdle, OnEndIdle);
 		mStateMachine->AddAction(running, OnBeginRunning, OnUpdateRunning, OnEndRunning);
 		mStateMachine->AddAction(attack, OnBeginAttack, OnUpdateAttack, OnEndAttack);
 		mStateMachine->AddAction(hit, OnBeginHit, OnUpdateHit, OnEndHit);
 		mStateMachine->AddAction(die, OnBeginDie, OnUpdateDie, OnEndDie);
 
-		mStateMachine->AddTransition(conditionRun, running);
-		mStateMachine->AddTransition(condittionAttack, attack);
-		mStateMachine->AddTransition(conditionHit, hit);
-		mStateMachine->AddTransition(conditionDie, die);
+		mStateMachine->AddTransition(conditionRun, idle, running);
+		mStateMachine->AddTransition(condittionAttack, running, idle);
+		mStateMachine->AddTransition(conditionHit, idle, hit);
+		mStateMachine->AddTransition(conditionDie, idle, die);
 
 	}
 	virtual void Update() 
@@ -145,6 +152,10 @@ public:
 	
 	ScriptGrid* GetGrid() { return mAgent->GetPathFinding()->GetGrid(); }
 
+	// === Idle State Functions ===
+	static void OnBeginIdle() { Console::Log("[Idle] Begin"); }
+	static void OnUpdateIdle() { Console::Log("[Idle] Updating... Waiting for start request."); }
+	static void OnEndIdle() { Console::Log("[Idle] End"); }
 
 	// === Running State Functions ===
 	static void OnBeginRunning() { Console::Log("[Running] Begin"); }
@@ -165,11 +176,40 @@ public:
 	static void OnBeginDie() { Console::Log("[Die] Begin"); }
 	static void OnUpdateDie() { Console::Log("[Die] Updating... Has no life."); }
 	static void OnEndDie() { Console::Log("[Die] End"); }
+	
+	bool IsNotMooving()
+	{
+		return isNotMooving;
+	}
+	bool IsChasingPlayer() 
+	{ 
+		Vector3f32 posPlayer = mPlayer->GetWorldPosition();
+		Vector3f32 posThis = this->GetWorldPosition();
 
-	static bool SetRun(bool run) { isChasingPlayer = run; }
-	static bool IsChasingPlayer() { return isChasingPlayer; }
-	static bool IsAttacking() { return isAttacking; }
-	static bool TookDamage() { return tookDamage; }
-	static bool IsDead() { return isDead; }
+		float dist = abs((posPlayer.x - posThis.x) + (posPlayer.y - posThis.y) + (posPlayer.z - posThis.z));
+
+		if (dist <= 0.5f)
+		{
+			isChasingPlayer = true;
+		}
+		else
+		{
+			isChasingPlayer = false;
+		}
+
+		return isChasingPlayer;
+	}
+	bool IsAttacking() 
+	{ 
+		return isAttacking; 
+	}
+	bool TookDamage() 
+	{ 
+		return tookDamage; 
+	}
+	bool IsDead() 
+	{
+		return isDead; 
+	}
 
 END_SCRIPT

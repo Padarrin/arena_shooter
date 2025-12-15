@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "StatesSystem.h"
-#include "../StateMachine.h"
+#include "StateMachine/StateMachine.h"
 
 namespace gce 
 {
