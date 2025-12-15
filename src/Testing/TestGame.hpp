@@ -68,11 +68,11 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 	enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
 }
 
-void CreateFloor(gce::Scene& scene, D12PipelineObject* pso)
+void CreateFloor(gce::Scene& scene)
 {
 	///////////////////////////////////////////////////////////
 	// Map json
-	JsonLoader::LoadMap("../../res/Gameplay/Json/Lampe.json", &scene, pso);
+	JsonLoader::LoadMap("../../res/Gameplay/Json/map_test.json", &scene);
 	///////////////////////////////////////////////////////////
 }
 
@@ -158,13 +158,11 @@ BEGIN_TEST( Game )
 	gce::Vector2f32 sizeGrid = gce::Vector2f32(50.f, 50.f);
 	gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 2.5f), posPlayer.z);
 
-	D12PipelineObject* pso = new D12PipelineObject(SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE);
-
 	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
 	//CreateEnemy(scene, player, grid);
 
-	CreateFloor(scene, pso);
+	CreateFloor(scene);
 
 	CreateAngleGringer(scene, player, weaponParent);
 	CreateSubmachineGun(scene, player, weaponParent);

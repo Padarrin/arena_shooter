@@ -19,7 +19,7 @@ using namespace gce;
 
 struct JsonLoader
 {
-    static void LoadMap(String const& path, Scene* pScene, D12PipelineObject* pso)
+    static void LoadMap(String const& path, Scene* pScene)
     {
         if (pScene == nullptr) return;
 

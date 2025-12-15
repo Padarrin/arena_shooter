@@ -4,6 +4,12 @@
 #include "Player.hpp"
 #include "Grid.hpp"
 #include <chrono>
+#include <../Core/StateMachine/StateMachine.h>
+#include <Render.h>
+#include <Engine.h>
+#include "define.h"
+
+using namespace gce;
 
 DECLARE_SCRIPT(ScriptEnemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
@@ -15,9 +21,24 @@ protected:
 	using mClock = std::chrono::steady_clock;
 	mClock::time_point mPreviousTime = mClock::now();
 
+	// StateMachine
+	StateMachine& mStateMachine;
+
+	mStateMachine->AddAction(idle, OnBeginIdle, OnUpdateIdle, OnEndIdle);
+	mStateMachine->AddAction(roaming, OnBeginRoaming, OnUpdateRoaming, OnEndRoaming);
+	mStateMachine->AddAction(attack, OnBeginAttack, OnUpdateAttack, OnEndAttack);
+	mStateMachine->AddAction(die, OnBeginDie, OnUpdateDie, OnEndDie);
+
+	String idle = "Idle";
+	String roaming = "Roaming";
+	String attack = "Attack";
+	String die = "Die";
+
+
 public:
 	ScriptAgent* mAgent;
 
+	// Fonctions
 	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); mAgent->mCharacter->SetMaxLife(100); mAgent->mCharacter->SetDamage(5); }
 	virtual void Start() 
 	{
@@ -100,5 +121,25 @@ public:
 	}
 	
 	ScriptGrid* GetGrid() { return mAgent->GetPathFinding()->GetGrid(); }
+
+	// === Idle State Functions ===
+	static void OnBeginIdle() { Console::Log("[Idle] Begin"); }
+	static void OnUpdateIdle() { Console::Log("[Idle] Updating... Waiting for start request."); }
+	static void OnEndIdle() { Console::Log("[Idle] End"); }
+
+	// === Roaming State Functions ===
+	static void OnBeginRoaming() { Console::Log("[Roaming] Begin"); }
+	static void OnUpdateRoaming() { Console::Log("[Roaming] Updating... Doing work."); }
+	static void OnEndRoaming() { Console::Log("[Roaming] End"); }
+
+	// === Attack State Functions ===
+	static void OnBeginAttack() { Console::Log("[Attack] Begin"); }
+	static void OnUpdateAttack() { Console::Log("[Attack] Updating... Doing work."); }
+	static void OnEndAttack() { Console::Log("[Attack] End"); }
+
+	// === Die State Functions ===
+	static void OnBeginDie() { Console::Log("[Die] Begin"); }
+	static void OnUpdateDie() { Console::Log("[Die] Updating... Has no life."); }
+	static void OnEndDie() { Console::Log("[Die] End"); }
 
 END_SCRIPT
