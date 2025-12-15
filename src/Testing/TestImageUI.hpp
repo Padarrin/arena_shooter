@@ -1,5 +1,5 @@
-﻿#ifndef TESTING_TEST_UI_IMAGE_H_INCLUDED
-#define TESTING_TEST_UI_IMAGE_H_INCLUDED
+﻿#ifndef TESTING_TEST_IMAGE_UI_H_INCLUDED
+#define TESTING_TEST_IMAGE_UI_H_INCLUDED
 
 #include "define.h"
 
@@ -11,7 +11,7 @@
 
 using namespace gce;
 
-BEGIN_TEST( UiImage )
+BEGIN_TEST(ImageUI)
 
     GameManager::Create();
     Scene& scene = Scene::Create();
@@ -24,7 +24,7 @@ BEGIN_TEST( UiImage )
     windowParam.isFullScreen = true;
 
     GameObject& crosshair = GameObject::Create(scene);
-    UiImage& uiImage = *crosshair.AddComponent<UiImage>();
+    ImageUI& uiImage = *crosshair.AddComponent<ImageUI>();
     Vector2f32 center = { windowParam.width / 2.f, windowParam.height / 2.f };
     Vector2f32 size = { 32, 32 };
     Vector2f32 posUi = center - size * 0.5f;

@@ -17,21 +17,21 @@
 #include "JsonLoader.hpp"
 using namespace gce;
 
-gce::GameObject& CreateCamera(gce::Scene& scene/*, gce::GameObject& weaponParent*/)
+gce::GameObject& CreateCamera(gce::Scene& scene, gce::GameObject& weaponParent)
 {
 	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
-	//cameraObject.transform.LocalTranslate({ 0, 0, 0 });
-	//cameraObject.transform.SetWorldPosition({ 0,0,-10 });
+	cameraObject.transform.LocalTranslate({ 0, 0, 0 });
+	cameraObject.transform.SetWorldPosition({ 0,0,-10 });
 	cameraObject.SetName("Camera");
-	//cameraObject.AddChild(weaponParent);
+	cameraObject.AddChild(weaponParent);
 
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
-	//camera.SetMainCamera();
+	camera.SetMainCamera();
 	camera.SetType(gce::PERSPECTIVE);
 	camera.perspective.fov = XM_PIDIV4;
 	camera.perspective.nearPlane = 0.001f;
 	camera.perspective.farPlane = 500.0f;
-	//camera.perspective.aspectRatio = 600.0f / 400.0f;
+	camera.perspective.aspectRatio = 600.0f / 400.0f;
 	camera.perspective.up = { 0.0f, 1.0f, 0.0f };
 	return cameraObject;
 }
@@ -156,24 +156,6 @@ void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& wea
 
 }
 
-//std::vector<ScriptBall*> CreateBall(gce::Scene& scene)
-//{
-//	int maxBall = 10;
-//	float x = 0;
-//
-//	std::vector<ScriptBall*> balls;
-//
-//	while (maxBall != 0)
-//	{
-//		ScriptBall* ball = ScriptBall::CreateBall("PlayerBall", { x,-50,0 }, {0,0,0}, 0, DEFAULT_BALL_DAMAGE, scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-//		balls.push_back(ball);
-//		maxBall--;
-//		x += 3;
-//	}
-//
-//	return balls;
-//}
-
 void CreateUI(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& cameraObject, gce::Vector3f32 pos, gce::Vector3f32 scale)
 {
 	gce::GameObject& uiObject = CreateGameObject<ScriptUI>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -202,26 +184,26 @@ BEGIN_TEST( Game )
 	windowParam.height = 1080;
 	windowParam.isFullScreen = true;
 
-	//gce::GameObject& weaponParent = gce::GameObject::Create(scene);
+	gce::GameObject& weaponParent = gce::GameObject::Create(scene);
 
-	
+	gce::GameObject& cameraObject = CreateCamera(scene, weaponParent);
 
-	/*gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
+	gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
 	gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
 	directionalLight.DefaultDirectionLight();
-	directionalLight.color = { 0.0f, 0.0f, 0.0f, 1.0f };*/
+	directionalLight.color = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-	//ScriptPlayer* player = CreatePlayer(scene, cameraObject);
-	//gce::Vector3f32 posPlayer = player->GetWorldPosition();
-	//gce::Vector2f32 sizeGrid = gce::Vector2f32(20.f, 40.f);
-	//gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z);
+	ScriptPlayer* player = CreatePlayer(scene, cameraObject);
+	gce::Vector3f32 posPlayer = player->GetWorldPosition();
+	gce::Vector2f32 sizeGrid = gce::Vector2f32(20.f, 40.f);
+	gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z);
 
-	//D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
+	D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
 
-	//ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
+	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-	//CreateUI(scene, player, cameraObject, { 0.5f, 9.7f, 1.f }, { 0.1f, 0.1f, 0.01f });
-	//CreateUI(scene, player, cameraObject, { 0.6f, 9.7f, 1.f }, { 0.08f, 0.08f, 0.01f });
+	/*CreateUI(scene, player, cameraObject, { 0.5f, 9.7f, 1.f }, { 0.1f, 0.1f, 0.01f });
+	CreateUI(scene, player, cameraObject, { 0.6f, 9.7f, 1.f }, { 0.08f, 0.08f, 0.01f });*/
 
 	GameObject& crosshair = GameObject::Create(scene);
 	ImageUI& uiImage = *crosshair.AddComponent<ImageUI>();
@@ -243,27 +225,17 @@ BEGIN_TEST( Game )
 	meshRenderer->pPso = &texturePso;
 	Cube.transform.SetWorldPosition({ 0, 0, 10 });
 
-	//gce::GameObject& cameraObject = CreateCamera(scene/*, weaponParent*/);
-	GameObject& cameraObject = GameObject::Create(scene);
-	Camera* camera = cameraObject.AddComponent<Camera>();
-	cameraObject.AddScript<CameraScript>();
-	camera->SetType(PERSPECTIVE);
-	camera->perspective.fov = XM_PIDIV4;
-	camera->perspective.nearPlane = 0.001f;
-	camera->perspective.farPlane = 500.0f;
-	camera->perspective.up = { 0.0f, 1.0f, 0.0f };
-	//CreateEnemy(scene, player, grid);
+	CreateEnemy(scene, player, grid);
 
-	//CreateFloor(scene, pso);
-	//
-	//CreateAngleGringer(scene, player, weaponParent);
-	//
-	//ScriptSubMachineGun* weapon = CreateSubmachineGun(scene, player, weaponParent);
-	//weapon->SetBall(CreateBall(scene));
+	CreateFloor(scene, pso);
+	
+	CreateAngleGringer(scene, player, weaponParent);
+	
+	ScriptSubMachineGun* weapon = CreateSubmachineGun(scene, player, weaponParent);
 
-	//CreateBazooka(scene, player, weaponParent);
-	//
-	//player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
+	CreateBazooka(scene, player, weaponParent);
+	
+	player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
 
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 	//geometry = 
@@ -276,64 +248,6 @@ BEGIN_TEST( Game )
 
 END_TEST_MAIN_FUNCTION()
 
-DECLARE_SCRIPT(CameraScript, ScriptFlag::Update)
-
-void Update() override
-{
-	if (m_pOwner == nullptr) return;
-
-	float32 const deltaTime = GameManager::DeltaTime();
-
-	// Position
-	Vector3f32 translation{};
-	translation += m_pOwner->transform.GetLocalRight() * static_cast<float32>(GetKey(Keyboard::D) - GetKey(Keyboard::Q));
-	translation += m_pOwner->transform.GetLocalUp() * static_cast<float32>(GetKey(Keyboard::SPACE) - GetKey(Keyboard::LCONTROL));
-	translation += m_pOwner->transform.GetLocalForward() * static_cast<float32>(GetKey(Keyboard::Z) - GetKey(Keyboard::S));
-	translation *= deltaTime;
-
-	// Scale
-	float32 const allScale = static_cast<float32>(GetKey(Keyboard::NUMPAD_ADD) - GetKey(Keyboard::NUMPAD_SUBTRACT));
-
-	Vector3f32 scale;
-	scale.x = static_cast<float32>(GetKey(Keyboard::INSERT) - GetKey(Keyboard::DELETE_)) + allScale;
-	scale.y = static_cast<float32>(GetKey(Keyboard::HOME) - GetKey(Keyboard::END)) + allScale;
-	scale.z = static_cast<float32>(GetKey(Keyboard::PAGE_UP) - GetKey(Keyboard::PAGE_DOWN)) + allScale;
-	scale *= deltaTime;
-
-	Vector3f32 one;
-	one.SetOne();
-	scale += one;
-
-	Vector2i32 const middlePosition(GameManager::GetWindow()->GetWidth() / 2, GameManager::GetWindow()->GetHeight() / 2);
-
-	Vector2i32 mouseDirection = GetMousePosition();
-	mouseDirection.x -= middlePosition.x;
-	mouseDirection.y -= middlePosition.y;
-
-	SetMousePosition(middlePosition);
-
-	// Rotation
-	Vector3f32 localRotation{
-		static_cast<float32>(mouseDirection.y),
-		0.0f,
-		static_cast<float32>(GetKey(Keyboard::NUMPAD7) - GetKey(Keyboard::NUMPAD9))
-	};
-	localRotation *= 3.14f / 180.0f * deltaTime * 5.0f;
-
-	Vector3f32 worldRotation{
-		0.0f,
-		static_cast<float32>(mouseDirection.x),
-		0.0f
-	};
-	worldRotation *= 3.14f / 180.0f * deltaTime * 5.0f;
-
-	m_pOwner->transform.LocalTranslate(translation);
-	m_pOwner->transform.LocalScale(scale);
-	m_pOwner->transform.LocalRotate(localRotation);
-	m_pOwner->transform.WorldRotate(worldRotation);
-}
-
-END_SCRIPT
 
 END_TEST(Game)
 
