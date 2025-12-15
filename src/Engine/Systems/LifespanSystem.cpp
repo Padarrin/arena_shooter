@@ -113,6 +113,13 @@ void LifespanSystem::HandleCreations()
         buttonComponent.m_created = true;
     }
 
+    while (ImageUI::s_creationList.Empty() == false)
+    {
+        ImageUI& ImageUIComponent = *ImageUI::s_list[ImageUI::s_creationList.Front()];
+        ImageUI::s_creationList.Pop();
+        ImageUIComponent.m_created = true;
+    }
+
     // Always last
     while (Script::s_creationList.Empty() == false)
     {

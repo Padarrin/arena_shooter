@@ -14,6 +14,8 @@
 #include "Engine/Components/UIButton.h"
 
 
+// Image
+#include "Engine/Components/ImageUI.h"
 
 /* ----- 2D ----- */
 

@@ -8,11 +8,7 @@
 #include "../Gameplay/Grid.hpp"
 #include "../Gameplay/SubMachineGun.hpp"
 #include "../Gameplay/Ball.hpp"
-#include "../Engine/Components/MeshRenderer.h"
-#include "../Engine/Components/Light.h"
-#include "../Engine/Components/ColliderBase3D.h"
-#include "../Engine/Components/BoxCollider.h"
-#include "../Engine/Components/UiImage.h"
+#include "../Engine/Components.h"
 #include "define.h"
 #include "JsonLoader.hpp"
 using namespace gce;
@@ -26,7 +22,7 @@ gce::GameObject& CreateCamera(gce::Scene& scene, gce::GameObject& weaponParent)
 	cameraObject.AddChild(weaponParent);
 
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
-	camera.SetMainCamera();
+	camera.SetMainCamera(); //Creer carrer noir
 	camera.SetType(gce::PERSPECTIVE);
 	camera.perspective.fov = XM_PIDIV4;
 	camera.perspective.nearPlane = 0.001f;
@@ -165,7 +161,7 @@ void CreateUI(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& cameraOb
 	ui->mEntity->SetWorldScale(gce::Vector3f32(scale));
 }
 
-BEGIN_TEST(ImageUI)
+BEGIN_TEST(Game)
 
 	gce::GameManager::Create();
 	gce::Scene& scene = gce::Scene::Create();
@@ -193,14 +189,14 @@ BEGIN_TEST(ImageUI)
 	directionalLight.DefaultDirectionLight();
 	directionalLight.color = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-	/*ScriptPlayer* player = CreatePlayer(scene, cameraObject);
+	ScriptPlayer* player = CreatePlayer(scene, cameraObject);
 	gce::Vector3f32 posPlayer = player->GetWorldPosition();
 	gce::Vector2f32 sizeGrid = gce::Vector2f32(20.f, 40.f);
 	gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 0.5f), posPlayer.z);
 
 	D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
 
-	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);*/
+	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
 	/*CreateUI(scene, player, cameraObject, { 0.5f, 9.7f, 1.f }, { 0.1f, 0.1f, 0.01f });
 	CreateUI(scene, player, cameraObject, { 0.6f, 9.7f, 1.f }, { 0.08f, 0.08f, 0.01f });*/
@@ -225,7 +221,7 @@ BEGIN_TEST(ImageUI)
 	meshRenderer->pPso = &texturePso;
 	Cube.transform.SetWorldPosition({ 0, 0, 10 });
 
-	/*CreateEnemy(scene, player, grid);
+	CreateEnemy(scene, player, grid);
 
 	CreateFloor(scene, pso);
 	
@@ -235,7 +231,7 @@ BEGIN_TEST(ImageUI)
 
 	CreateBazooka(scene, player, weaponParent);
 	
-	player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);*/
+	player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
 
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 	//geometry = 
