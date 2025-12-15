@@ -179,16 +179,25 @@ public:
 	
 	bool IsNotMooving()
 	{
-		return isNotMooving;
-	}
-	bool IsChasingPlayer() 
-	{ 
 		Vector3f32 posPlayer = mPlayer->GetWorldPosition();
 		Vector3f32 posThis = this->GetWorldPosition();
 
 		float dist = abs((posPlayer.x - posThis.x) + (posPlayer.y - posThis.y) + (posPlayer.z - posThis.z));
 
 		if (dist <= 0.5f)
+		{
+			isNotMooving = true;
+		}
+		else
+		{
+			isNotMooving = false;
+			isChasingPlayer = true;
+		}
+		return isNotMooving;
+	}
+	bool IsChasingPlayer() 
+	{
+		if (!IsNotMooving)
 		{
 			isChasingPlayer = true;
 		}
