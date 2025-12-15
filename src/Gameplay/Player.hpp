@@ -51,9 +51,12 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 			gce::HideMouseCursor();
 
-			InputMove(deltaTime);
-			InputShoot(deltaTime);
-			TurnCamera();
+			if (deltaTime > 0.f)
+			{
+				InputMove(deltaTime);
+				InputShoot(deltaTime);
+				TurnCamera();
+			}
 
 			if (mCharacter->GetLife() <= 0)
 				mCharacter->mEntity->DestroyEntity();
@@ -114,6 +117,9 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 				isWindowInitialised = true;
 			}
 
+			mObjectCamera->transform.SetLocalRotation(gce::Vector3f32((float)gce::GetMousePosition().y * degree, 0.f, 0.f));
+			m_pOwner->transform.SetWorldRotation(gce::Vector3f32(0.f,(float)gce::GetMousePosition().x * degree ,0.f));
+
 			if (!isCursorLocked)
 				return;
 
@@ -129,7 +135,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			m_pOwner->transform.SetWorldRotation(gce::Vector3f32(mPitch, mYaw, 0.f));
 			m_pOwner->GetChildren()[0]->transform.SetLocalRotation(gce::Vector3f32(mPitch, 0.f, 0.f));
 			gce::SetMousePosition(centerSizeWindow);
-
 		}
 
 		void Jump(float strength, float deltaTime)
