@@ -8,14 +8,14 @@
 DECLARE_SCRIPT(ScriptWeapons, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 protected:
     float mShootSpeed;
-
+    inline static gce::Geometry* mShape;
     int mTypeBullet;
 
 public:
     ScriptEntity* mEntity;
     ScriptPistolMagazine* mMagazine;
 
-    virtual void Initia() { mEntity = m_pOwner->AddScript<ScriptEntity>(); mEntity->Initia(); mMagazine = m_pOwner->AddScript<ScriptPistolMagazine>(); mMagazine->Initia(); mEntity->SetLocalPosition(gce::Vector3f32(0.f, 0.f, 0.f)); }
+    virtual void Initia() { mEntity = m_pOwner->AddScript<ScriptEntity>(); mEntity->Initia(); mMagazine = m_pOwner->AddScript<ScriptPistolMagazine>(); mMagazine->Initia(); mEntity->SetLocalPosition(gce::Vector3f32(0.f, 0.f, 0.f)); mShape = gce::SHAPES.CUBE; }
     virtual void Start() { mEntity->Start(); mMagazine->Start(); }
     virtual void Update() {}
     virtual void Destroy() {}
@@ -28,7 +28,7 @@ public:
     static void ShootBall(cstr name, ScriptWeapons* weapons, float speed, int damage)
     {
         ScriptEntity* myParentEntity = weapons->mEntity;
-        CreateBallInFront<T>(name, speed, damage, gce::SHAPES.CUBE, myParentEntity);
+        CreateBallInFront<T>(name, speed, damage, mShape, myParentEntity);
     }
 
     template<typename T>
@@ -38,6 +38,7 @@ public:
         T* ball = T::CreateBall(name, entityGiveInformation->GetWorldPosition() + entityGiveInformation->GetWorldForward(), entityGiveInformation->GetWorldForward(), speed, damage, *entityGiveInformation->GetScene(), geometry);
         ball->mShootable->mObject->mEntity->SetWorldRotate(gce::Vector3f32(rot.GetX(), rot.GetY(), rot.GetZ()));
     }
+
 
     template<typename T>
     T* GetChildWeapon() { return mEntity->GetGameObject()->GetScript<T>(); }

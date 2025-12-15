@@ -3,11 +3,13 @@
 
 DECLARE_SCRIPT(ScriptSubMachineGun, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 protected:
+    std::vector<ScriptBall*> mBalls;
+    int mIndex;
 
 public:
     ScriptWeapons* mWeapons;
 
-    virtual void Initia() { mWeapons = m_pOwner->AddScript<ScriptWeapons>(); mWeapons->Initia(); mWeapons->mMagazine->SetShootTime(0.5f); mWeapons->mMagazine->SetReloadTime(2.5f); }
+    virtual void Initia() { mWeapons = m_pOwner->AddScript<ScriptWeapons>(); mWeapons->Initia(); mWeapons->mMagazine->SetShootTime(0.5f); mWeapons->mMagazine->SetReloadTime(2.5f); mIndex = mBalls.size(); }
     virtual void Start() {}
     virtual void Update() {}
     virtual void Destroy() {}
@@ -33,7 +35,7 @@ public:
         {
             //pas vide
             bool isExecute = GetPistolMagazine()->CanShoot();
-            //si une ball a été utiliser
+            //si une ball a ï¿½tï¿½ utiliser
             if (isExecute)
             {
                 //tirer une ball
@@ -58,5 +60,7 @@ public:
     {
         return mWeapons->mMagazine;
     }
+
+    void SetBall(std::vector<ScriptBall*> balls) { mBalls = balls; }
 
     END_SCRIPT

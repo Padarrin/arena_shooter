@@ -18,7 +18,7 @@ public:
 
 	virtual void Initia() { mObject = m_pOwner->AddScript<ScriptObject>(); mObject->Initia(); mDestroyTime = Time(5);  SetDamage(0); }
 	virtual void Start() { }
-	virtual void Update() { UpdateDirection(); UpdateOutTime(); }
+	virtual void Update() { UpdateDirection(); UpdateOutTime(); mDestroyTime.Update(GameManager::DeltaTime());}
 	virtual void Destroy() {}
 
 	virtual void CollisionEnter(gce::GameObject* other) {}

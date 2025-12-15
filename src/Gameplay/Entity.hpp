@@ -34,9 +34,39 @@ public:
 		entityGiveInformation->SetWorldRotate(gce::Vector3f32(-asin(dir.y), atan2(dir.x, dir.z), 0.f));
 	}
 
-	void DestroyEntity()
+	void DestroyCharacter()
 	{
 		m_pOwner->SetActive(false);
+	}
+
+	void DestroyEntity()
+	{
+		if (m_pOwner->HasChildren())
+		{
+			gce::Vector<gce::GameObject*> child = m_pOwner->GetChildren();
+			int lenght = (int)child.Size() - 1;
+			for (int i = lenght; i > -1; i--)
+			{
+				m_pOwner->RemoveChild(*child[i]);
+			}
+		}
+		if (m_pOwner->HasParent())
+		{
+			m_pOwner->RemoveParent();
+		}
+
+		if (m_pOwner->HasComponent<Camera>()) m_pOwner->RemoveComponent<Camera>();
+		if (m_pOwner->HasComponent<SpriteRenderer>()) m_pOwner->RemoveComponent<SpriteRenderer>();
+		if (m_pOwner->HasComponent<MeshRenderer>()) m_pOwner->RemoveComponent<MeshRenderer>();
+		if (m_pOwner->HasComponent<Animator2D>()) m_pOwner->RemoveComponent<Animator2D>();
+		if (m_pOwner->HasComponent<BoxCollider2D>()) m_pOwner->RemoveComponent<BoxCollider2D>();
+		if (m_pOwner->HasComponent<CircleCollider2D>()) m_pOwner->RemoveComponent<CircleCollider2D>();
+		if (m_pOwner->HasComponent<SphereCollider>()) m_pOwner->RemoveComponent<SphereCollider>();
+		if (m_pOwner->HasComponent<BoxCollider>()) m_pOwner->RemoveComponent<BoxCollider>();
+		if (m_pOwner->HasComponent<PhysicComponent>()) m_pOwner->RemoveComponent<PhysicComponent>();
+
+		m_pOwner->SetActive(false);
+		m_pOwner->Destroy();
 	}
 
 	void SetWorldPosition(gce::Vector3f32 position) { m_pOwner->transform.SetWorldPosition(position); }

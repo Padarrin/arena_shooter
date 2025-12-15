@@ -3,9 +3,11 @@
 
 #include <Render.h>
 #include <Engine.h>
+#include "../Gameplay/UI.hpp"
 #include "../Gameplay/Enemy.hpp"
 #include "../Gameplay/Grid.hpp"
 #include "../Gameplay/SubMachineGun.hpp"
+#include "../Gameplay/Ball.hpp"
 #include "../Engine/Components/MeshRenderer.h"
 #include "../Engine/Components/Light.h"
 #include "../Engine/Components/ColliderBase3D.h"
@@ -53,6 +55,7 @@ void SetNail(/*gce::Scene& scene,*/gce::GameObject*/*&*/ enemyObject, ScriptPlay
 	//Life = 20 a 200, Damage = 1 a 5
 	//gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 	enemyObject->AddComponent<gce::BoxCollider>()->SetActive(true);
+	enemyObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
 	//enemyObject.SetName("Enemy");
 
 
@@ -69,8 +72,7 @@ void SetNail(/*gce::Scene& scene,*/gce::GameObject*/*&*/ enemyObject, ScriptPlay
 
 void SetFloor(/*gce::Scene& scene,*/gce::GameObject* floorObject)
 {
-	//Life = 20 a 200, Damage = 1 a 5
-	//gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	//gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, gce::SHAPES.CUBE);
 	floorObject->AddComponent<gce::BoxCollider>()->SetActive(true);
 	//enemyObject.SetName("Enemy");
 
@@ -152,7 +154,7 @@ ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vect
 void CreateAngleGringer(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 {
 	gce::GameObject& angleGringerObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
-	angleGringerObject.SetName("Enemy");
+	angleGringerObject.SetName("AngleGringer");
 
 	weaponParent.AddChild(angleGringerObject);
 
@@ -166,10 +168,10 @@ void CreateAngleGringer(gce::Scene& scene, ScriptPlayer* player, gce::GameObject
 
 }
 
-void CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
+ScriptSubMachineGun* CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 {
 	gce::GameObject& subMachineGunObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
-	subMachineGunObject.SetName("Enemy");
+	subMachineGunObject.SetName("SubmachineGun");
 
 	weaponParent.AddChild(subMachineGunObject);
 
@@ -181,12 +183,13 @@ void CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObjec
 
 	player->AddWeapon(subMachineGun->mWeapons);//2
 
+	return subMachineGun;
 }
 
 void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 {
 	gce::GameObject& bazookaObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
-	bazookaObject.SetName("Enemy");
+	bazookaObject.SetName("Bazooka");
 
 	weaponParent.AddChild(bazookaObject);
 
@@ -202,36 +205,36 @@ void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& wea
 
 BEGIN_TEST(Game)
 
-gce::GameManager::Create();
-gce::Scene& scene = gce::Scene::Create();
+	gce::GameManager::Create();
+	gce::Scene& scene = gce::Scene::Create();
 
-gce::GameObject& weaponParent = gce::GameObject::Create(scene);
+	gce::GameObject& weaponParent = gce::GameObject::Create(scene);
 
-gce::GameObject& cameraObject = CreateCamera(scene, weaponParent);
+	gce::GameObject& cameraObject = CreateCamera(scene, weaponParent);
 
-gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
-gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
-directionalLight.DefaultDirectionLight();
-directionalLight.color = { 0.0f, 0.0f, 0.0f, 1.0f };
+	gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
+	gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
+	directionalLight.DefaultDirectionLight();
+	directionalLight.color = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-ScriptPlayer* player = CreatePlayer(scene, cameraObject);
-gce::Vector3f32 posPlayer = player->GetWorldPosition();
-gce::Vector2f32 sizeGrid = gce::Vector2f32(10.f, 10.f);
-gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 2.5f), posPlayer.z + 20.f);
+	ScriptPlayer* player = CreatePlayer(scene, cameraObject);
+	gce::Vector3f32 posPlayer = player->GetWorldPosition();
+	gce::Vector2f32 sizeGrid = gce::Vector2f32(10.f, 10.f);
+	gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 2.5f), posPlayer.z + 20.f);
 
-D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
+	D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
 
-ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
+	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-//CreateEnemy(scene, player, grid);
+	//CreateEnemy(scene, player, grid);
 
-CreateMap(scene, player, grid);
+	CreateMap(scene, player, grid);
 
-CreateAngleGringer(scene, player, weaponParent);
-CreateSubmachineGun(scene, player, weaponParent);
-CreateBazooka(scene, player, weaponParent);
+	CreateAngleGringer(scene, player, weaponParent);
+	CreateSubmachineGun(scene, player, weaponParent);
+	CreateBazooka(scene, player, weaponParent);
 
-player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
+	player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
 
 //createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 //geometry = 
