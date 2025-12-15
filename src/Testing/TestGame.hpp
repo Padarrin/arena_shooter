@@ -3,22 +3,24 @@
 
 #include <Render.h>
 #include <Engine.h>
+#include "../Gameplay/UI.hpp"
 #include "../Gameplay/Enemy.hpp"
 #include "../Gameplay/Grid.hpp"
 #include "../Gameplay/SubMachineGun.hpp"
+#include "../Gameplay/Ball.hpp"
 #include "../Engine/Components/MeshRenderer.h"
 #include "../Engine/Components/Light.h"
 #include "../Engine/Components/ColliderBase3D.h"
 #include "../Engine/Components/BoxCollider.h"
 #include "define.h"
 #include "JsonLoader.hpp"
-
 using namespace gce;
 
 gce::GameObject& CreateCamera(gce::Scene& scene, gce::GameObject& weaponParent)
 {
 	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
 	cameraObject.transform.LocalTranslate({ 0, 0, 0 });
+	cameraObject.SetName("Camera");
 	cameraObject.AddChild(weaponParent);
 
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
@@ -41,22 +43,22 @@ ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject)
 	gamePlayer.AddChild(cameraObject);
 
 	ScriptPlayer* player = gamePlayer.GetScript<ScriptPlayer>();
-	player->WorldTranslate(gce::Vector3f32(0.f, 2.5f, 0.f));
+	player->SetWorldPosition(gce::Vector3f32(0.f, 10.f, 0.f));
 	player->mCharacter->SetSpeed(9);
 	player->SetJump(6.f);
 
 	return player;
 }
 
-void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
+void CreateNail(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptPlayer* player, ScriptGrid* grid)
 {
 	//Life = 20 a 200, Damage = 1 a 5
 
 	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 	enemyObject.AddComponent<gce::BoxCollider>()->SetActive(true);
+	enemyObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
 	enemyObject.SetName("Enemy");
 
-	
 	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
 	enemy->SetWorldPosition({ 10,-8,10 });
 	enemy->SetPlayer(player);
@@ -68,12 +70,91 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 	enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
 }
 
-void CreateFloor(gce::Scene& scene)
+void SetNail(/*gce::Scene& scene,*/gce::GameObject*/*&*/ enemyObject, ScriptPlayer* player, ScriptGrid* grid)
+{
+	//Life = 20 a 200, Damage = 1 a 5
+	//gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	enemyObject->AddComponent<gce::BoxCollider>()->SetActive(true);
+	enemyObject->AddComponent<gce::PhysicComponent>()->SetActive(false);
+	//enemyObject.SetName("Enemy");
+
+
+	ScriptEnemy* enemy = enemyObject->GetScript<ScriptEnemy>();
+	enemy->SetWorldPosition({ 10,-8,10 });
+	enemy->SetPlayer(player);
+	enemy->SetMaxLife(20);
+	enemy->SetDamage(10);
+	enemy->mAgent->mCharacter->SetSpeed(5.f);
+	enemy->mAgent->GetPathFinding()->SetGrid(grid);
+	enemy->SetCellTarget(grid->GetCell(player->GetWorldPosition()));
+	enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
+}
+
+void SetFloor(/*gce::Scene& scene,*/gce::GameObject* floorObject)
+{
+	//gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, gce::SHAPES.CUBE);
+	floorObject->AddComponent<gce::BoxCollider>()->SetActive(true);
+	//enemyObject.SetName("Enemy");
+
+	ScriptEntity* floor = floorObject->AddScript<ScriptEntity>();
+}
+
+void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
 	///////////////////////////////////////////////////////////
 	// Map json
-	JsonLoader::LoadMap("../../res/Gameplay/Json/map_test.json", &scene);
+	std::vector<gce::GameObject*> gameObjectLoad = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/map_test.json", &scene);
+
+	int lenghtLoad = (int)gameObjectLoad.size();
+	for (int i = 0; i < lenghtLoad; i++)
+	{
+		gce::GameObject* currentGameObject= gameObjectLoad[i];
+		
+		//////////////////////Enemy///////////////////////
+		if (currentGameObject->GetName() == "Nail")
+		{
+			currentGameObject->SetName("Enemy");
+			SetNail(currentGameObject, player, grid);
+		}
+		else if (currentGameObject->GetName() == "Bot")
+		{
+			currentGameObject->SetName("Bot");
+			//SetNail(currentGameObject, player, grid);
+		}
+		//////////////////////Enemy Fin///////////////////////
+		//////////////////////Item///////////////////////
+		else if (currentGameObject->GetName() == "Item")
+		{
+			currentGameObject->SetName("Item");
+			//SetNail(currentGameObject, player, grid);
+		}
+		//////////////////////Item Fin///////////////////////
+		//////////////////////Furniture///////////////////////
+		else if (currentGameObject->GetName() == "Box")
+		{
+			currentGameObject->SetName("Box");
+			//SetNail(currentGameObject, player, grid);
+		}
+		//////////////////////Furniture Fin///////////////////////
+		//////////////////////Floor///////////////////////
+		else
+		{
+			currentGameObject->SetName("Floor");
+			SetFloor(currentGameObject);
+		}
+		//////////////////////Floor Fin///////////////////////
+	}
 	///////////////////////////////////////////////////////////
+
+	//gce::GameObject& floorObject;
+	//floorObject.AddComponent<gce::BoxCollider>()->SetActive(true);
+	//floorObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
+	//floorObject.SetName("Floor");
+
+	//ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
+	//entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
+	//entity->SetWorldScale({ 50.f,16.f,50.f });
+
 }
 
 ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vector3f32 positionCenter, int sizeCell)
@@ -93,7 +174,7 @@ ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vect
 void CreateAngleGringer(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 {
 	gce::GameObject& angleGringerObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
-	angleGringerObject.SetName("Enemy");
+	angleGringerObject.SetName("AngleGringer");
 
 	weaponParent.AddChild(angleGringerObject);
 
@@ -107,10 +188,10 @@ void CreateAngleGringer(gce::Scene& scene, ScriptPlayer* player, gce::GameObject
 
 }
 
-void CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
+ScriptSubMachineGun* CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 {
 	gce::GameObject& subMachineGunObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
-	subMachineGunObject.SetName("Enemy");
+	subMachineGunObject.SetName("SubmachineGun");
 
 	weaponParent.AddChild(subMachineGunObject);
 
@@ -122,12 +203,13 @@ void CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObjec
 
 	player->AddWeapon(subMachineGun->mWeapons);//2
 
+	return subMachineGun;
 }
 
 void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 {
 	gce::GameObject& bazookaObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
-	bazookaObject.SetName("Enemy");
+	bazookaObject.SetName("Bazooka");
 
 	weaponParent.AddChild(bazookaObject);
 
@@ -141,7 +223,7 @@ void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& wea
 
 }
 
-BEGIN_TEST( Game )
+BEGIN_TEST(Game)
 
 	gce::GameManager::Create();
 	gce::Scene& scene = gce::Scene::Create();
@@ -151,18 +233,22 @@ BEGIN_TEST( Game )
 	gce::GameObject& cameraObject = CreateCamera(scene, weaponParent);
 
 	gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
-	directionalLightObject.AddComponent<Light>()->DefaultDirectionLight();
+	gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
+	directionalLight.DefaultDirectionLight();
+	directionalLight.color = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	ScriptPlayer* player = CreatePlayer(scene, cameraObject);
 	gce::Vector3f32 posPlayer = player->GetWorldPosition();
-	gce::Vector2f32 sizeGrid = gce::Vector2f32(50.f, 50.f);
-	gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 2.5f), posPlayer.z);
+	gce::Vector2f32 sizeGrid = gce::Vector2f32(10.f, 10.f);
+	gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 2.5f), posPlayer.z + 20.f);
+
+	D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
 
 	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-	//CreateEnemy(scene, player, grid);
+	CreateNail(scene, player, grid);
 
-	CreateFloor(scene);
+	CreateMap(scene, player, grid);
 
 	CreateAngleGringer(scene, player, weaponParent);
 	CreateSubmachineGun(scene, player, weaponParent);
@@ -170,17 +256,17 @@ BEGIN_TEST( Game )
 
 	player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
 
-	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
-	//geometry = 
-	//texture = 
-	//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
+//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
+//geometry = 
+//texture = 
+//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
 
-	gce::WindowParam windowParam;
-	/*windowParam.height = 992;
-	windowParam.width = 1768;*/
-	gce::GameManager::Run(windowParam);
+gce::WindowParam windowParam;
+/*windowParam.height = 992;
+windowParam.width = 1768;*/
+gce::GameManager::Run(windowParam);
 
-	gce::GameManager::Destroy();
+gce::GameManager::Destroy();
 
 END_TEST_MAIN_FUNCTION()
 
