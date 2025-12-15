@@ -195,6 +195,18 @@ BEGIN_TEST( Game )
 
 	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
+	gce::GameObject& uiObject = CreateGameObject<ScriptUI>(scene);
+	ScriptUI* ui = uiObject.GetScript<ScriptUI>();
+
+	gce::BitMapBrush imageSubMachine{ "res/Textures/test1.png" };
+
+	gce::Vector3f32 posImageSubMachine = gce::Vector3f32(0.f, 0.f, 5.f);
+	gce::Vector3f32 scaleImageSubMachine = gce::Vector3f32(0.5f, 0.5f, 0.1f);
+	gce::GameObject& imageSubMachineObject = gce::GameObject::Create(scene); imageSubMachineObject.transform.LocalTranslate(posImageSubMachine); imageSubMachineObject.transform.SetWorldScale(scaleImageSubMachine); imageSubMachineObject.transform.SetWorldScale(scaleImageSubMachine); AddMeshRenderer(imageSubMachineObject, gce::SHAPES.CUBE);
+	imageSubMachineObject.SetActive(true);
+
+	ui->SetPlayer(player);
+
 	CreateEnemy(scene, player, grid);
 
 	CreateFloor(scene, pso);

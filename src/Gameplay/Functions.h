@@ -79,6 +79,10 @@ Entity* GetNearestAgent(gce::Vector3f32 pos);
 //template<typename T>
 //T* GetNearestCell(gce::Vector3f32 pos, std::vector<std::vector<T*>> allCells);
 
+void AddMeshRenderer(gce::GameObject& object, gce::Geometry* geometry);
+
+void AddMeshRenderer(gce::GameObject& object, gce::Geometry* geometry, gce::Texture* texture);
+
 template<typename T>
 T* GetEntityNearest(gce::Vector3f32 pos, float minDis);
 

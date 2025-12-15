@@ -37,7 +37,12 @@ private:
 public:
 	virtual void Initia() 
 	{ 
-		mUiWeapon = mPlayer->GetAllWeapons(); 
+		
+	}
+
+	virtual void Start()
+	{
+		mUiWeapon = mPlayer->GetAllWeapons();
 		mCurrentWeapon = mPlayer->GetCurrentWeapon();
 
 		mSubmachine = (*mUiWeapon)[SUBMACHINEGUN]->mMagazine;
@@ -53,11 +58,6 @@ public:
 		mImprPiece.SetInStock(0);
 
 		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
-	}
-
-	virtual void Start()
-	{
-		
 	}
 
 	virtual void Update()
