@@ -48,12 +48,12 @@ ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject)
 	return player;
 }
 
-void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
+void SetNail(/*gce::Scene& scene,*/gce::GameObject& enemyObject, ScriptPlayer* player, ScriptGrid* grid)
 {
 	//Life = 20 a 200, Damage = 1 a 5
-	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	//gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 	enemyObject.AddComponent<gce::BoxCollider>()->SetActive(true);
-	enemyObject.SetName("Enemy");
+	//enemyObject.SetName("Enemy");
 
 
 	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
@@ -67,32 +67,21 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 	enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
 }
 
-void CreateMap(gce::Scene& scene, D12PipelineObject* pso)
+void SetFloor(/*gce::Scene& scene,*/gce::GameObject& floorObject)
+{
+	//Life = 20 a 200, Damage = 1 a 5
+	//gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	floorObject.AddComponent<gce::BoxCollider>()->SetActive(true);
+	//enemyObject.SetName("Enemy");
+
+	ScriptEntity* floor = floorObject.AddScript<ScriptEntity>();
+}
+
+void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
 	///////////////////////////////////////////////////////////
 	// Map json
-	std::vector<gce::GameObject&> gameObjectLoad = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/map_test.json", &scene, pso);
-
-	int lenghtLoad = (int)gameObjectLoad.size();
-	for (int i = 0; i < lenghtLoad; i++)
-	{
-		gce::GameObject& currentGameObject= gameObjectLoad[i];
-		
-		//////////////////////Enemy///////////////////////
-		if (currentGameObject.GetName() == "Nail")
-		{
-			currentGameObject.SetName("Nail");
-		}
-		else if (currentGameObject.GetName() == "Bot")
-		{
-			currentGameObject.SetName("Bot");
-		}
-		//////////////////////Enemy Fin///////////////////////
-		//////////////////////Item///////////////////////
-		//////////////////////Item Fin///////////////////////
-		//////////////////////Furniture///////////////////////
-		//////////////////////Furniture Fin///////////////////////
-	}
+	
 	///////////////////////////////////////////////////////////
 
 	//gce::GameObject& floorObject;
@@ -194,9 +183,9 @@ D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, S
 
 ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-CreateEnemy(scene, player, grid);
+//CreateEnemy(scene, player, grid);
 
-CreateFloor(scene, pso);
+CreateMap(scene, player, grid);
 
 CreateAngleGringer(scene, player, weaponParent);
 CreateSubmachineGun(scene, player, weaponParent);
