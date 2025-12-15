@@ -80,7 +80,7 @@ public:
 	void Damage(int damage) 
 	{ 
 		mLife -= damage; 
-		if (mLife < 1) { mEntity->DestroyEntity(); }
+		if (mLife < 1) { mEntity->DestroyCharacter(); }
 	}
 	void Heal(int heal) 
 	{ 
@@ -108,7 +108,7 @@ public:
 	{ 
 		mLife = life; 
 		if (mLife > mMaxLife) { mLife = mMaxLife; } 
-		else if (mLife < 1) { mEntity->DestroyEntity(); }
+		else if (mLife < 1) { mEntity->DestroyCharacter(); }
 	}
 	int GetLife() 
 	{ 

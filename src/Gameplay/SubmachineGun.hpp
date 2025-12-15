@@ -38,15 +38,17 @@ public:
             //si une ball a été utiliser
             if (isExecute)
             {
-                if (mIndex >= 0)
-                {
-                    //tirer une ball
-                    //ScriptWeapons::ShootBall<ScriptBall>("PlayerBall", mWeapons, speed, damage);
-                    ScriptWeapons::TPBall<ScriptBall>("PlayerBall", mWeapons, speed, damage, mBalls[mIndex]);
-                    mIndex--;
-                }
-                else
-                    mIndex = mBalls.size();
+                ScriptWeapons::ShootBall<ScriptBall>("PlayerBall", mWeapons, speed, damage);
+
+                //if (mIndex >= 0)
+                //{
+                //    //tirer une ball
+                //    
+                //    //ScriptWeapons::TPBall<ScriptBall>("PlayerBall", mWeapons, speed, damage, mBalls[mIndex]);
+                //    mIndex--;
+                //}
+                //else
+                //    mIndex = mBalls.size();
 
                 return true;
             }

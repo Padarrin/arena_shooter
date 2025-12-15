@@ -38,7 +38,7 @@ ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject)
 {
 	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	gamePlayer.AddComponent<gce::BoxCollider>()->SetActive(true);
-	gamePlayer.AddComponent<gce::PhysicComponent>()->SetActive(false);
+	gamePlayer.AddComponent<gce::PhysicComponent>()->SetActive(true);
 	gamePlayer.SetName("Player");
 	gamePlayer.AddChild(cameraObject);
 
@@ -55,6 +55,7 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 	//Life = 20 a 200, Damage = 1 a 5
 	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 	enemyObject.AddComponent<gce::BoxCollider>()->SetActive(true);
+	enemyObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
 	enemyObject.SetName("Enemy");
 
 	
@@ -153,23 +154,23 @@ void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& wea
 
 }
 
-std::vector<ScriptBall*> CreateBall(gce::Scene& scene)
-{
-	int maxBall = 10;
-	float x = 0;
-
-	std::vector<ScriptBall*> balls;
-
-	while (maxBall != 0)
-	{
-		ScriptBall* ball = ScriptBall::CreateBall("PlayerBall", { x,-50,0 }, {0,0,0}, 0, DEFAULT_BALL_DAMAGE, scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-		balls.push_back(ball);
-		maxBall--;
-		x += 3;
-	}
-
-	return balls;
-}
+//std::vector<ScriptBall*> CreateBall(gce::Scene& scene)
+//{
+//	int maxBall = 10;
+//	float x = 0;
+//
+//	std::vector<ScriptBall*> balls;
+//
+//	while (maxBall != 0)
+//	{
+//		ScriptBall* ball = ScriptBall::CreateBall("PlayerBall", { x,-50,0 }, {0,0,0}, 0, DEFAULT_BALL_DAMAGE, scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+//		balls.push_back(ball);
+//		maxBall--;
+//		x += 3;
+//	}
+//
+//	return balls;
+//}
 
 BEGIN_TEST( Game )
 
@@ -201,7 +202,7 @@ BEGIN_TEST( Game )
 	CreateAngleGringer(scene, player, weaponParent);
 
 	ScriptSubMachineGun* weapon = CreateSubmachineGun(scene, player, weaponParent);
-	weapon->SetBall(CreateBall(scene));
+	//weapon->SetBall(CreateBall(scene));
 
 	CreateBazooka(scene, player, weaponParent);
 

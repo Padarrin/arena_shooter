@@ -29,10 +29,10 @@ public:
 			if (mName == "EnemyBall" && other->GetName() == "PlayerBall")
 			{
 				mShootable->mObject->mEntity->DestroyEntity();
-				other->SetActive(false);
+				other->GetScript<ScriptEntity>()->DestroyEntity();
 			}
 			if(other->GetName() == "Floor")
-				other->SetActive(false);
+				mShootable->mObject->mEntity->DestroyEntity();
 		}
 	}
 	virtual void CollisionStay(gce::GameObject* other) {}
@@ -60,7 +60,6 @@ public:
 	{
 		gce::GameObject& gameBall = CreateGameObject<ScriptBall>(scene, geometry, texture,color);
 		gameBall.AddComponent<gce::BoxCollider>()->SetActive(true);
-		gameBall.AddComponent<gce::PhysicComponent>()->SetActive(false);
 		gameBall.SetName(name);
 		gameBall.transform.SetWorldScale(gce::Vector3f32{  0.25f,0.25f,0.25f });
 		ScriptBall* ball = gameBall.GetScript<ScriptBall>();
