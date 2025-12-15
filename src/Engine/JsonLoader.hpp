@@ -10,6 +10,8 @@
 
 #include "GameObject.h"
 
+#include "../Gameplay/Functions.h"
+
 //#include "Health.hpp"
 
 using json = nlohmann::json;
@@ -39,10 +41,23 @@ struct JsonLoader
         for (int i = 0; i < jObjects.size(); ++i)
         {
             json currObject = jObjects[i];
-            GameObject& gameObject = GameObject::Create(*pScene);
-            MeshRenderer& mesh = *gameObject.AddComponent<MeshRenderer>();
-            mesh.pGeometry = GeometryFactory::LoadJsonGeometry(currObject);
-            mesh.pPso = pso;
+
+            Texture* texture = nullptr;
+            if (currObject.contains("texture") && currObject["texture"].is_string())
+            {
+                std::string texturePath = "res/Textures/";
+                texturePath.append(currObject["texture"].get<std::string>());
+                texture = new Texture(texturePath);
+                //mesh.pMaterial->albedoTextureID = texture->GetTextureID();
+                //mesh.pMaterial->useTextureAlbedo = true;
+                //mesh.pMaterial->subsurface = 0.2f;
+            }
+
+            CreateGameObject(pScene, GeometryFactory::LoadJsonGeometry(currObject), texture);
+            //GameObject& gameObject = GameObject::Create(*pScene);
+            //MeshRenderer& mesh = *gameObject.AddComponent<MeshRenderer>();
+            //mesh.pGeometry = GeometryFactory::LoadJsonGeometry(currObject);
+            //mesh.pPso = pso;
             gameObject.SetName(currObject["name"].get<String>().c_str());
 
             //if (currObject["has_collider"].get<bool>() == true)
@@ -54,16 +69,6 @@ struct JsonLoader
             //        //h->maxHealth = 1.0f;
             //    }
             //}
-
-            if (currObject.contains("texture") && currObject["texture"].is_string())
-            {
-                std::string texturePath = "res/Textures/";
-                texturePath.append(currObject["texture"].get<std::string>());
-                Texture* texture = new Texture(texturePath);
-                mesh.pMaterial->albedoTextureID = texture->GetTextureID();
-                mesh.pMaterial->useTextureAlbedo = true;
-                mesh.pMaterial->subsurface = 0.2f;
-            }
 
             // Pos / Scale / Rot
             {
