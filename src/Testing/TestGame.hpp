@@ -67,11 +67,32 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 	enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
 }
 
-void CreateFloor(gce::Scene& scene, D12PipelineObject* pso)
+void CreateMap(gce::Scene& scene, D12PipelineObject* pso)
 {
 	///////////////////////////////////////////////////////////
 	// Map json
-	JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/map_test.json", &scene, pso);
+	std::vector<gce::GameObject&> gameObjectLoad = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/map_test.json", &scene, pso);
+
+	int lenghtLoad = (int)gameObjectLoad.size();
+	for (int i = 0; i < lenghtLoad; i++)
+	{
+		gce::GameObject& currentGameObject= gameObjectLoad[i];
+		
+		//////////////////////Enemy///////////////////////
+		if (currentGameObject.GetName() == "Nail")
+		{
+			currentGameObject.SetName("Nail");
+		}
+		else if (currentGameObject.GetName() == "Bot")
+		{
+			currentGameObject.SetName("Bot");
+		}
+		//////////////////////Enemy Fin///////////////////////
+		//////////////////////Item///////////////////////
+		//////////////////////Item Fin///////////////////////
+		//////////////////////Furniture///////////////////////
+		//////////////////////Furniture Fin///////////////////////
+	}
 	///////////////////////////////////////////////////////////
 
 	//gce::GameObject& floorObject;

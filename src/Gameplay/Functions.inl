@@ -94,21 +94,8 @@ inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geome
 	T* ob = object.AddScript<T>();
 	ob->T::Initia();
 
-	AddMeshRenderer(gce::GameObject & object, gce::Geometry * geometry, gce::Texture * texture)
-	if (geometry != nullptr)
-	{
-		static gce::D12PipelineObject defaultPso(gce::SHADERS.VERTEX, gce::SHADERS.PIXEL, gce::SHADERS.HULL, gce::SHADERS.DOMAIN_, gce::SHADERS.ROOT_SIGNATURE);
+	AddMeshRenderer(object, geometry, texture);;
 
-		gce::MeshRenderer& meshRenderer = *object.AddComponent<gce::MeshRenderer>();
-		meshRenderer.pGeometry = geometry;
-		meshRenderer.pPso = &defaultPso;
-
-		if (texture != nullptr)
-		{
-			meshRenderer.pMaterial->albedoTextureID = texture->GetTextureID();
-			meshRenderer.pMaterial->useTextureAlbedo = 1;
-		}
-	}
 	gce::Light* light = object.AddComponent<gce::Light>();
 	light->color = color;
 

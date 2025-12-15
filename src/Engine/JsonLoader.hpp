@@ -19,9 +19,10 @@ using namespace gce;
 
 struct JsonLoader
 {
-    static void LoadMap(String const& path, Scene* pScene, D12PipelineObject* pso)
+    static std::vector<GameObject&> LoadMap(String const& path, Scene* pScene, D12PipelineObject* pso)
     {
-        if (pScene == nullptr) return;
+        std::vector<GameObject&> objLoad = std::vector<GameObject&>();
+        if (pScene == nullptr) return objLoad;
 
         Map<GameObject*, String> objects;
 
@@ -53,7 +54,8 @@ struct JsonLoader
                 //mesh.pMaterial->subsurface = 0.2f;
             }
 
-            CreateGameObject(pScene, GeometryFactory::LoadJsonGeometry(currObject), texture);
+            GameObject& gameObject = GameObject::Create(*pScene);
+            AddMeshRenderer(gameObject, GeometryFactory::LoadJsonGeometry(currObject), texture);
             //GameObject& gameObject = GameObject::Create(*pScene);
             //MeshRenderer& mesh = *gameObject.AddComponent<MeshRenderer>();
             //mesh.pGeometry = GeometryFactory::LoadJsonGeometry(currObject);
@@ -99,6 +101,9 @@ struct JsonLoader
                 el.second = currObject["parent"].get<std::string>();
                 objects.insert(el);
             }
+
+            objLoad.push_back(gameObject);
+
         }
 
         for (std::pair<GameObject*, String> el : objects)
@@ -110,6 +115,7 @@ struct JsonLoader
                     el.first->SetParent(*el2.first);
             }
         }
+        return objLoad;
     }
 };
 
