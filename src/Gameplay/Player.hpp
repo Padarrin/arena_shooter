@@ -103,7 +103,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		void TurnCamera()
 		{
-			gce::WindowParam param = gce::GameManager::GetWindowParam();
+			/*gce::WindowParam param = gce::GameManager::GetWindowParam();
 			gce::Vector2i32 centerSizeWindow = gce::Vector2i32((int)(param.height * 0.5f), (int)(param.width * 0.5f));
 
 			if (gce::GetKeyDown(gce::Keyboard::LSHIFT)) {
@@ -133,7 +133,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			m_pOwner->transform.SetWorldRotation(gce::Vector3f32(mPitch, mYaw, 0.f));
 			mObjectCamera->transform.SetLocalRotation(gce::Vector3f32(mPitch, 0.f, 0.f));
 			gce::SetMousePosition(centerSizeWindow);
-
+			*/
 		}
 
 		void Jump(float strength, float deltaTime)
