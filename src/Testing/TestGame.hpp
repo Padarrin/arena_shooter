@@ -50,12 +50,31 @@ ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject)
 	return player;
 }
 
+void CreateNail(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptPlayer* player, ScriptGrid* grid)
+{
+	//Life = 20 a 200, Damage = 1 a 5
+	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	enemyObject.AddComponent<gce::BoxCollider>()->SetActive(true);
+	enemyObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
+	enemyObject.SetName("Enemy");
+
+	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
+	enemy->SetWorldPosition({ 10,-8,10 });
+	enemy->SetPlayer(player);
+	enemy->SetMaxLife(20);
+	enemy->SetDamage(10);
+	enemy->mAgent->mCharacter->SetSpeed(5.f);
+	enemy->mAgent->GetPathFinding()->SetGrid(grid);
+	enemy->SetCellTarget(grid->GetCell(player->GetWorldPosition()));
+	enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
+}
+
 void SetNail(/*gce::Scene& scene,*/gce::GameObject*/*&*/ enemyObject, ScriptPlayer* player, ScriptGrid* grid)
 {
 	//Life = 20 a 200, Damage = 1 a 5
 	//gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 	enemyObject->AddComponent<gce::BoxCollider>()->SetActive(true);
-	enemyObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
+	enemyObject->AddComponent<gce::PhysicComponent>()->SetActive(false);
 	//enemyObject.SetName("Enemy");
 
 
@@ -226,7 +245,7 @@ BEGIN_TEST(Game)
 
 	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-	//CreateEnemy(scene, player, grid);
+	CreateNail(scene, player, grid);
 
 	CreateMap(scene, player, grid);
 
