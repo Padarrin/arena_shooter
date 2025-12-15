@@ -48,15 +48,15 @@ ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject)
 	return player;
 }
 
-void SetNail(/*gce::Scene& scene,*/gce::GameObject& enemyObject, ScriptPlayer* player, ScriptGrid* grid)
+void SetNail(/*gce::Scene& scene,*/gce::GameObject*/*&*/ enemyObject, ScriptPlayer* player, ScriptGrid* grid)
 {
 	//Life = 20 a 200, Damage = 1 a 5
 	//gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
-	enemyObject.AddComponent<gce::BoxCollider>()->SetActive(true);
+	enemyObject->AddComponent<gce::BoxCollider>()->SetActive(true);
 	//enemyObject.SetName("Enemy");
 
 
-	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
+	ScriptEnemy* enemy = enemyObject->GetScript<ScriptEnemy>();
 	enemy->SetWorldPosition({ 10,-8,10 });
 	enemy->SetPlayer(player);
 	enemy->SetMaxLife(20);
@@ -73,48 +73,47 @@ void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
 	///////////////////////////////////////////////////////////
 	// Map json
-	JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/map_test.json", &scene);
-	/*std::vector<gce::GameObject&> gameObjectLoad = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/map_test.json", &scene);
+	std::vector<gce::GameObject*> gameObjectLoad = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/map_test.json", &scene);
 
 	int lenghtLoad = (int)gameObjectLoad.size();
 	for (int i = 0; i < lenghtLoad; i++)
 	{
-		gce::GameObject& currentGameObject= gameObjectLoad[i];
+		gce::GameObject* currentGameObject= gameObjectLoad[i];
 		
 		//////////////////////Enemy///////////////////////
-		if (currentGameObject.GetName() == "Nail")
+		if (currentGameObject->GetName() == "Nail")
 		{
-			currentGameObject.SetName("Enemy");
+			currentGameObject->SetName("Enemy");
 			SetNail(currentGameObject, player, grid);
 		}
-		else if (currentGameObject.GetName() == "Bot")
+		else if (currentGameObject->GetName() == "Bot")
 		{
-			currentGameObject.SetName("Bot");
+			currentGameObject->SetName("Bot");
 			//SetNail(currentGameObject, player, grid);
 		}
 		//////////////////////Enemy Fin///////////////////////
 		//////////////////////Item///////////////////////
-		else if (currentGameObject.GetName() == "Item")
+		else if (currentGameObject->GetName() == "Item")
 		{
-			currentGameObject.SetName("Item");
+			currentGameObject->SetName("Item");
 			//SetNail(currentGameObject, player, grid);
 		}
 		//////////////////////Item Fin///////////////////////
 		//////////////////////Furniture///////////////////////
-		else if (currentGameObject.GetName() == "Box")
+		else if (currentGameObject->GetName() == "Box")
 		{
-			currentGameObject.SetName("Box");
+			currentGameObject->SetName("Box");
 			//SetNail(currentGameObject, player, grid);
 		}
 		//////////////////////Furniture Fin///////////////////////
 		//////////////////////Floor///////////////////////
 		else
 		{
-			currentGameObject.SetName("Floor");
+			currentGameObject->SetName("Floor");
 			//SetFloor(currentGameObject);
 		}
 		//////////////////////Floor Fin///////////////////////
-	}*/
+	}
 	///////////////////////////////////////////////////////////
 
 	//gce::GameObject& floorObject;
