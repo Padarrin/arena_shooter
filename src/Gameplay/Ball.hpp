@@ -24,6 +24,7 @@ public:
 			if ((mName == "EnemyBall" && other->GetName() == "Player") || (mName == "PlayerBall" && other->GetName() == "Enemy"))
 			{
 				character->Damage(mShootable->GetDamage());
+				
 				mShootable->mObject->mEntity->DestroyEntity();
 			}
 			if (mName == "EnemyBall" && other->GetName() == "PlayerBall")
