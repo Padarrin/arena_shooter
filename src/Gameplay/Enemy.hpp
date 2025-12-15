@@ -18,7 +18,7 @@ protected:
 public:
 	ScriptAgent* mAgent;
 
-	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); }
+	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); mAgent->mCharacter->SetMaxLife(100); mAgent->mCharacter->SetDamage(5); }
 	virtual void Start() 
 	{
 		ScriptGrid* grid = GetGrid();
@@ -58,7 +58,7 @@ public:
 
 		if (elapsed >= std::chrono::seconds(1))
 		{
-			mAgent->mCharacter->CreateBallInFront<ScriptBall>(100.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, myParentEntity);
+			//mAgent->mCharacter->CreateBallInFront<ScriptBall>("EnemyBall", 100.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, myParentEntity);
 			mPreviousTime = currentTime;
 		}
 	}
@@ -81,6 +81,24 @@ public:
 	void SetPlayer(ScriptPlayer* player) { mPlayer = player; }
 	ScriptPlayer* GetPlayer() { return mPlayer; }
 
+	void SetMaxLife(int life)
+	{
+		mAgent->mCharacter->SetMaxLife(life);
+	}
+	int GetMaxLife()
+	{
+		return mAgent->mCharacter->GetMaxLife();
+	}
+
+	void SetDamage(int damage)
+	{
+		mAgent->mCharacter->SetDamage(damage);
+	}
+	int GetDamage()
+	{
+		return mAgent->mCharacter->GetDamage();
+	}
+	
 	ScriptGrid* GetGrid() { return mAgent->GetPathFinding()->GetGrid(); }
 
 END_SCRIPT

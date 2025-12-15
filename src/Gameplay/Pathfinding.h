@@ -6,9 +6,6 @@
 #include "Grid.hpp"
 #include "Node.h"
 #include "Agent.hpp"
-//#include "PathFinding.inl"
-//#include "Queue.hpp"
-//#include "Compare.h"
 
 template<typename T>
 class Node;

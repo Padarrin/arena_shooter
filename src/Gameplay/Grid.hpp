@@ -208,7 +208,7 @@ public:
 	{
 		gce::Vector3f32 diffPos = pos - GetPosOfIndex00();
 		gce::Vector2i32 index = gce::Vector2i32(diffPos.x / ((float)mCellSize), diffPos.z / ((float)mCellSize));
-		if (index.x < -1 || index.y < -1)
+		if (index.x < 0 || index.y < 0)
 		{
 			return nullptr;
 		}
