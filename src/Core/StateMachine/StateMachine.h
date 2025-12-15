@@ -18,6 +18,7 @@ struct StateMachine
 	struct Transition
 	{
 		gce::Vector<Condition> conditions;
+		String from;
 		String target;
 	};
 
@@ -26,6 +27,8 @@ struct StateMachine
 		OnBegin onBegin;
 		OnUpdate onUpdate;
 		OnEnd onEnd;
+
+		gce::Vector<Transition> m_transitions;
 	};
 
 	void AddAction(String& name, Action action = {});
@@ -36,7 +39,7 @@ struct StateMachine
 	void SetOnEndAction(String& name, OnEnd pOnEnd);
 
 	void AddTransition(Transition transition);
-	void AddTransition(gce::Vector<Condition>& conditions, String& target);
+	void AddTransition(gce::Vector<Condition>& conditions, String& from, String& to);
 
 	void Update();
 
@@ -49,7 +52,6 @@ private :
 	String m_actualAction;
 
 	UnorderedMap< String, Action> m_actions;
-	gce::Vector<Transition> m_transitions;
 };
 
 #endif

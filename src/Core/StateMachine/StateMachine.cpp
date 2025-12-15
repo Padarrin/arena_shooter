@@ -70,7 +70,7 @@ void StateMachine::SetOnEndAction(String& name, OnEnd pOnEnd)
 ////////////////////////////////////////////////////
 void StateMachine::AddTransition(Transition transition)
 {
-	m_transitions.PushBack(transition);
+	m_actions[transition.from].m_transitions.PushBack(transition);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -78,9 +78,9 @@ void StateMachine::AddTransition(Transition transition)
 // @param conditions The conditions that must be met for the transition to occur.
 // @param target The target action to transition to when conditions are met.
 ////////////////////////////////////////////////////////////////////////////////////
-void StateMachine::AddTransition(gce::Vector<Condition>& conditions, String& target)
+void StateMachine::AddTransition(gce::Vector<Condition>& conditions, String& from, String& to)
 {
-	AddTransition(Transition(conditions, target));
+	AddTransition(Transition(conditions,from, to));
 }
 
 ///////////////////////////////////////
@@ -88,7 +88,7 @@ void StateMachine::AddTransition(gce::Vector<Condition>& conditions, String& tar
 ///////////////////////////////////////
 void StateMachine::Update()
 {
-	for (auto it = m_transitions.begin(); it != m_transitions.end(); it++)
+	for (auto it = m_actions[m_actualAction].m_transitions.begin(); it != m_actions[m_actualAction].m_transitions.end(); it++)
 	{
 		Transition transition = *it;
 		bool transit = true;
