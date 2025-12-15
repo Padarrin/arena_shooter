@@ -72,8 +72,8 @@ public:
 
         if (mShowMenu)
         {
-            if (mObjectCamera != nullptr)
-            {
+            //if (mObjectCamera != nullptr)
+            //{
                 //if (deltatime != -1.f)
                 //{
                     //gce::GameObject* playerObject = mObjectCamera->GetParent();
@@ -86,7 +86,7 @@ public:
                 //}
                 //mObjectCamera->transform.SetWorldPosition(mCameraPositionInMenu);
                 //mObjectCamera->transform.SetWorldRotation(gce::Vector3f32(0.f, 0.f, 0.f));
-            }
+            //}
             deltatime = -1.f;
         }
         else
