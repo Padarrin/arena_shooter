@@ -32,7 +32,7 @@ gce::GameObject& CreateCamera(gce::Scene& scene, gce::GameObject& weaponParent)
 	return cameraObject;
 }
 
-ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject, ScriptSubMachineGun* subMachine)
+ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject)
 {
 	gce::GameObject& playerObject = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	playerObject.AddComponent<gce::BoxCollider>()->SetActive(true);
