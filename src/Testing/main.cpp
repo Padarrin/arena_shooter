@@ -37,7 +37,7 @@
 // ===== TOOL ===== //
 // SpriteSheet
 
-#define TEST UiImage
+#define TEST ImageUI
 #define SUBTEST
 #include "Test.h"
 RUN_TEST

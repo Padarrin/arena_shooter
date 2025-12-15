@@ -6,20 +6,22 @@
 #include <Structs.h>
 #include <Font.h>
 
-namespace gce
+namespace gce {
+
+DECLARE_COMPONENT( TextRenderer, UIBase )
 {
-	DECLARE_COMPONENT(TextRenderer, UIBase)
-	{
-		WStringView text;
-		Font* pFont;
-		UiBrush* pBrush;
-		RectanglePosF* rectPosF;
+	WStringView text;
+	Font* pFont;
+	UiBrush* pBrush;
+	RectanglePosF* rectPosF;
 
-	protected:
-		void Init() override;
+protected:
+	void Init() override;
 
-		friend class UiSystem;
-	};
+	friend class UiSystem;
+};
+
+
 }
 
 #endif

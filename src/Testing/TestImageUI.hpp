@@ -30,7 +30,7 @@ BEGIN_TEST(ImageUI)
     Vector2f32 posUi = center - size * 0.5f;
     uiImage.InitializeImage(posUi,size, 1.f);
 
-    uiImage.btmBrush = new BitMapBrush("res/Textures/crosshair.png");
+    uiImage.btmBrush = new BitMapBrush("res/Textures/test1.png");
     uiImage.btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 },{ 1.f / 16.f, 1.f / 16.f, 1.f / 16.f }, 0);
 	uiImage.SetActive(true);
 
