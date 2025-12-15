@@ -19,9 +19,9 @@ using namespace gce;
 
 struct JsonLoader
 {
-    static std::vector<GameObject&> LoadMap(String const& path, Scene* pScene, D12PipelineObject* pso)
+    static std::vector<GameObject*> LoadMap(String const& path, Scene* pScene)
     {
-        std::vector<GameObject&> objLoad = std::vector<GameObject&>();
+        std::vector<GameObject*> objLoad = std::vector<GameObject*>();
         if (pScene == nullptr) return objLoad;
 
         Map<GameObject*, String> objects;
@@ -102,7 +102,7 @@ struct JsonLoader
                 objects.insert(el);
             }
 
-            objLoad.push_back(gameObject);
+            objLoad.push_back(&gameObject);
 
         }
 

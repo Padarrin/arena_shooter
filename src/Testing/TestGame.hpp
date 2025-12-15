@@ -48,12 +48,12 @@ ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject)
 	return player;
 }
 
-void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
+void SetNail(/*gce::Scene& scene,*/gce::GameObject& enemyObject, ScriptPlayer* player, ScriptGrid* grid)
 {
 	//Life = 20 a 200, Damage = 1 a 5
-	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	//gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 	enemyObject.AddComponent<gce::BoxCollider>()->SetActive(true);
-	enemyObject.SetName("Enemy");
+	//enemyObject.SetName("Enemy");
 
 
 	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
@@ -67,11 +67,14 @@ void CreateEnemy(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 	enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
 }
 
-void CreateMap(gce::Scene& scene, D12PipelineObject* pso)
+
+
+void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
 	///////////////////////////////////////////////////////////
 	// Map json
-	std::vector<gce::GameObject&> gameObjectLoad = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/map_test.json", &scene, pso);
+	JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/map_test.json", &scene);
+	/*std::vector<gce::GameObject&> gameObjectLoad = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/map_test.json", &scene);
 
 	int lenghtLoad = (int)gameObjectLoad.size();
 	for (int i = 0; i < lenghtLoad; i++)
@@ -81,18 +84,37 @@ void CreateMap(gce::Scene& scene, D12PipelineObject* pso)
 		//////////////////////Enemy///////////////////////
 		if (currentGameObject.GetName() == "Nail")
 		{
-			currentGameObject.SetName("Nail");
+			currentGameObject.SetName("Enemy");
+			SetNail(currentGameObject, player, grid);
 		}
 		else if (currentGameObject.GetName() == "Bot")
 		{
 			currentGameObject.SetName("Bot");
+			//SetNail(currentGameObject, player, grid);
 		}
 		//////////////////////Enemy Fin///////////////////////
 		//////////////////////Item///////////////////////
+		else if (currentGameObject.GetName() == "Item")
+		{
+			currentGameObject.SetName("Item");
+			//SetNail(currentGameObject, player, grid);
+		}
 		//////////////////////Item Fin///////////////////////
 		//////////////////////Furniture///////////////////////
+		else if (currentGameObject.GetName() == "Box")
+		{
+			currentGameObject.SetName("Box");
+			//SetNail(currentGameObject, player, grid);
+		}
 		//////////////////////Furniture Fin///////////////////////
-	}
+		//////////////////////Floor///////////////////////
+		else
+		{
+			currentGameObject.SetName("Floor");
+			//SetFloor(currentGameObject);
+		}
+		//////////////////////Floor Fin///////////////////////
+	}*/
 	///////////////////////////////////////////////////////////
 
 	//gce::GameObject& floorObject;
@@ -194,9 +216,9 @@ D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, S
 
 ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-CreateEnemy(scene, player, grid);
+//CreateEnemy(scene, player, grid);
 
-CreateFloor(scene, pso);
+CreateMap(scene, player, grid);
 
 CreateAngleGringer(scene, player, weaponParent);
 CreateSubmachineGun(scene, player, weaponParent);
