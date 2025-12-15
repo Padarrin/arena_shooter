@@ -94,6 +94,21 @@ inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geome
 	T* ob = object.AddScript<T>();
 	ob->T::Initia();
 
+	AddMeshRenderer(object, geometry, texture);
+
+	gce::Light* light = object.AddComponent<gce::Light>();
+	light->color = color;
+
+	return object;
+}
+
+inline void AddMeshRenderer(gce::GameObject& object, gce::Geometry* geometry)
+{
+	AddMeshRenderer(object, geometry, nullptr);
+}
+
+inline void AddMeshRenderer(gce::GameObject& object, gce::Geometry* geometry, gce::Texture* texture)
+{
 	if (geometry != nullptr)
 	{
 		static gce::D12PipelineObject defaultPso(gce::SHADERS.VERTEX, gce::SHADERS.PIXEL, gce::SHADERS.HULL, gce::SHADERS.DOMAIN_, gce::SHADERS.ROOT_SIGNATURE);
@@ -108,10 +123,6 @@ inline gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geome
 			meshRenderer.pMaterial->useTextureAlbedo = 1;
 		}
 	}
-	gce::Light* light = object.AddComponent<gce::Light>();
-	light->color = color;
-
-	return object;
 }
 
 template<typename T>

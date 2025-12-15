@@ -34,11 +34,11 @@ private:
 	ScriptPistolMagazine* mSubmachine;
 	ScriptPistolMagazine* mBazooka;
 
+
 public:
 	virtual void Initia() 
 	{ 
-		mUiWeapon = mPlayer->GetAllWeapons(); 
-		mCurrentWeapon = mPlayer->GetCurrentWeapon();
+		mUiWeapon = mPlayer->GetAllWeapons();
 
 		mSubmachine = (*mUiWeapon)[SUBMACHINEGUN]->mMagazine;
 		mBazooka = (*mUiWeapon)[SUBMACHINEGUN]->mMagazine;
@@ -57,7 +57,7 @@ public:
 
 	virtual void Start()
 	{
-		
+		mCurrentWeapon = mPlayer->GetCurrentWeapon();
 	}
 
 	virtual void Update()

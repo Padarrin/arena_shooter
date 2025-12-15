@@ -29,6 +29,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		ScriptWeapons* mCurrentWeapon;
 
+		ScriptSubMachineGun* mSubMachine;
+
 		std::vector<ScriptWeapons*> mAllWeapons;
 
 	public:
@@ -87,8 +89,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			{
 				if (mCurrentWeapon != nullptr)
 				{
-					ScriptSubMachineGun* weapon = mCurrentWeapon->GetChildWeapon<ScriptSubMachineGun>();
-					weapon->Action();
+					mSubMachine = mCurrentWeapon->GetChildWeapon<ScriptSubMachineGun>();
+					mSubMachine->Action();
 				}
 			}
 		}

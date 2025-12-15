@@ -18,6 +18,7 @@ public:
 		SetLocalPosition(gce::Vector3f32(0.f, 0.f, 0.f));
 		SetLocalRotate(gce::Vector3f32(0.f, 0.f, 0.f));
 		SetLocalScale(gce::Vector3f32(1.f, 1.f, 1.f));
+
 	}
 	virtual void Start() {}
 	virtual void Update() {}
