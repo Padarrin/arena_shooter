@@ -170,7 +170,7 @@ public:
 		ScriptPlayer* player = playerObject.GetScript<ScriptPlayer>();
 		player->SetCamera(cameraObject);
 		player->SetWorldPosition(gce::Vector3f32(0.f, 10.f, 0.f));
-		player->mCharacter->SetSpeed(9);
+		player->mCharacter->SetSpeed(90.f);
 		player->SetJump(6.f);
 
 		return player;
@@ -311,8 +311,7 @@ public:
 		angleGringer->mWeapons->mMagazine->SetReloadTime(2.5f);
 		angleGringer->mWeapons->mEntity->SetLocalPosition(gce::Vector3f32(2.f, 0.f, 3.f));
 
-		player->AddWeapon(angleGringer->mWeapons);
-
+		player->AddWeapon(angleGringer->mWeapons);//1
 	}
 
 	static ScriptSubMachineGun* CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
@@ -346,7 +345,7 @@ public:
 		bazooka->mWeapons->mMagazine->SetReloadTime(2.5f);
 		bazooka->mWeapons->mEntity->SetLocalPosition(gce::Vector3f32(2.f, 0.f, 3.f));
 
-		player->AddWeapon(bazooka->mWeapons);
+		player->AddWeapon(bazooka->mWeapons);//3
 
 	}
 
@@ -432,13 +431,14 @@ public:
 	static void DeleteGameObject()
 	{
 		auto* mapGameObject = gMenuObject->m_pScene->GetGameObject();
-		/*for (auto& [id, gameObject] : *mapGameObject)
+		for (auto& [id, gameObject] : *mapGameObject)
 		{
 			if (gameObject->GetScript<ScriptEntity>() != nullptr || gameObject->GetScript<ScriptGrid>() != nullptr)
 			{
 				gameObject->SetActive(false);
 			}
-		}*/
+		}
+		/*gCameraObject->RemoveParent();
 		for (auto it = mapGameObject->begin(); it != mapGameObject->end(); )
 		{
 			gce::GameObject* gameObject = it->second;
@@ -460,7 +460,8 @@ public:
 			{
 				++it;
 			}
-		}
+			
+		}*/
 	}
 
 
