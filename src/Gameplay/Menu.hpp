@@ -7,6 +7,7 @@ enum INTERFACE_SHOW
     NOTHING,
     MAIN_MENU,
     PAUSE_MENU,
+    WINLOSE_MENU,
     SETTING_MENU,
     LOAD_MENU,
 
@@ -73,8 +74,18 @@ public:
         {
             if (mObjectCamera != nullptr)
             {
-                mObjectCamera->transform.SetWorldPosition(mCameraPositionInMenu);
-                mObjectCamera->transform.SetWorldRotation(gce::Vector3f32(0.f, 0.f, 0.f));
+                //if (deltatime != -1.f)
+                //{
+                    //gce::GameObject* playerObject = mObjectCamera->GetParent();
+                    //if (playerObject != nullptr)
+                    //{
+                        //ScriptPlayer* player = playerObject->GetScript<ScriptPlayer>();
+                        //player->mYaw = 0.f;
+                        //player->mPitch = 0.f;
+                    //}
+                //}
+                //mObjectCamera->transform.SetWorldPosition(mCameraPositionInMenu);
+                //mObjectCamera->transform.SetWorldRotation(gce::Vector3f32(0.f, 0.f, 0.f));
             }
             deltatime = -1.f;
         }

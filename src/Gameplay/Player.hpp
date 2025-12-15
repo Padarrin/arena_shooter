@@ -37,6 +37,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		std::vector<ScriptWeapons*> mAllWeapons;
 
 	public:
+		
 		ScriptCharacter* mCharacter;
 
 		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); mYaw = 0.f; mPitch = 0.f; isWindowInitialised = false; isCursorLocked = true; }
@@ -44,6 +45,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		{ 
 			mWindow = gce::GameManager::GetWindow(); 
 			mIsJumping = true;
+			mYaw = 0.f; mPitch = 0.f;
 		}
 
 		virtual void Update()
@@ -103,7 +105,17 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		void TurnCamera()
 		{
-			/*gce::WindowParam param = gce::GameManager::GetWindowParam();
+			/*if (mObjectCamera == nullptr)
+				return;
+
+			uint32 width = mWindow->GetWidth();
+			uint32 height = mWindow->GetHeight();
+			float degree = 360.f / ((gce::Sqrt(width * width + height * height) * 100.f));
+
+			mObjectCamera->transform.SetLocalRotation(gce::Vector3f32((float)gce::GetMousePosition().y * degree, 0.f, 0.f));
+			m_pOwner->transform.SetWorldRotation(gce::Vector3f32(0.f, (float)gce::GetMousePosition().x * degree, 0.f));
+			*/
+			gce::WindowParam param = gce::GameManager::GetWindowParam();
 			gce::Vector2i32 centerSizeWindow = gce::Vector2i32((int)(param.height * 0.5f), (int)(param.width * 0.5f));
 
 			if (gce::GetKeyDown(gce::Keyboard::LSHIFT)) {
@@ -133,7 +145,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			m_pOwner->transform.SetWorldRotation(gce::Vector3f32(mPitch, mYaw, 0.f));
 			mObjectCamera->transform.SetLocalRotation(gce::Vector3f32(mPitch, 0.f, 0.f));
 			gce::SetMousePosition(centerSizeWindow);
-			*/
+			
 		}
 
 		void Jump(float strength, float deltaTime)
