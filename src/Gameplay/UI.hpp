@@ -36,7 +36,7 @@ private:
 	Ui mBall;
 	Ui mSeekerBall;
 	Ui mImprPiece;
-
+	
 	gce::GameObject* mCameraObject;
 
 	std::vector<ScriptWeapons*>* mUiWeapon;
@@ -52,8 +52,13 @@ private:
 	std::vector<Image*> mAllImages;
 
 public:
+	ScriptEntity* mEntity;
+
 	virtual void Initia() 
 	{ 
+		mEntity = m_pOwner->AddScript<ScriptEntity>();
+		mEntity->Initia();
+
 		mAllImages = std::vector<Image*>();
 
 		mCameraObject = m_pOwner->GetParent();
@@ -61,7 +66,7 @@ public:
 
 	virtual void Start()
 	{
-		mUiWeapon = mPlayer->GetAllWeapons();
+		/*mUiWeapon = mPlayer->GetAllWeapons();
 		mCurrentWeapon = mPlayer->GetCurrentWeapon();
 
 		mSubmachine = (*mUiWeapon)[SUBMACHINEGUN]->mMagazine;
@@ -76,7 +81,7 @@ public:
 		mImprPiece.SetStockMax(30);
 		mImprPiece.SetInStock(0);
 
-		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
+		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();*/
 	}
 
 	virtual void Update()
@@ -101,8 +106,8 @@ public:
 			mPlayer->SetCurrentWeapon(BAZOOKA);
 		}
 
-		mCurrentWeapon = mPlayer->GetCurrentWeapon();
-		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
+		/*mCurrentWeapon = mPlayer->GetCurrentWeapon();
+		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();*/
 	}
 
 	std::vector<Image*> ShowMenu() { return ActiveImage(); }

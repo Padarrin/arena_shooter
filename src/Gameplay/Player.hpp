@@ -100,7 +100,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			const int centerHeight = (int)(gce::GameManager::GetWindowParam().height * 0.5f);
 			const int centerWidth = (int)(gce::GameManager::GetWindowParam().width * 0.5f);
 
-			const float degToRad = PI / 180.0f;
+			const float degToRad = PI / 360.0f;
 
 			// limites en radians
 			const float pitchMin = -89.0f * degToRad;
