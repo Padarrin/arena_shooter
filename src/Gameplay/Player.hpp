@@ -37,10 +37,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * verticalInput;
 
 			WorldTranslate(direction * mCharacter->GetSpeed() * deltaTime);
-
-			if (mObjectCamera == nullptr)
-				return;
-			mObjectCamera->transform.SetWorldPosition(gce::Vector3f32(0.f, 0.f, 0.f));
 		}
 
 		void TurnCamera()
