@@ -21,6 +21,7 @@ enum WEAPON_ORDER
 DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
 	protected:
+		gce::GameObject* mObjectCamera;
 		gce::Window* mWindow;
 
 		float mJump;
@@ -117,9 +118,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 				isWindowInitialised = true;
 			}
 
-			mObjectCamera->transform.SetLocalRotation(gce::Vector3f32((float)gce::GetMousePosition().y * degree, 0.f, 0.f));
-			m_pOwner->transform.SetWorldRotation(gce::Vector3f32(0.f,(float)gce::GetMousePosition().x * degree ,0.f));
-
 			if (!isCursorLocked)
 				return;
 
@@ -158,6 +156,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			physique->SetVelocity(velocity);
 			mIsJumping = false;
 		}
+
+		void SetCamera(gce::GameObject* cameraObject) { mObjectCamera = cameraObject; }
 
 		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
 		gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }

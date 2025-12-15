@@ -168,7 +168,7 @@ public:
 		playerObject.AddChild(*cameraObject);
 
 		ScriptPlayer* player = playerObject.GetScript<ScriptPlayer>();
-		player->SetCamera(*cameraObject);
+		player->SetCamera(cameraObject);
 		player->SetWorldPosition(gce::Vector3f32(0.f, 10.f, 0.f));
 		player->mCharacter->SetSpeed(9);
 		player->SetJump(6.f);
@@ -179,7 +179,7 @@ public:
 	static void CreateNail(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptPlayer* player, ScriptGrid* grid)
 	{
 		//Life = 20 a 200, Damage = 1 a 5
-		gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+		gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 		enemyObject.AddComponent<gce::BoxCollider>()->SetActive(true);
 		enemyObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
 		enemyObject.SetName("Enemy");
@@ -204,7 +204,8 @@ public:
 		//enemyObject.SetName("Enemy");
 
 
-		ScriptEnemy* enemy = enemyObject->AddComponent<ScriptEnemy>();
+		//ScriptEnemy* enemy = enemyObject->AddComponent<ScriptEnemy>();
+		/*ScriptEnemy* enemy = enemyObject->GetComponent<ScriptEnemy>();
 		enemy->SetWorldPosition({ 10,-8,10 });
 		enemy->SetPlayer(player);
 		enemy->SetMaxLife(20);
@@ -213,6 +214,7 @@ public:
 		enemy->mAgent->GetPathFinding()->SetGrid(grid);
 		enemy->SetCellTarget(grid->GetCell(player->GetWorldPosition()));
 		enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
+		*/
 	}
 
 	static void SetFloor(/*gce::Scene& scene,*/gce::GameObject* floorObject)
@@ -363,7 +365,7 @@ public:
 		//ImageData data = ImageLoader::LoadTexture(String(RES_PATH) + path);
 
 		gce::GameObject& weaponParent = gce::GameObject::Create(scene);
-		cameraObject.AddChild(weaponParent);
+		cameraObject->AddChild(weaponParent);
 
 		ScriptPlayer* player = CreatePlayer(scene, cameraObject);
 

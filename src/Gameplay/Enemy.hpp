@@ -18,7 +18,7 @@ protected:
 public:
 	ScriptAgent* mAgent;
 
-	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); mAgent->mCharacter->SetMaxLife(100); mAgent->mCharacter->SetDamage(5); }
+	virtual void Initia() { mAgent = m_pOwner->AddScript<ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); mAgent->mCharacter->SetMaxLife(100); mAgent->mCharacter->SetDamage(5); }
 	virtual void Start() 
 	{
 		ScriptGrid* grid = GetGrid();
