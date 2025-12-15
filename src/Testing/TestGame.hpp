@@ -67,7 +67,15 @@ void SetNail(/*gce::Scene& scene,*/gce::GameObject*/*&*/ enemyObject, ScriptPlay
 	enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
 }
 
+void SetFloor(/*gce::Scene& scene,*/gce::GameObject* floorObject)
+{
+	//Life = 20 a 200, Damage = 1 a 5
+	//gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+	floorObject->AddComponent<gce::BoxCollider>()->SetActive(true);
+	//enemyObject.SetName("Enemy");
 
+	ScriptEntity* floor = floorObject->AddScript<ScriptEntity>();
+}
 
 void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
@@ -110,7 +118,7 @@ void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 		else
 		{
 			currentGameObject->SetName("Floor");
-			//SetFloor(currentGameObject);
+			SetFloor(currentGameObject);
 		}
 		//////////////////////Floor Fin///////////////////////
 	}
