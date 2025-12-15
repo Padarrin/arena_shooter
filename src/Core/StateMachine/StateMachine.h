@@ -4,15 +4,15 @@
 #include <Containers/Vector.hpp>
 #include "define.h"
 
-using OnBegin = void(*)();
-using OnUpdate = void(*)();
-using OnEnd = void(*)();
+using OnBegin = std::function<void()>;
+using OnUpdate = std::function<void()>;
+using OnEnd = std::function<void()>;
 
 struct StateMachine
 {
 	struct Condition
 	{
-		bool(*condition)();
+		std::function<bool()> condition;
 	};
 
 	struct Transition

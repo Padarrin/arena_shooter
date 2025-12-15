@@ -6,6 +6,7 @@
 #include <chrono>
 #include "../Core/StateMachine/StateMachine.h"
 
+using namespace gce;
 
 DECLARE_SCRIPT(ScriptEnemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
@@ -18,7 +19,7 @@ protected:
 	mClock::time_point mPreviousTime = mClock::now();
 
 	// StateMachine
-	StateMachine* mStateMachine;
+	gce::StateMachine* mStateMachine;
 
 	String running = "Running";
 	String attack = "Attack";
@@ -30,15 +31,15 @@ protected:
 	inline static bool tookDamage = false;
 	inline static bool isDead = false;
 
-	StateMachine::Condition condition2{ IsChasingPlayer };
-	StateMachine::Condition condition3{ IsAttacking };
-	StateMachine::Condition condition4{ TookDamage };
-	StateMachine::Condition condition5{ IsDead };
+	gce::StateMachine::Condition condition2{ IsChasingPlayer };
+	gce::StateMachine::Condition condition3{ IsAttacking };
+	gce::StateMachine::Condition condition4{ TookDamage };
+	gce::StateMachine::Condition condition5{ IsDead };
 
-	Vector<StateMachine::Condition> conditionRun{ condition2 };
-	Vector<StateMachine::Condition> condittionAttack{ condition3 };
-	Vector<StateMachine::Condition> conditionHit{ condition4 };
-	Vector<StateMachine::Condition> conditionDie{ condition5 };
+	Vector<gce::StateMachine::Condition> conditionRun{ condition2 };
+	Vector<gce::StateMachine::Condition> condittionAttack{ condition3 };
+	Vector<gce::StateMachine::Condition> conditionHit{ condition4 };
+	Vector<gce::StateMachine::Condition> conditionDie{ condition5 };
 
 
 public:
@@ -58,6 +59,7 @@ public:
 
 		SetIsNoPath(false);
 
+		statemachine = GameManager::GetStatesSystem().CreateStateMachine(m_pOwner);
 
 		// StateMachine
 		mStateMachine->AddAction(running, OnBeginRunning, OnUpdateRunning, OnEndRunning);

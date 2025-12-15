@@ -8,5 +8,6 @@
 #include "Systems/PhysicSystem.h"
 #include "Systems/ScriptSystem.h"
 #include "Systems/UiSystem.h"
+#include "Systems/StatesSystem.h"
 
 #endif
