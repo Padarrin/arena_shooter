@@ -17,6 +17,28 @@ public:
 	int GetInStock() { return inStock; }
 };
 
+struct SettingImage
+{
+private:
+	gce::Vector2f32 pos;
+	gce::Vector2f32 size;
+	gce::Vector3f32 scale;
+	float32 opacity;
+
+public:
+	void SetPos(gce::Vector2f32 position) { pos = position; }
+	gce::Vector2f32 GetPos() { return pos; }
+
+	void SetSize(gce::Vector2f32 sizeImage) { size = sizeImage; }
+	gce::Vector2f32 GetSize() { return size; }
+
+	void SetScale(gce::Vector3f32 scaleImage) { scale = scaleImage; }
+	gce::Vector3f32 GetScale() { return scale; }
+
+	void SetOpacity(float32 opacityImage) { opacity = opacityImage; }
+	float32 GetOpacity() { return opacity; }
+};
+
 DECLARE_SCRIPT(ScriptUI, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
 private:
@@ -24,6 +46,13 @@ private:
 	Ui mSeekerBall;
 	Ui mImprPiece;
 	
+	SettingImage mWeaponPrincipal;
+	SettingImage mWeaponSecond;
+	SettingImage mWeaponThird;
+
+	gce::Vector2f32 posUiPrincipal;
+	gce::Vector2f32 posUiSecond;
+
 	gce::GameObject* mCameraObject;
 
 	std::vector<ScriptWeapons*>* mUiWeapon;
@@ -38,12 +67,32 @@ private:
 
 	std::vector<gce::GameObject*> mAllImages;
 
+	gce::WindowParam* mWindowParam;
+
 public:
 	ScriptEntity* mEntity;
 
 	virtual void Initia() 
 	{ 
-		/*mUiWeapon = mPlayer->GetAllWeapons();
+		mWeaponPrincipal.SetSize(gce::Vector2f32{ 72,72 });
+		mWeaponPrincipal.SetScale(gce::Vector3f32{ 1.f / 14.f, 1.f / 14.f, 1.f / 14.f });
+		mWeaponPrincipal.SetOpacity(1.f);
+
+		mWeaponSecond.SetSize(gce::Vector2f32{ 65,65 });
+		mWeaponSecond.SetScale(gce::Vector3f32{ 1.f / 15.f, 1.f / 15.f, 1.f / 15.f });
+		mWeaponSecond.SetOpacity(1.f);
+	}
+
+	virtual void Start()
+	{
+		mWeaponPrincipal.SetPos(gce::Vector2f32{ mWindowParam->width * 0.7f,mWindowParam->height * 0.68f });
+		mWeaponSecond.SetPos(gce::Vector2f32{ mWindowParam->width * 0.74f,mWindowParam->height * 0.68f });
+
+		posUiPrincipal = mWeaponPrincipal.GetPos() - mWeaponPrincipal.GetSize() * 0.5f;
+		posUiSecond = mWeaponSecond.GetPos() - mWeaponSecond.GetSize() * 0.5f;
+
+		mUiWeapon = mPlayer->GetAllWeapons();
+		mCurrentWeapon = mPlayer->GetCurrentWeapon();
 
 		mSubmachine = (*mUiWeapon)[SUBMACHINEGUN]->mMagazine;
 		mBazooka = (*mUiWeapon)[SUBMACHINEGUN]->mMagazine;
@@ -57,12 +106,7 @@ public:
 		mImprPiece.SetStockMax(30);
 		mImprPiece.SetInStock(0);
 
-		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();*/
-	}
-
-	virtual void Start()
-	{
-		//mCurrentWeapon = mPlayer->GetCurrentWeapon();
+		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 	}
 
 	virtual void Update()
@@ -75,46 +119,42 @@ public:
 		if (gce::GetKeyDown(gce::Keyboard::Key::_1) && mName != "AngleGringer")
 		{
 			mPlayer->SetCurrentWeapon(ANGLEGRINGER);
+			mCurrentWeapon = mPlayer->GetCurrentWeapon();
+			mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
+
+			mAllImages[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix(gce::Vector3f32{ posUiPrincipal.x, posUiPrincipal.y, 0 }, mWeaponPrincipal.GetScale(), 0.f);
+			mAllImages[0]->GetComponent<ImageUI>()->btmBrush->SetOpacity(mWeaponPrincipal.GetOpacity());
+			mAllImages[0]->SetActive(true);
+
+			mAllImages[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix(gce::Vector3f32{ posUiSecond.x, posUiSecond.y, 0 }, mWeaponSecond.GetScale(), 0.f);
+			mAllImages[1]->GetComponent<ImageUI>()->btmBrush->SetOpacity(mWeaponSecond.GetOpacity());
+			mAllImages[1]->SetActive(true);
 		}
 
 		else if (gce::GetKeyDown(gce::Keyboard::Key::_2) && mName != "SubmachineGun")
 		{
 			mPlayer->SetCurrentWeapon(SUBMACHINEGUN);
+			mCurrentWeapon = mPlayer->GetCurrentWeapon();
+			mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
+
+			mAllImages[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix(gce::Vector3f32{ posUiPrincipal.x, posUiPrincipal.y, 0 }, mWeaponPrincipal.GetScale(), 0.f);
+			mAllImages[1]->GetComponent<ImageUI>()->btmBrush->SetOpacity(mWeaponPrincipal.GetOpacity());
+			mAllImages[1]->SetActive(true);
 		}
 
 		else if (gce::GetKeyDown(gce::Keyboard::Key::_3) && mName != "Bazooka")
 		{
 			mPlayer->SetCurrentWeapon(BAZOOKA);
+			mCurrentWeapon = mPlayer->GetCurrentWeapon();
+			mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 		}
-
-		/*mCurrentWeapon = mPlayer->GetCurrentWeapon();
-		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();*/
-	}
-
-	void CreateUI(gce::Scene& scene, gce::Vector2f32 pos, gce::Vector2f32 size, gce::Vector3f32 scale, std::string path, D12PipelineObject& texturePso)
-	{
-		GameObject& crosshair = GameObject::Create(scene);
-		ImageUI* uiImage = crosshair.AddComponent<ImageUI>();
-
-		Vector2f32 posUi = pos - size * 0.5f;
-
-		uiImage->InitializeImage(posUi, size, 1.f);
-
-		uiImage->btmBrush = new BitMapBrush(path);
-		uiImage->btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, scale, 0);
-		uiImage->SetActive(true);
-
-		mAllImages.push_back(&crosshair);
-
-		/*GameObject& Cube = GameObject::Create(scene);
-		MeshRenderer* meshRenderer = Cube.AddComponent<MeshRenderer>();
-		meshRenderer->pGeometry = SHAPES.CUBE;
-		meshRenderer->pPso = &texturePso;
-		Cube.transform.SetWorldPosition({ 0, 0, 10 });*/
-
 	}
 
 	void SetPlayer(ScriptPlayer* player) { mPlayer = player; }
 	ScriptPlayer* GetPlayer() { return mPlayer; }
+
+	void AddImage(gce::GameObject& imageObject) { mAllImages.push_back(&imageObject); }
+
+	void SetWinParam(gce::WindowParam windowPa) { mWindowParam = &windowPa; }
 
 END_SCRIPT
