@@ -33,7 +33,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		bool isCursorLocked;
 
 		ScriptWeapons* mCurrentWeapon;
-
 		std::vector<ScriptWeapons*> mAllWeapons;
 
 	public:
@@ -45,7 +44,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		{ 
 			mWindow = gce::GameManager::GetWindow(); 
 			mIsJumping = true;
-			mYaw = 0.f; mPitch = 0.f;
 		}
 
 		virtual void Update()

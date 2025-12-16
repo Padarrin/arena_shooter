@@ -463,6 +463,7 @@ public:
 	static void DeleteGameObject()
 	{
 		auto* mapGameObject = gMenuObject->m_pScene->GetGameObject();
+		gCameraObject->RemoveParent();
 		for (auto& [id, gameObject] : *mapGameObject)
 		{
 			if (gameObject->GetScript<ScriptEntity>() != nullptr || gameObject->GetScript<ScriptGrid>() != nullptr)
