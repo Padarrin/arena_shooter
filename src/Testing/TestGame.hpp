@@ -206,7 +206,7 @@ public:
 		ScriptPlayer* player = playerObject.GetScript<ScriptPlayer>();
 		player->SetCamera(cameraObject);
 		player->SetWorldPosition(gce::Vector3f32(0.f, 10.f, 0.f));
-		player->mCharacter->SetSpeed(90.f);
+		player->mCharacter->SetSpeed(9.f);
 		player->SetJump(6.f);
 
 		return player;
