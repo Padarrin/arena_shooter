@@ -197,6 +197,14 @@ public:
 			{
 				isDead = false;
 			}
+			if (this->mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage()))
+			{
+				tookDamage = true;
+			}
+			else
+			{
+				tookDamage = false;
+			}
 		}
 		else if (dist > 0.5f)
 		{

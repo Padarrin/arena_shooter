@@ -77,10 +77,11 @@ public:
 		mTarget.isSet = true;
 	}
 
-	void Damage(int damage) 
+	bool Damage(int damage) 
 	{ 
 		mLife -= damage; 
 		if (mLife < 1) { mEntity->DestroyCharacter(); }
+		return true;
 	}
 	void Heal(int heal) 
 	{ 
