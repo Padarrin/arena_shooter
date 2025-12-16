@@ -152,27 +152,6 @@ void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& wea
 
 }
 
-void CreateUI(gce::Scene& scene, gce::Vector2f32 pos, gce::Vector2f32 size, gce::Vector3f32 scale, std::string path, D12PipelineObject &texturePso)
-{
-	GameObject& crosshair = GameObject::Create(scene);
-	ImageUI* uiImage = crosshair.AddComponent<ImageUI>();
-
-	Vector2f32 posUi = pos - size * 0.5f;
-
-	uiImage->InitializeImage(posUi, size, 1.f);
-
-	uiImage->btmBrush = new BitMapBrush(path);
-	uiImage->btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, scale, 0);
-	uiImage->SetActive(true);
-
-	/*GameObject& Cube = GameObject::Create(scene);
-	MeshRenderer* meshRenderer = Cube.AddComponent<MeshRenderer>();
-	meshRenderer->pGeometry = SHAPES.CUBE;
-	meshRenderer->pPso = &texturePso;
-	Cube.transform.SetWorldPosition({ 0, 0, 10 });*/
-
-}
-
 BEGIN_TEST(Game)
 
 	gce::GameManager::Create();
@@ -211,10 +190,10 @@ BEGIN_TEST(Game)
 	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
 	gce::GameObject& uiObject = gce::GameObject::Create(scene);
-	ScriptUI* ui = uiObject.GetScript<ScriptUI>();
+	ScriptUI* ui = uiObject.AddScript<ScriptUI>();
 	//ui->SetPlayer(player);
 
-	CreateUI(scene, { windowParam.width*0.8f,windowParam.height * 0.78f }, {72,72}, { 1.f / 14.f, 1.f / 14.f, 1.f / 14.f }, "res/Textures/test1.png", texturePso);
+	ui->CreateUI(scene, { windowParam.width*0.8f,windowParam.height * 0.78f }, {72,72}, { 1.f / 14.f, 1.f / 14.f, 1.f / 14.f }, "res/Textures/test1.png", texturePso);
 
 	CreateEnemy(scene, player, grid);
 

@@ -91,10 +91,30 @@ public:
 		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();*/
 	}
 
+	void CreateUI(gce::Scene& scene, gce::Vector2f32 pos, gce::Vector2f32 size, gce::Vector3f32 scale, std::string path, D12PipelineObject& texturePso)
+	{
+		GameObject& crosshair = GameObject::Create(scene);
+		ImageUI* uiImage = crosshair.AddComponent<ImageUI>();
+
+		Vector2f32 posUi = pos - size * 0.5f;
+
+		uiImage->InitializeImage(posUi, size, 1.f);
+
+		uiImage->btmBrush = new BitMapBrush(path);
+		uiImage->btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, scale, 0);
+		uiImage->SetActive(true);
+
+		mAllImages.push_back(&crosshair);
+
+		/*GameObject& Cube = GameObject::Create(scene);
+		MeshRenderer* meshRenderer = Cube.AddComponent<MeshRenderer>();
+		meshRenderer->pGeometry = SHAPES.CUBE;
+		meshRenderer->pPso = &texturePso;
+		Cube.transform.SetWorldPosition({ 0, 0, 10 });*/
+
+	}
+
 	void SetPlayer(ScriptPlayer* player) { mPlayer = player; }
 	ScriptPlayer* GetPlayer() { return mPlayer; }
-
-	void AddImage(gce::GameObject* imageObject) { mAllImages.push_back(imageObject); }
-	std::vector<gce::GameObject*>* GetAllImages() { return &mAllImages; }
 
 END_SCRIPT
