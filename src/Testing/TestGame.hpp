@@ -103,7 +103,7 @@ void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
 	///////////////////////////////////////////////////////////
 	// Map json
-	std::vector<gce::GameObject*> gameObjectLoad = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/map_test.json", &scene);
+	std::vector<gce::GameObject*> gameObjectLoad = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/outside.json", &scene);
 
 	int lenghtLoad = (int)gameObjectLoad.size();
 	for (int i = 0; i < lenghtLoad; i++)
@@ -246,7 +246,7 @@ BEGIN_TEST(Game)
 
 	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-	CreateNail(scene, player, grid);
+	//CreateNail(scene, player, grid);
 
 	CreateMap(scene, player, grid);
 

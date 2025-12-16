@@ -29,23 +29,19 @@ protected:
 	String hit = "Hit";
 	String die = "Die";
 
-	inline static bool isNotMooving = true;
+	inline static bool isIdle = false;
 	inline static bool isChasingPlayer = false;
 	inline static bool isAttacking = false;
 	inline static bool tookDamage = false;
 	inline static bool isDead = false;
 
-	StateMachine::Condition condition1{ [this] {return this->IsNotMooving(); } };
-	StateMachine::Condition condition2{ [this] {return this->IsChasingPlayer(); } };
-	StateMachine::Condition condition3{ [this] {return this->IsAttacking(); } };
-	StateMachine::Condition condition4{ [this] {return this->TookDamage(); } };
-	StateMachine::Condition condition5{ [this] {return this->IsDead(); } };
+	StateMachine::Condition conditions{ [this] {return this->Conditions(); } };
 
-	Vector<StateMachine::Condition> conditionIdle{ condition1 };
-	Vector<StateMachine::Condition> conditionRun{ condition2 };
-	Vector<StateMachine::Condition> condittionAttack{ condition3 };
-	Vector<StateMachine::Condition> conditionHit{ condition4 };
-	Vector<StateMachine::Condition> conditionDie{ condition5 };
+	Vector<StateMachine::Condition> conditionIdle{ conditions };
+	Vector<StateMachine::Condition> conditionRun{ conditions };
+	Vector<StateMachine::Condition> condittionAttack{ conditions };
+	Vector<StateMachine::Condition> conditionHit{ conditions };
+	Vector<StateMachine::Condition> conditionDie{ conditions };
 
 
 public:
@@ -176,8 +172,8 @@ public:
 	static void OnBeginDie() { Console::Log("[Die] Begin"); }
 	static void OnUpdateDie() { Console::Log("[Die] Updating... Has no life."); }
 	static void OnEndDie() { Console::Log("[Die] End"); }
-	
-	bool IsNotMooving()
+
+	bool Conditions()
 	{
 		Vector3f32 posPlayer = mPlayer->GetWorldPosition();
 		Vector3f32 posThis = this->GetWorldPosition();
@@ -186,39 +182,46 @@ public:
 
 		if (dist <= 0.5f)
 		{
-			isNotMooving = true;
+			isIdle = true;
+			isAttacking = true;
+
+			if (this->mAgent->GetLife() == 0)
+			{
+				isIdle = false;
+				isChasingPlayer = false;
+				isAttacking = false;
+				tookDamage = false;
+				isDead = true;
+			}
+			else
+			{
+				isDead = false;
+			}
+		}
+		else if (dist > 0.5f)
+		{
+			isChasingPlayer = true;
+			isIdle = false;
 		}
 		else
 		{
-			isNotMooving = false;
-			IsChasingPlayer();
+			isIdle = true;
 		}
-		return isNotMooving;
+		return true;
+	}
+
+	bool IsIdle()
+	{
+		return isIdle;
 	}
 	bool IsChasingPlayer() 
 	{
-		if (IsNotMooving())
-		{
-			isChasingPlayer = false;
-		}
-		else
-		{
-			isChasingPlayer = true;
-		}
-
 		return isChasingPlayer;
 	}
 	bool IsAttacking() 
-	{ 
-		return isAttacking; 
-	}
-	bool TookDamage() 
-	{ 
-		return tookDamage; 
-	}
-	bool IsDead() 
-	{
-		return isDead; 
-	}
+	{ return isAttacking; }
+	bool TookDamage() { return tookDamage; }
+	bool IsDead() { return isDead; }
+
 
 END_SCRIPT

@@ -104,6 +104,10 @@ public:
 	gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }
 	void WorldTranslate(gce::Vector3f32 position) { mCharacter->mEntity->WorldTranslate(position); }
 
+	int GetLife()
+	{
+		return mCharacter->GetLife();
+	}
 
 END_SCRIPT
 
