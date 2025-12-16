@@ -17,20 +17,7 @@ public:
 	int GetInStock() { return inStock; }
 };
 
-struct Image
-{
-	gce::GameObject* mImageObjet;
-
-	Image() { mImageObjet = nullptr; }
-	Image(gce::GameObject* buttonObjet) { mImageObjet = buttonObjet; }
-
-	void SetAll(gce::GameObject* buttonObjet) { mImageObjet = buttonObjet; }
-
-	void SetImageObjet(gce::GameObject* buttonObjet) { mImageObjet = buttonObjet; }
-	gce::GameObject* GetImageObjet() { return mImageObjet; }
-};
-
-DECLARE_SCRIPT(ScriptUI, ScriptFlag::Start | ScriptFlag::Update)
+DECLARE_SCRIPT(ScriptUI, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
 private:
 	Ui mBall;
@@ -49,13 +36,14 @@ private:
 	ScriptPistolMagazine* mSubmachine;
 	ScriptPistolMagazine* mBazooka;
 
+	std::vector<gce::GameObject*> mAllImages;
 
 public:
 	ScriptEntity* mEntity;
 
 	virtual void Initia() 
 	{ 
-		mUiWeapon = mPlayer->GetAllWeapons();
+		/*mUiWeapon = mPlayer->GetAllWeapons();
 
 		mSubmachine = (*mUiWeapon)[SUBMACHINEGUN]->mMagazine;
 		mBazooka = (*mUiWeapon)[SUBMACHINEGUN]->mMagazine;
@@ -69,12 +57,12 @@ public:
 		mImprPiece.SetStockMax(30);
 		mImprPiece.SetInStock(0);
 
-		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
+		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();*/
 	}
 
 	virtual void Start()
 	{
-		mCurrentWeapon = mPlayer->GetCurrentWeapon();
+		//mCurrentWeapon = mPlayer->GetCurrentWeapon();
 	}
 
 	virtual void Update()
@@ -103,27 +91,10 @@ public:
 		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();*/
 	}
 
-	std::vector<Image*> ShowMenu() { return ActiveImage(); }
-
-	std::vector<Image*> ActiveImage()
-	{
-		std::vector<Image*> allActiveImage;
-
-		for (auto im = mAllImages.begin(); im != mAllImages.end(); ++im)
-		{
-			Image* image = *im;
-			
-			image->GetImageObjet()->SetActive(true);
-			allActiveImage.push_back(image);
-		}
-
-		return allActiveImage;
-	}
-
 	void SetPlayer(ScriptPlayer* player) { mPlayer = player; }
 	ScriptPlayer* GetPlayer() { return mPlayer; }
 
-	void AddImage(gce::GameObject* imageObject) { mAllImages.push_back(new Image(imageObject)); }
-	std::vector<Image*>* GetAllImages() { return &mAllImages; }
+	void AddImage(gce::GameObject* imageObject) { mAllImages.push_back(imageObject); }
+	std::vector<gce::GameObject*>* GetAllImages() { return &mAllImages; }
 
 END_SCRIPT

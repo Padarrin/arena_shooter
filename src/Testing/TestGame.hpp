@@ -152,13 +152,25 @@ void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& wea
 
 }
 
-void CreateUI(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& cameraObject, gce::Vector3f32 pos, gce::Vector3f32 scale)
+void CreateUI(gce::Scene& scene, gce::Vector2f32 pos, gce::Vector2f32 size, gce::Vector3f32 scale, std::string path, D12PipelineObject &texturePso)
 {
-	gce::GameObject& uiObject = CreateGameObject<ScriptUI>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-	cameraObject.AddChild(uiObject);
-	ScriptUI* ui = uiObject.GetScript<ScriptUI>();
-	ui->mEntity->SetWorldPosition(gce::Vector3f32(pos));
-	ui->mEntity->SetWorldScale(gce::Vector3f32(scale));
+	GameObject& crosshair = GameObject::Create(scene);
+	ImageUI* uiImage = crosshair.AddComponent<ImageUI>();
+
+	Vector2f32 posUi = pos - size * 0.5f;
+
+	uiImage->InitializeImage(posUi, size, 1.f);
+
+	uiImage->btmBrush = new BitMapBrush(path);
+	uiImage->btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, scale, 0);
+	uiImage->SetActive(true);
+
+	/*GameObject& Cube = GameObject::Create(scene);
+	MeshRenderer* meshRenderer = Cube.AddComponent<MeshRenderer>();
+	meshRenderer->pGeometry = SHAPES.CUBE;
+	meshRenderer->pPso = &texturePso;
+	Cube.transform.SetWorldPosition({ 0, 0, 10 });*/
+
 }
 
 BEGIN_TEST(Game)
@@ -198,28 +210,11 @@ BEGIN_TEST(Game)
 
 	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-	/*CreateUI(scene, player, cameraObject, { 0.5f, 9.7f, 1.f }, { 0.1f, 0.1f, 0.01f });
-	CreateUI(scene, player, cameraObject, { 0.6f, 9.7f, 1.f }, { 0.08f, 0.08f, 0.01f });*/
+	gce::GameObject& uiObject = gce::GameObject::Create(scene);
+	ScriptUI* ui = uiObject.GetScript<ScriptUI>();
+	//ui->SetPlayer(player);
 
-	GameObject& crosshair = GameObject::Create(scene);
-	ImageUI& uiImage = *crosshair.AddComponent<ImageUI>();
-	Vector2f32 center = { windowParam.width / 2.f, windowParam.height / 2.f };
-	Vector2f32 size = { 32, 32 };
-	Vector2f32 posUi = center - size * 0.5f;
-	uiImage.InitializeImage(posUi, size, 1.f);
-
-	uiImage.btmBrush = new BitMapBrush("res/Textures/test1.png");
-	uiImage.btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, { 1.f / 16.f, 1.f / 16.f, 1.f / 16.f }, 0);
-	uiImage.SetActive(true);
-
-
-
-	HideMouseCursor();
-	GameObject& Cube = GameObject::Create(scene);
-	MeshRenderer* meshRenderer = Cube.AddComponent<MeshRenderer>();
-	meshRenderer->pGeometry = SHAPES.CUBE;
-	meshRenderer->pPso = &texturePso;
-	Cube.transform.SetWorldPosition({ 0, 0, 10 });
+	CreateUI(scene, { windowParam.width*0.8f,windowParam.height * 0.78f }, {72,72}, { 1.f / 14.f, 1.f / 14.f, 1.f / 14.f }, "res/Textures/test1.png", texturePso);
 
 	CreateEnemy(scene, player, grid);
 
@@ -232,6 +227,7 @@ BEGIN_TEST(Game)
 	CreateBazooka(scene, player, weaponParent);
 	
 	player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
+
 
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
 	//geometry = 
