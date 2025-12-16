@@ -44,11 +44,12 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		{ 
 			mWindow = gce::GameManager::GetWindow(); 
 			mIsJumping = true;
+			gce::PhysicComponent* physique = m_pOwner->GetComponent<gce::PhysicComponent>();
+			bool i = physique->IsActive();
 		}
 
 		virtual void Update()
 		{ 
-			std::cout << GetWorldPosition().y << std::endl;
 			float deltaTime = gce::GameManager::DeltaTime();
 
 			gce::HideMouseCursor();
@@ -80,7 +81,6 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			float verticalInput = gce::GetKey(gce::Keyboard::Key::Z) - gce::GetKey(gce::Keyboard::Key::S);
 
 			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * verticalInput;
-
 			WorldTranslate(direction * mCharacter->GetSpeed() * deltaTime);
 
 			if (gce::GetKeyDown(gce::Keyboard::Key::SPACE))
