@@ -45,8 +45,9 @@ public:
     void SetRowCol(gce::Vector2i32 rowcol) { mRowCol = rowcol; }
 
     void SetIsInaccessible(bool isInaccessible, bool isAlwaysInaccessible) { mIsInaccessible = isInaccessible; mIsAlwaysInaccessible = isAlwaysInaccessible;}
+    void SetIsInaccessible(bool isInaccessible) { mIsInaccessible = isInaccessible; }
     bool GetIsInaccessible() { return mIsInaccessible; }
-    bool GetIsInaccessible() { return mIsAlwaysInaccessible; }
+    bool GetIsAlwaysInaccessible() { return mIsAlwaysInaccessible; }
 
     void SetHaveObject(GameObject* haveObject) { mHaveObject = haveObject; }
     GameObject* GetHaveObject() { return mHaveObject; }

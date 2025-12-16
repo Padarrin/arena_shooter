@@ -44,6 +44,22 @@ public:
 	}
 	virtual void Update() 
 	{
+		int lenghtI = (int)mAllCells.size();
+		int lenghtJ = (int)mAllCells.size();
+		for (int i = 0; i < lenghtI; i++)
+		{
+			for (int j = 0; j < lenghtJ; j++)
+			{
+				Cell* cell = mAllCells[i][j];
+				if (cell->GetIsInaccessible())
+				{
+					if (cell->GetIsAlwaysInaccessible() == false)
+					{
+						cell->SetIsInaccessible(false);
+					}
+				}
+			}
+		}
 	}
 	virtual void Destroy() {}
 
@@ -80,13 +96,13 @@ public:
 		mAllNodes.clear();
 	}
 
-	void SetAllInacessibleInRect(gce::Vector2f32 centerPositionXZ, gce::Vector2f32 size, bool isAlwaysInaccessible)
+	void SetAllInacessibleInRectWithCenter(gce::Vector2f32 centerPositionXZ, gce::Vector2f32 size, bool isAlwaysInaccessible)
 	{
 		gce::Vector4 rectXYWH = gce::Vector4(centerPositionXZ.x - (size.x * 0.5f), centerPositionXZ.y - (size.y * 0.5f), size.x, size.y);
 		SetAllInacessibleInRect(rectXYWH, isAlwaysInaccessible);
 	}
 
-	void SetAllInacessibleInRect(gce::Vector2f32 positionXZ, gce::Vector2f32 size, bool isAlwaysInaccessible)
+	void SetAllInacessibleInRectWithPos(gce::Vector2f32 positionXZ, gce::Vector2f32 size, bool isAlwaysInaccessible)
 	{
 		gce::Vector4 rectXYWH = gce::Vector4(positionXZ.x, positionXZ.y, size.x, size.y);
 		SetAllInacessibleInRect(rectXYWH, isAlwaysInaccessible);
