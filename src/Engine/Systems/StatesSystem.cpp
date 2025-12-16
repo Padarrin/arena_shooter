@@ -9,7 +9,7 @@ namespace gce
 		if (m_stateMachineList.contains(pMe))
 			return m_stateMachineList[pMe];
 		
-		StateMachine* stateMachine = new StateMachine(pMe);
+		StateMachine* stateMachine = new StateMachine();
 
 		m_stateMachineList[pMe] = stateMachine;
 		return stateMachine;

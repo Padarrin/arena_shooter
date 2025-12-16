@@ -191,19 +191,19 @@ public:
 		else
 		{
 			isNotMooving = false;
-			isChasingPlayer = true;
+			IsChasingPlayer();
 		}
 		return isNotMooving;
 	}
 	bool IsChasingPlayer() 
 	{
-		if (!IsNotMooving)
+		if (IsNotMooving())
 		{
-			isChasingPlayer = true;
+			isChasingPlayer = false;
 		}
 		else
 		{
-			isChasingPlayer = false;
+			isChasingPlayer = true;
 		}
 
 		return isChasingPlayer;
