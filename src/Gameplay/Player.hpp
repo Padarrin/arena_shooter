@@ -88,6 +88,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			{
 				Jump(mJump, deltaTime);
 			}
+			//mObjectCamera->transform.SetWorldPosition(GetWorldPosition());
 		}
 
 		void InputShoot(float deltaTime)

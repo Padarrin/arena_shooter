@@ -23,7 +23,7 @@
 #include "JsonLoader.hpp"
 using namespace gce;
 
-gce::GameObject* gCameraObject;
+//gce::GameObject* gCameraObject;
 gce::GameObject* gMenuObject;
 
 BEGIN_TEST(Game)
@@ -31,7 +31,7 @@ BEGIN_TEST(Game)
 	gce::GameManager::Create();
 	gce::Scene& scene = gce::Scene::Create();
 
-	gCameraObject = CreateCamera(scene);
+	//gCameraObject = CreateCamera(scene);
 
 	gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
 	gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
@@ -130,8 +130,8 @@ BEGIN_TEST(Game)
 	gce::GameObject& buttonEndObject = gce::GameObject::Create(scene); buttonEndObject.transform.LocalTranslate(posButtonEnd); buttonEndObject.transform.LocalScale(scaleButtonEnd);
 	gce::UIButton* buttonEnd = buttonEndObject.AddComponent<gce::UIButton>(); buttonEnd->AddListener(TestGame::Quit); buttonEnd->pBitMapBrush = &imageButtonEnd; buttonEnd->pHoverBitMapBrush = &imageCollideButtonEnd;
 
-	menu->SetCamera(gCameraObject);
-	menu->SetWorldPositionCamera(posCameraInMenu);
+	//menu->SetCamera(gCameraObject);
+	//menu->SetWorldPositionCamera(posCameraInMenu);
 
 	menu->AddImage(&imageMainMenuObject, MAIN_MENU);
 	menu->AddButton(&buttonStartObject, MAIN_MENU);
@@ -383,15 +383,16 @@ public:
 
 	static void Start()
 	{
-		gce::GameObject* cameraObject = gCameraObject;
-		gce::Scene& scene = (*gCameraObject->m_pScene);
-
+		//gce::GameObject* cameraObject = gCameraObject;
 		gce::GameObject* menuObject = gMenuObject;
+		gce::Scene& scene = (*gMenuObject->m_pScene);
+
 		ScriptMenu* menu = menuObject->GetScript<ScriptMenu>();
 		menu->HideMenu();
 		menu->SetInterfaceShow(NOTHING);
 
-		ResetCamera(cameraObject);
+		gce::GameObject* cameraObject = CreateCamera(scene);
+		//ResetCamera(cameraObject);
 
 		//ImageData data = ImageLoader::LoadTexture(String(RES_PATH) + path);
 
@@ -404,14 +405,14 @@ public:
 		gce::Vector2f32 sizeGrid = gce::Vector2f32(40.f, 80.f);
 		gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 2.5f), posPlayer.z + 20.f);
 
-		ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
+		//ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
 		//CreateEnemy(scene, player, grid);
 
 		//CreateFloor(scene);
-		CreateNail(scene, player, grid);
+		//CreateNail(scene, player, grid);
 
-		CreateMap(scene, player, grid);
+		//CreateMap(scene, player, grid);
 
 		CreateAngleGringer(scene, player, weaponParent);
 		CreateSubmachineGun(scene, player, weaponParent);
@@ -462,14 +463,6 @@ public:
 
 	static void DeleteGameObject()
 	{
-		auto* mapGameObject = gMenuObject->m_pScene->GetGameObject();
-		for (auto& [id, gameObject] : *mapGameObject)
-		{
-			if (gameObject->GetScript<ScriptEntity>() != nullptr || gameObject->GetScript<ScriptGrid>() != nullptr)
-			{
-				gameObject->SetActive(false);
-			}
-		}
 		/*gCameraObject->RemoveParent();
 		for (auto it = mapGameObject->begin(); it != mapGameObject->end(); )
 		{
@@ -492,8 +485,19 @@ public:
 			{
 				++it;
 			}
-			
+
 		}*/
+		auto* mapGameObject = gMenuObject->m_pScene->GetGameObject();
+		for (auto& [id, gameObject] : *mapGameObject)
+		{
+			bool isEntity = gameObject->HasScript<ScriptEntity>();
+			bool isGrid = gameObject->HasScript<ScriptGrid>();
+			bool isCamera = gameObject->HasComponent<gce::Camera>();
+			if (isEntity || isGrid || isCamera)
+			{
+				gameObject->SetActive(false);
+			}
+		}
 	}
 
 
