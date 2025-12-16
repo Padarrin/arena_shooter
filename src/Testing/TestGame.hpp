@@ -236,8 +236,8 @@ public:
 		//enemyObject.SetName("Enemy");
 
 
-		//ScriptEnemy* enemy = enemyObject->AddComponent<ScriptEnemy>();
-		/*ScriptEnemy* enemy = enemyObject->GetComponent<ScriptEnemy>();
+		ScriptEnemy* enemy = enemyObject->AddScript<ScriptEnemy>();
+		//ScriptEnemy* enemy = enemyObject->GetScript<ScriptEnemy>();
 		enemy->SetWorldPosition({ 10,-8,10 });
 		enemy->SetPlayer(player);
 		enemy->SetMaxLife(20);
@@ -246,7 +246,7 @@ public:
 		enemy->mAgent->GetPathFinding()->SetGrid(grid);
 		enemy->SetCellTarget(grid->GetCell(player->GetWorldPosition()));
 		enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
-		*/
+		
 	}
 
 	static void SetFloor(/*gce::Scene& scene,*/gce::GameObject* floorObject)
@@ -395,29 +395,29 @@ public:
 
 		//ImageData data = ImageLoader::LoadTexture(String(RES_PATH) + path);
 
-		gce::GameObject& weaponParent = gce::GameObject::Create(scene);
-		cameraObject->AddChild(weaponParent);
+		//gce::GameObject& weaponParent = gce::GameObject::Create(scene);
+		//cameraObject->AddChild(weaponParent);
 
 		ScriptPlayer* player = CreatePlayer(scene, cameraObject);
 
-		gce::Vector3f32 posPlayer = player->GetWorldPosition();
-		gce::Vector2f32 sizeGrid = gce::Vector2f32(40.f, 80.f);
-		gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 2.5f), posPlayer.z + 20.f);
+		//gce::Vector3f32 posPlayer = player->GetWorldPosition();
+		//gce::Vector2f32 sizeGrid = gce::Vector2f32(40.f, 80.f);
+		//gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 2.5f), posPlayer.z + 20.f);
 
-		ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
+		//ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
 		//CreateEnemy(scene, player, grid);
 
 		//CreateFloor(scene);
-		CreateNail(scene, player, grid);
+		//CreateNail(scene, player, grid);
 
-		CreateMap(scene, player, grid);
+		//CreateMap(scene, player, grid);
 
-		CreateAngleGringer(scene, player, weaponParent);
-		CreateSubmachineGun(scene, player, weaponParent);
-		CreateBazooka(scene, player, weaponParent);
+		//CreateAngleGringer(scene, player, weaponParent);
+		//CreateSubmachineGun(scene, player, weaponParent);
+		//CreateBazooka(scene, player, weaponParent);
 
-		player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
+		//player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
 
 	}
 

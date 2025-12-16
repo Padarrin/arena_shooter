@@ -63,7 +63,6 @@ public:
     virtual void Update()
     {
         float32 &deltatime = gce::GameManager::s_pInstance->m_deltaTime;
-        std::cout << " " << deltatime << " " << mShowMenu << std::endl;
 
         if (gce::GetKey(gce::Keyboard::ENTER) || gce::GetKey(gce::Keyboard::ESCAPE))
         {
@@ -72,21 +71,6 @@ public:
 
         if (mShowMenu)
         {
-            //if (mObjectCamera != nullptr)
-            //{
-                //if (deltatime != -1.f)
-                //{
-                    //gce::GameObject* playerObject = mObjectCamera->GetParent();
-                    //if (playerObject != nullptr)
-                    //{
-                        //ScriptPlayer* player = playerObject->GetScript<ScriptPlayer>();
-                        //player->mYaw = 0.f;
-                        //player->mPitch = 0.f;
-                    //}
-                //}
-                //mObjectCamera->transform.SetWorldPosition(mCameraPositionInMenu);
-                //mObjectCamera->transform.SetWorldRotation(gce::Vector3f32(0.f, 0.f, 0.f));
-            //}
             deltatime = -1.f;
         }
         else

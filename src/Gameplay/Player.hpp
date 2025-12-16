@@ -48,6 +48,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		virtual void Update()
 		{ 
+			std::cout << GetWorldPosition().y << std::endl;
 			float deltaTime = gce::GameManager::DeltaTime();
 
 			gce::HideMouseCursor();
