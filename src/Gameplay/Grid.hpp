@@ -80,6 +80,35 @@ public:
 		mAllNodes.clear();
 	}
 
+	void SetAllInacessibleInRect(gce::Vector2f32 centerPositionXZ, gce::Vector2f32 size, bool isAlwaysInaccessible)
+	{
+		gce::Vector4 rectXYWH = gce::Vector4(centerPositionXZ.x - (size.x * 0.5f), centerPositionXZ.y - (size.y * 0.5f), size.x, size.y);
+		SetAllInacessibleInRect(rectXYWH, isAlwaysInaccessible);
+	}
+
+	void SetAllInacessibleInRect(gce::Vector2f32 positionXZ, gce::Vector2f32 size, bool isAlwaysInaccessible)
+	{
+		gce::Vector4 rectXYWH = gce::Vector4(positionXZ.x, positionXZ.y, size.x, size.y);
+		SetAllInacessibleInRect(rectXYWH, isAlwaysInaccessible);
+	}
+
+	void SetAllInacessibleInRect(gce::Vector4 rectXYWH, bool isAlwaysInaccessible)
+	{
+		float x = rectXYWH.GetX();float y = rectXYWH.GetY();
+		float w = rectXYWH.GetZ();float h = rectXYWH.GetW();
+
+		int lenghtW = (int)(w / (float)mCellSize) + 1;
+		int lenghtH = (int)(h / (float)mCellSize) + 1;
+		for (int i = 0; i < lenghtW; i++)
+		{
+			for (int j = 0; j < lenghtH; j++)
+			{
+				Cell* c = GetNearestCell(gce::Vector3f32(x + i * mCellSize, 0.f, y + j * mCellSize));
+				c->SetIsInaccessible(true, isAlwaysInaccessible);
+			}
+		}
+	}
+
 	// SetScale et lance InitTab
 	void SetSizeTabCell(gce::Vector2i32 sizeTabCell) { m_pOwner->transform.SetWorldScale(gce::Vector3f32((float)sizeTabCell.x * mCellSize, 0.1f, (float)sizeTabCell.y * mCellSize)); InitTab(sizeTabCell); }
 	gce::Vector2i32 GetSizeTabCell() { return gce::Vector2i32(mAllCells.size(), mAllCells[0].size()); }
@@ -139,19 +168,9 @@ public:
 		return GetPosOfIndex00() + addPos;
 	}
 
-	Cell* GetCell(gce::Vector3f32 pos)
-	{
-		Cell* nearest = GetNearestCell(pos);
-		if (nearest != nullptr)
-		{
-			return nearest;
-		}
-		return nullptr;
-	}
-
 	Node<Cell>* GetNode(gce::Vector3f32 pos) 
 	{
-		Cell* cell = GetCell(pos);
+		Cell* cell = GetNearestCell(pos);
 		if (cell != nullptr)
 		{
 			return GetNode(cell);

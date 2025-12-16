@@ -238,7 +238,7 @@ public:
 		enemy->SetPlayer(player);
 		enemy->mAgent->mCharacter->SetSpeed(5.f);
 		enemy->mAgent->GetPathFinding()->SetGrid(grid);
-		enemy->SetCellTarget(grid->GetCell(player->GetWorldPosition()));
+		enemy->SetCellTarget(grid->GetNearestCell(player->GetWorldPosition()));
 		enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
 	}
 

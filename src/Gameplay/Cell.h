@@ -16,12 +16,13 @@ protected:
     gce::Vector2i32 mRowCol;
 
     bool mIsInaccessible;
+    bool mIsAlwaysInaccessible;
 
     GameObject* mHaveObject;
 public:
     Cell() { Start(); }
 
-    void Start() { SetConfigHeight(1);  SetRowCol(-1, -1); SetIsInaccessible(false); SetHaveObject(nullptr); }
+    void Start() { SetConfigHeight(1);  SetRowCol(-1, -1); SetIsInaccessible(false, false); SetHaveObject(nullptr); }
     
     void OnUpdate() {}
 
@@ -43,8 +44,9 @@ public:
     void SetRowCol(int row, int col) { mRowCol.x = row; mRowCol.y = col; }
     void SetRowCol(gce::Vector2i32 rowcol) { mRowCol = rowcol; }
 
-    void SetIsInaccessible(bool isInaccessible) { mIsInaccessible = isInaccessible; }
+    void SetIsInaccessible(bool isInaccessible, bool isAlwaysInaccessible) { mIsInaccessible = isInaccessible; mIsAlwaysInaccessible = isAlwaysInaccessible;}
     bool GetIsInaccessible() { return mIsInaccessible; }
+    bool GetIsInaccessible() { return mIsAlwaysInaccessible; }
 
     void SetHaveObject(GameObject* haveObject) { mHaveObject = haveObject; }
     GameObject* GetHaveObject() { return mHaveObject; }
