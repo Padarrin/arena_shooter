@@ -17,7 +17,7 @@ struct ShapeUi;
 struct ColorBrush;
 
 
-DECLARE_COMPONENT( UIButton, UiBase )
+DECLARE_COMPONENT( UIButton, UIBase )
 {
     enum Shape: uint8 { RECT, ROUND_RECT, ELLIPSE, LINE };
 

@@ -3,8 +3,6 @@
 #include "Weapons.hpp"
 #include "Player.hpp"
 
-DECLARE_SCRIPT(ScriptUI, ScriptFlag::Start | ScriptFlag::Update)
-
 struct Ui
 {
 private:
@@ -19,10 +17,27 @@ public:
 	int GetInStock() { return inStock; }
 };
 
+struct Image
+{
+	gce::GameObject* mImageObjet;
+
+	Image() { mImageObjet = nullptr; }
+	Image(gce::GameObject* buttonObjet) { mImageObjet = buttonObjet; }
+
+	void SetAll(gce::GameObject* buttonObjet) { mImageObjet = buttonObjet; }
+
+	void SetImageObjet(gce::GameObject* buttonObjet) { mImageObjet = buttonObjet; }
+	gce::GameObject* GetImageObjet() { return mImageObjet; }
+};
+
+DECLARE_SCRIPT(ScriptUI, ScriptFlag::Start | ScriptFlag::Update)
+
 private:
 	Ui mBall;
 	Ui mSeekerBall;
 	Ui mImprPiece;
+	
+	gce::GameObject* mCameraObject;
 
 	std::vector<ScriptWeapons*>* mUiWeapon;
 
@@ -36,6 +51,8 @@ private:
 
 
 public:
+	ScriptEntity* mEntity;
+
 	virtual void Initia() 
 	{ 
 		mUiWeapon = mPlayer->GetAllWeapons();
@@ -82,11 +99,31 @@ public:
 			mPlayer->SetCurrentWeapon(BAZOOKA);
 		}
 
-		mCurrentWeapon = mPlayer->GetCurrentWeapon();
-		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
+		/*mCurrentWeapon = mPlayer->GetCurrentWeapon();
+		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();*/
+	}
+
+	std::vector<Image*> ShowMenu() { return ActiveImage(); }
+
+	std::vector<Image*> ActiveImage()
+	{
+		std::vector<Image*> allActiveImage;
+
+		for (auto im = mAllImages.begin(); im != mAllImages.end(); ++im)
+		{
+			Image* image = *im;
+			
+			image->GetImageObjet()->SetActive(true);
+			allActiveImage.push_back(image);
+		}
+
+		return allActiveImage;
 	}
 
 	void SetPlayer(ScriptPlayer* player) { mPlayer = player; }
 	ScriptPlayer* GetPlayer() { return mPlayer; }
+
+	void AddImage(gce::GameObject* imageObject) { mAllImages.push_back(new Image(imageObject)); }
+	std::vector<Image*>* GetAllImages() { return &mAllImages; }
 
 END_SCRIPT

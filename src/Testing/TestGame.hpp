@@ -8,10 +8,7 @@
 #include "../Gameplay/Grid.hpp"
 #include "../Gameplay/SubMachineGun.hpp"
 #include "../Gameplay/Ball.hpp"
-#include "../Engine/Components/MeshRenderer.h"
-#include "../Engine/Components/Light.h"
-#include "../Engine/Components/ColliderBase3D.h"
-#include "../Engine/Components/BoxCollider.h"
+#include "../Engine/Components.h"
 #include "define.h"
 #include "JsonLoader.hpp"
 using namespace gce;
@@ -20,11 +17,12 @@ gce::GameObject& CreateCamera(gce::Scene& scene, gce::GameObject& weaponParent)
 {
 	gce::GameObject& cameraObject = gce::GameObject::Create(scene);
 	cameraObject.transform.LocalTranslate({ 0, 0, 0 });
+	//cameraObject.transform.SetWorldPosition({ 0,0,-10 });
 	cameraObject.SetName("Camera");
 	cameraObject.AddChild(weaponParent);
 
 	gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
-	camera.SetMainCamera();
+	camera.SetMainCamera(); //Creer carrer noir
 	camera.SetType(gce::PERSPECTIVE);
 	camera.perspective.fov = XM_PIDIV4;
 	camera.perspective.nearPlane = 0.001f;
@@ -154,28 +152,33 @@ void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& wea
 
 }
 
-//std::vector<ScriptBall*> CreateBall(gce::Scene& scene)
-//{
-//	int maxBall = 10;
-//	float x = 0;
-//
-//	std::vector<ScriptBall*> balls;
-//
-//	while (maxBall != 0)
-//	{
-//		ScriptBall* ball = ScriptBall::CreateBall("PlayerBall", { x,-50,0 }, {0,0,0}, 0, DEFAULT_BALL_DAMAGE, scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-//		balls.push_back(ball);
-//		maxBall--;
-//		x += 3;
-//	}
-//
-//	return balls;
-//}
+void CreateUI(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& cameraObject, gce::Vector3f32 pos, gce::Vector3f32 scale)
+{
+	gce::GameObject& uiObject = CreateGameObject<ScriptUI>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	cameraObject.AddChild(uiObject);
+	ScriptUI* ui = uiObject.GetScript<ScriptUI>();
+	ui->mEntity->SetWorldPosition(gce::Vector3f32(pos));
+	ui->mEntity->SetWorldScale(gce::Vector3f32(scale));
+}
 
-BEGIN_TEST( Game )
+BEGIN_TEST(Game)
 
 	gce::GameManager::Create();
 	gce::Scene& scene = gce::Scene::Create();
+
+	D12PipelineObject texturePso(
+		SHADERS.VERTEX,
+		SHADERS.PIXEL,
+		SHADERS.HULL,
+		SHADERS.DOMAIN_,
+		SHADERS.ROOT_SIGNATURE
+	);
+
+	WindowParam windowParam;
+	windowParam.title = L"Test Light";
+	windowParam.width = 1920;
+	windowParam.height = 1080;
+	windowParam.isFullScreen = true;
 
 	gce::GameObject& weaponParent = gce::GameObject::Create(scene);
 
@@ -195,26 +198,39 @@ BEGIN_TEST( Game )
 
 	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-	gce::GameObject& uiObject = CreateGameObject<ScriptUI>(scene);
-	ScriptUI* ui = uiObject.GetScript<ScriptUI>();
-	gce::BitMapBrush subMachine{ "res/Textures" };
-	gce::Vector3f32 posImageSubMachine = gce::Vector3f32(0.f, 0.f, 5.f);
-	gce::Vector3f32 scaleImageSubMachine = gce::Vector3f32(0.5f, 0.5f, 0.1f);
-	gce::GameObject& imageSubMachine = gce::GameObject::Create(scene); imageSubMachine.transform.LocalTranslate(posImageSubMachine); imageSubMachine.transform.SetWorldScale(scaleImageSubMachine); imageSubMachine.transform.SetWorldScale(scaleImageSubMachine); AddMeshRenderer(imageSubMachine, gce::SHAPES.CUBE);
+	/*CreateUI(scene, player, cameraObject, { 0.5f, 9.7f, 1.f }, { 0.1f, 0.1f, 0.01f });
+	CreateUI(scene, player, cameraObject, { 0.6f, 9.7f, 1.f }, { 0.08f, 0.08f, 0.01f });*/
 
-	ui->SetPlayer(player);
+	GameObject& crosshair = GameObject::Create(scene);
+	ImageUI& uiImage = *crosshair.AddComponent<ImageUI>();
+	Vector2f32 center = { windowParam.width / 2.f, windowParam.height / 2.f };
+	Vector2f32 size = { 32, 32 };
+	Vector2f32 posUi = center - size * 0.5f;
+	uiImage.InitializeImage(posUi, size, 1.f);
+
+	uiImage.btmBrush = new BitMapBrush("res/Textures/test1.png");
+	uiImage.btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, { 1.f / 16.f, 1.f / 16.f, 1.f / 16.f }, 0);
+	uiImage.SetActive(true);
+
+
+
+	HideMouseCursor();
+	GameObject& Cube = GameObject::Create(scene);
+	MeshRenderer* meshRenderer = Cube.AddComponent<MeshRenderer>();
+	meshRenderer->pGeometry = SHAPES.CUBE;
+	meshRenderer->pPso = &texturePso;
+	Cube.transform.SetWorldPosition({ 0, 0, 10 });
 
 	CreateEnemy(scene, player, grid);
 
 	CreateFloor(scene, pso);
-
+	
 	CreateAngleGringer(scene, player, weaponParent);
-
+	
 	ScriptSubMachineGun* weapon = CreateSubmachineGun(scene, player, weaponParent);
-	//weapon->SetBall(CreateBall(scene));
 
 	CreateBazooka(scene, player, weaponParent);
-
+	
 	player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
 
 	//createur de gameobject (remplacer les 'x' par le nom de la class + modifier ou supprimer geometry et ou texture)
@@ -222,15 +238,11 @@ BEGIN_TEST( Game )
 	//texture = 
 	//Scriptx* x = CreateGameObject<Scriptx>(scene, geometry, texture);
 
-	gce::WindowParam windowParam;
-	/*windowParam.height = 992;
-	windowParam.width = 1768;*/
 	gce::GameManager::Run(windowParam);
 
 	gce::GameManager::Destroy();
 
 END_TEST_MAIN_FUNCTION()
-
 
 
 END_TEST(Game)

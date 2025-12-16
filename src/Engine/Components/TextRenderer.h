@@ -8,7 +8,7 @@
 
 namespace gce {
 
-DECLARE_COMPONENT( TextRenderer, UiBase )
+DECLARE_COMPONENT( TextRenderer, UIBase )
 {
 	WStringView text;
 	Font* pFont;
