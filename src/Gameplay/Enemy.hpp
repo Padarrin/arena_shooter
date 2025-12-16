@@ -218,16 +218,9 @@ public:
 		return true;
 	}
 
-	bool IsIdle()
-	{
-		return isIdle;
-	}
-	bool IsChasingPlayer() 
-	{
-		return isChasingPlayer;
-	}
-	bool IsAttacking() 
-	{ return isAttacking; }
+	bool IsIdle() { return isIdle; }
+	bool IsChasingPlayer() { return isChasingPlayer; }
+	bool IsAttacking() { return isAttacking; }
 	bool TookDamage() { return tookDamage; }
 	bool IsDead() { return isDead; }
 

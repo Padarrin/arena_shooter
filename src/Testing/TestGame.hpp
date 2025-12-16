@@ -38,7 +38,7 @@ ScriptPlayer* CreatePlayer(gce::Scene& scene, gce::GameObject& cameraObject)
 {
 	gce::GameObject& gamePlayer = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	gamePlayer.AddComponent<gce::BoxCollider>()->SetActive(true);
-	gamePlayer.AddComponent<gce::PhysicComponent>()->SetActive(true);
+	gamePlayer.AddComponent<gce::PhysicComponent>()->SetActive(false);
 	gamePlayer.SetName("Player");
 	gamePlayer.AddChild(cameraObject);
 
@@ -103,58 +103,59 @@ void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
 	///////////////////////////////////////////////////////////
 	// Map json
-	std::vector<gce::GameObject*> gameObjectLoad = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/outside.json", &scene);
+	std::vector<gce::GameObject*> hangar = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/Hangar.json", &scene);
+	std::vector<gce::GameObject*> outside = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/outside.json", &scene);
+	std::vector<std::vector<gce::GameObject*>> gameObjectLoad;
+	gameObjectLoad.push_back(hangar);
+	gameObjectLoad.push_back(outside);
+
+	hangar[0]->transform.SetWorldPosition({ hangar[0]->transform.GetWorldPosition().x + 0.f, hangar[0]->transform.GetWorldPosition().y + 2.229f, hangar[0]->transform.GetWorldPosition().z + 0.f });
+	outside[0]->transform.SetWorldPosition({ outside[0]->transform.GetWorldPosition().x + 45.f, outside[0]->transform.GetWorldPosition().y + 2.229f, outside[0]->transform.GetWorldPosition().z + 0.f });
 
 	int lenghtLoad = (int)gameObjectLoad.size();
 	for (int i = 0; i < lenghtLoad; i++)
 	{
-		gce::GameObject* currentGameObject= gameObjectLoad[i];
-		
-		//////////////////////Enemy///////////////////////
-		if (currentGameObject->GetName() == "Nail")
+		int geoLoad = (int)gameObjectLoad[i].size();
+		for (int j = 0; j < geoLoad; j++)
 		{
-			currentGameObject->SetName("Enemy");
-			SetNail(currentGameObject, player, grid);
+			gce::GameObject* currentGameObject = gameObjectLoad[i][j];
+
+			//////////////////////Enemy///////////////////////
+			if (currentGameObject->GetName() == "Nail")
+			{
+				currentGameObject->SetName("Enemy");
+				SetNail(currentGameObject, player, grid);
+			}
+			else if (currentGameObject->GetName() == "Bot")
+			{
+				currentGameObject->SetName("Bot");
+				//SetNail(currentGameObject, player, grid);
+			}
+			//////////////////////Enemy Fin///////////////////////
+			//////////////////////Item///////////////////////
+			else if (currentGameObject->GetName() == "Item")
+			{
+				currentGameObject->SetName("Item");
+				//SetNail(currentGameObject, player, grid);
+			}
+			//////////////////////Item Fin///////////////////////
+			//////////////////////Furniture///////////////////////
+			else if (currentGameObject->GetName() == "Box")
+			{
+				currentGameObject->SetName("Box");
+				//SetNail(currentGameObject, player, grid);
+			}
+			//////////////////////Furniture Fin///////////////////////
+			//////////////////////Floor///////////////////////
+			else
+			{
+				currentGameObject->SetName("Floor");
+				SetFloor(currentGameObject);
+			}
+			//////////////////////Floor Fin///////////////////////
 		}
-		else if (currentGameObject->GetName() == "Bot")
-		{
-			currentGameObject->SetName("Bot");
-			//SetNail(currentGameObject, player, grid);
-		}
-		//////////////////////Enemy Fin///////////////////////
-		//////////////////////Item///////////////////////
-		else if (currentGameObject->GetName() == "Item")
-		{
-			currentGameObject->SetName("Item");
-			//SetNail(currentGameObject, player, grid);
-		}
-		//////////////////////Item Fin///////////////////////
-		//////////////////////Furniture///////////////////////
-		else if (currentGameObject->GetName() == "Box")
-		{
-			currentGameObject->SetName("Box");
-			//SetNail(currentGameObject, player, grid);
-		}
-		//////////////////////Furniture Fin///////////////////////
-		//////////////////////Floor///////////////////////
-		else
-		{
-			currentGameObject->SetName("Floor");
-			SetFloor(currentGameObject);
-		}
-		//////////////////////Floor Fin///////////////////////
+		///////////////////////////////////////////////////////////
 	}
-	///////////////////////////////////////////////////////////
-
-	//gce::GameObject& floorObject;
-	//floorObject.AddComponent<gce::BoxCollider>()->SetActive(true);
-	//floorObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
-	//floorObject.SetName("Floor");
-
-	//ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
-	//entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
-	//entity->SetWorldScale({ 50.f,16.f,50.f });
-
 }
 
 ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vector3f32 positionCenter, int sizeCell)
@@ -240,7 +241,7 @@ BEGIN_TEST(Game)
 	ScriptPlayer* player = CreatePlayer(scene, cameraObject);
 	gce::Vector3f32 posPlayer = player->GetWorldPosition();
 	gce::Vector2f32 sizeGrid = gce::Vector2f32(10.f, 10.f);
-	gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 2.5f), posPlayer.z + 20.f);
+	gce::Vector3f32 posGrid = gce::Vector3f32(0.f, 0.f, 0.f);
 
 	D12PipelineObject* pso = new D12PipelineObject{ SHADERS.VERTEX, SHADERS.PIXEL, SHADERS.HULL, SHADERS.DOMAIN_, SHADERS.ROOT_SIGNATURE };
 

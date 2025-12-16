@@ -20,7 +20,7 @@
                 0.004657188896089792
             ],
             "parent": null,
-            "texture": null,
+            "texture": "test1.png",
             "mesh": {
                 "vertices": [
                     -3087.133056640625,
