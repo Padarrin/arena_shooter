@@ -50,8 +50,6 @@ struct Image
 
 DECLARE_SCRIPT(ScriptMenu, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 protected:
-    gce::GameObject* mObjectCamera;
-    gce::Vector3f32 mCameraPositionInMenu;
     std::vector<Button*> mAllButtons;
     std::vector<Image*> mAllImages;
     INTERFACE_SHOW mInterfaceShow;
@@ -163,10 +161,6 @@ public:
     }
 
     bool GetShowMenu() { return mShowMenu; }
-
-    void SetCamera(gce::GameObject* cameraObject) { mObjectCamera = cameraObject; }
-    void SetWorldPositionCamera(gce::Vector3f32 pos) { mCameraPositionInMenu = pos; }
-    gce::Vector3f32 GetWorldPositionCamera() { return mCameraPositionInMenu; }
 
     std::vector<Button*> SetInterfaceShow(INTERFACE_SHOW interfaceShow) { mInterfaceShow = interfaceShow; if (mShowMenu) { return ActiveButton(interfaceShow); } return std::vector<Button*>(); }
     bool IsInterfaceShow(INTERFACE_SHOW interfaceShow) { return mInterfaceShow == interfaceShow; }

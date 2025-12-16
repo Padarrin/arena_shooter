@@ -44,12 +44,14 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		{ 
 			mWindow = gce::GameManager::GetWindow(); 
 			mIsJumping = true;
-			gce::PhysicComponent* physique = m_pOwner->GetComponent<gce::PhysicComponent>();
-			bool i = physique->IsActive();
+			gce::Vector3f32 posPlayer = gce::Vector3f32(0.f, 10.f, 0.f);
+			SetWorldPosition(posPlayer);
 		}
 
 		virtual void Update()
 		{ 
+			
+			std::cout << GetWorldPosition().y << std::endl;
 			float deltaTime = gce::GameManager::DeltaTime();
 
 			gce::HideMouseCursor();
