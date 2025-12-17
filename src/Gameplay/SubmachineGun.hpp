@@ -35,21 +35,11 @@ public:
         {
             //pas vide
             bool isExecute = GetPistolMagazine()->CanShoot();
-            //si une ball a été utiliser
+            //si une ball a ï¿½tï¿½ utiliser
             if (isExecute)
             {
+                //tirer une ball
                 ScriptWeapons::ShootBall<ScriptBall>("PlayerBall", mWeapons, speed, damage);
-
-                //if (mIndex >= 0)
-                //{
-                //    //tirer une ball
-                //    
-                //    //ScriptWeapons::TPBall<ScriptBall>("PlayerBall", mWeapons, speed, damage, mBalls[mIndex]);
-                //    mIndex--;
-                //}
-                //else
-                //    mIndex = mBalls.size();
-
                 return true;
             }
         }

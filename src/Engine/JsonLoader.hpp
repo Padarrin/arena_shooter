@@ -8,6 +8,10 @@
 #include "Core/nlohmann.hpp"
 #include "Core/Maths/Quaternion.h"
 
+#include "GameObject.h"
+
+#include "../Gameplay/Functions.h"
+
 //#include "Health.hpp"
 
 using json = nlohmann::json;
@@ -15,9 +19,10 @@ using namespace gce;
 
 struct JsonLoader
 {
-    static void LoadMap(String const& path, Scene* pScene, D12PipelineObject* pso)
+    static std::vector<GameObject*> LoadMap(String const& path, Scene* pScene)
     {
-        if (pScene == nullptr) return;
+        std::vector<GameObject*> objLoad = std::vector<GameObject*>();
+        if (pScene == nullptr) return objLoad;
 
         Map<GameObject*, String> objects;
 
@@ -37,10 +42,24 @@ struct JsonLoader
         for (int i = 0; i < jObjects.size(); ++i)
         {
             json currObject = jObjects[i];
-            gce::GameObject& gameObject = gce::GameObject::Create(*pScene);
-            MeshRenderer& mesh = *gameObject.AddComponent<MeshRenderer>();
-            mesh.pGeometry = GeometryFactory::LoadJsonGeometry(currObject);
-            mesh.pPso = pso;
+
+            Texture* texture = nullptr;
+            if (currObject.contains("texture") && currObject["texture"].is_string())
+            {
+                std::string texturePath = "res/Textures/";
+                texturePath.append(currObject["texture"].get<std::string>());
+                texture = new Texture(texturePath);
+                //mesh.pMaterial->albedoTextureID = texture->GetTextureID();
+                //mesh.pMaterial->useTextureAlbedo = true;
+                //mesh.pMaterial->subsurface = 0.2f;
+            }
+
+            GameObject& gameObject = GameObject::Create(*pScene);
+            AddMeshRenderer(gameObject, GeometryFactory::LoadJsonGeometry(currObject), texture);
+            //GameObject& gameObject = GameObject::Create(*pScene);
+            //MeshRenderer& mesh = *gameObject.AddComponent<MeshRenderer>();
+            //mesh.pGeometry = GeometryFactory::LoadJsonGeometry(currObject);
+            //mesh.pPso = pso;
             gameObject.SetName(currObject["name"].get<String>().c_str());
 
             //if (currObject["has_collider"].get<bool>() == true)
@@ -52,17 +71,6 @@ struct JsonLoader
             //        //h->maxHealth = 1.0f;
             //    }
             //}
-
-            if (currObject.contains("texture") && currObject["texture"].is_string())
-            {
-                std::string texturePath = "";
-                texturePath.append("res/Textures/");
-                texturePath.append(currObject["texture"].get<std::string>());
-                Texture* texture = new Texture(texturePath);
-                mesh.pMaterial->albedoTextureID = texture->GetTextureID();
-                mesh.pMaterial->useTextureAlbedo = 1;
-                mesh.pMaterial->subsurface = 0.2f;
-            }
 
             // Pos / Scale / Rot
             {
@@ -88,22 +96,25 @@ struct JsonLoader
 
             if (currObject.contains("parent") && currObject["parent"].is_string())
             {
-                std::pair<gce::GameObject*, String> el;
+                std::pair<GameObject*, String> el;
                 el.first = &gameObject;
                 el.second = currObject["parent"].get<std::string>();
                 objects.insert(el);
             }
+
+            objLoad.push_back(&gameObject);
         }
 
-        for (std::pair<gce::GameObject*, String> el : objects)
+        for (std::pair<GameObject*, String> el : objects)
         {
-            for (std::pair<gce::GameObject*, String> el2 : objects)
+            for (std::pair<GameObject*, String> el2 : objects)
             {
                 if (el.first == el2.first) continue;
                 if (el.second == el2.first->GetName())
                     el.first->SetParent(*el2.first);
             }
         }
+        return objLoad;
     }
 };
 

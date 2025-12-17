@@ -39,6 +39,9 @@ gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gc
 template<typename T>
 gce::GameObject& CreateGameObject(gce::Scene& scene, gce::Geometry* geometry, gce::Texture* texture, gce::Vector4 color);
 
+void AddMeshRenderer(gce::GameObject& object, gce::Geometry* geometry);
+void AddMeshRenderer(gce::GameObject& object, gce::Geometry* geometry, gce::Texture* texture);
+
 bool Normalize(gce::Vector3f32& vector)
 {
     float magnitude = std::sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);

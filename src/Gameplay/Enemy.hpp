@@ -3,7 +3,7 @@
 #include "Ball.hpp"
 #include "Player.hpp"
 #include "Grid.hpp"
-#include <chrono>
+//#include <chrono>
 
 DECLARE_SCRIPT(ScriptEnemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
 
@@ -12,13 +12,13 @@ protected:
 	Cell* mCellTarget;
 	bool mIsNoPath;
 
-	using mClock = std::chrono::steady_clock;
-	mClock::time_point mPreviousTime = mClock::now();
+	//using mClock = std::chrono::steady_clock;
+	//mClock::time_point mPreviousTime = mClock::now();
 
 public:
 	ScriptAgent* mAgent;
 
-	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); mAgent->mCharacter->SetMaxLife(100); mAgent->mCharacter->SetDamage(5); }
+	virtual void Initia() { mAgent = m_pOwner->AddScript<ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); mAgent->mCharacter->SetMaxLife(100); mAgent->mCharacter->SetDamage(5); }
 	virtual void Start() 
 	{
 		ScriptGrid* grid = GetGrid();
@@ -30,6 +30,8 @@ public:
 		}
 
 		SetIsNoPath(false);
+
+		mPlayer->Start();
 	}
 	virtual void Update() 
 	{ 
@@ -38,7 +40,9 @@ public:
 		{
 			myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
 		}
-
+		
+		mCellTarget = mAgent->GetPathFinding()->GetGrid()->GetNearestCell(mPlayer->GetWorldPosition());
+		
 		if (mAgent->GetPaths()->Size() < 1)
 		{
 			mIsNoPath = true;
@@ -53,14 +57,14 @@ public:
 			mIsNoPath = false;
 		}
 
-		auto currentTime = mClock::now();
-		auto elapsed = currentTime - mPreviousTime;
+		//auto currentTime = mClock::now();
+		//auto elapsed = currentTime - mPreviousTime;
 
-		if (elapsed >= std::chrono::seconds(1))
-		{
+		//if (elapsed >= std::chrono::seconds(1))
+		//{
 			//mAgent->mCharacter->CreateBallInFront<ScriptBall>("EnemyBall", 100.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, myParentEntity);
-			mPreviousTime = currentTime;
-		}
+		//	mPreviousTime = currentTime;
+		//}
 	}
 	virtual void Destroy() {}
 

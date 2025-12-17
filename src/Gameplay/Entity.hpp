@@ -37,6 +37,7 @@ public:
 
 	void DestroyCharacter()
 	{
+		if (m_pOwner->HasComponent<BoxCollider>()) m_pOwner->RemoveComponent<BoxCollider>();
 		m_pOwner->SetActive(false);
 	}
 

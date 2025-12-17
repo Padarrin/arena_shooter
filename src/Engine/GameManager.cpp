@@ -58,7 +58,7 @@ namespace gce {
         if (param.isSplitScreen) m_pWindow = new SplitScreenWindow(param.title, param.width, param.height, param.screenDisposition);
         else m_pWindow = new RenderWindow(param.title, param.width, param.height);
 
-        LightManager::SetLightsProperties(8.0f, 100.0f, 2.0f, 32.0f, 0.1f);
+        LightManager::SetLightsProperties(8.0f, 100.0f, 2.0f, 32.0f, 1.0f);
 
         m_lifespanSystem.HandleCreations();
         m_lifespanSystem.HandleDeletions();
@@ -66,6 +66,10 @@ namespace gce {
         while (m_pWindow->IsOpen())
         {
             m_deltaTime = m_chrono.Reset();
+            if (m_gameDeltaTime != -1)
+            {
+                m_gameDeltaTime = m_deltaTime;
+            }
             HandleFPS();
 
             InputSystem::HandleInputs();

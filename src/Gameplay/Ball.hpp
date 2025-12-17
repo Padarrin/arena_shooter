@@ -26,7 +26,7 @@ public:
 				character->Damage(mShootable->GetDamage());
 				mShootable->mObject->mEntity->DestroyEntity();
 			}
-			if (mName == "EnemyBall" && other->GetName() == "PlayerBall")
+			else if (mName == "EnemyBall" && other->GetName() == "PlayerBall")
 			{
 				mShootable->mObject->mEntity->DestroyEntity();
 				other->GetScript<ScriptEntity>()->DestroyEntity();
@@ -35,8 +35,8 @@ public:
 				mShootable->mObject->mEntity->DestroyEntity();
 		}
 	}
-	virtual void CollisionStay(gce::GameObject* other) {}
-	virtual void CollisionExit(gce::GameObject* other) {}
+	virtual void CollisionStay(GameObject* other) {}
+	virtual void CollisionExit(GameObject* other) {}
 
 
 
