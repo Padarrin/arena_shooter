@@ -246,7 +246,7 @@ BEGIN_TEST(Game)
 
 	ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-	//CreateNail(scene, player, grid);
+	CreateNail(scene, player, grid);
 
 	CreateMap(scene, player, grid);
 

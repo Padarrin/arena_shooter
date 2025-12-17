@@ -42,8 +42,6 @@ public:
 
 		gce::Vector3f32 positionCurrenteCell = mPathFinding.GetGrid()->GetPosOfCell(currentNode->GetData());
 		mCharacter->GoToPosition(gce::Vector3f32(positionCurrenteCell.x, positionCurrenteCell.y + GetOffsetOfGrid().y, positionCurrenteCell.z), mCharacter->GetSpeed());
-
-
 	}
 
 	bool GoToCell(Cell* cellEnd)

@@ -23,13 +23,13 @@ protected:
 
 	// StateMachine
 	Time mTimerStateMachine;
-	StateMachine* mStateMachine;
+	//StateMachine* mStateMachine;
 
-	String mIdle = "Idle";
+	/*String mIdle = "Idle";
 	String mRunning = "Running";
 	String mAttack = "Attack";
 	String mHit = "Hit";
-	String mDie = "Die";
+	String mDie = "Die";*/
 
 	inline static bool mIsIdle = false;
 	inline static bool mIsChasingPlayer = false;
@@ -37,13 +37,13 @@ protected:
 	inline static bool mTookDamage = false;
 	inline static bool mIsDead = false;
 
-	StateMachine::Condition mConditions{ [this] { return this->Conditions(); } };
+	//StateMachine::Condition mConditions{ [this] { return this->Conditions(); } };
 
-	Vector<StateMachine::Condition> mConditionIdle{ mConditions };
+	/*Vector<StateMachine::Condition> mConditionIdle{mConditions};
 	Vector<StateMachine::Condition> mConditionRun{ mConditions };
 	Vector<StateMachine::Condition> mConditionAttack{ mConditions };
 	Vector<StateMachine::Condition> mConditionHit{ mConditions };
-	Vector<StateMachine::Condition> mConditionDie{ mConditions };
+	Vector<StateMachine::Condition> mConditionDie{ mConditions };*/
 
 
 public:
@@ -63,10 +63,10 @@ public:
 
 		SetIsNoPath(false);
 
-		mStateMachine = GameManager::GetStatesSystem().CreateStateMachine(m_pOwner);
+		//mStateMachine = GameManager::GetStatesSystem().CreateStateMachine(m_pOwner);
 
 		// StateMachine
-		mStateMachine->AddAction(mIdle, OnBeginIdle, OnUpdateIdle, OnEndIdle);
+		/*mStateMachine->AddAction(mIdle, OnBeginIdle, OnUpdateIdle, OnEndIdle);
 		mStateMachine->AddAction(mRunning, OnBeginRunning, OnUpdateRunning, OnEndRunning);
 		mStateMachine->AddAction(mAttack, OnBeginAttack, OnUpdateAttack, OnEndAttack);
 		mStateMachine->AddAction(mHit, OnBeginHit, OnUpdateHit, OnEndHit);
@@ -75,11 +75,13 @@ public:
 		mStateMachine->AddTransition(mConditionRun, mIdle, mRunning);
 		mStateMachine->AddTransition(mConditionAttack, mRunning, mIdle);
 		mStateMachine->AddTransition(mConditionHit, mIdle, mHit);
-		mStateMachine->AddTransition(mConditionDie, mIdle, mDie);
+		mStateMachine->AddTransition(mConditionDie, mIdle, mDie);*/
 
 	}
 	virtual void Update() 
-	{ 
+	{
+		float deltaTime = gce::GameManager::DeltaTime();
+		
 		ScriptEntity* myParentEntity = mAgent->mCharacter->mEntity;
 		if (mPlayer != nullptr)
 		{
@@ -89,25 +91,22 @@ public:
 		if (mAgent->GetPaths()->Size() < 1)
 		{
 			mIsNoPath = true;
-			if (mCellTarget != nullptr)
-			{
-				mAgent->GoToCell(mCellTarget);
-				SetCellTarget(nullptr);
-				mIsChasingPlayer = true;
-			}
+			PathIsFinish();
 		}
 		else
 		{
 			mIsNoPath = false;
 		}
 
-		auto currentTime = mClock::now();
-		auto elapsed = currentTime - mPreviousTime;
-
-		if (elapsed >= std::chrono::seconds(1))
+		mTimerStateMachine.Update(deltaTime);
+		ChangeState();
+	}
+	virtual void PathIsFinish()
+	{
+		if (mCellTarget != nullptr)
 		{
-			//mAgent->mCharacter->CreateBallInFront<ScriptBall>("EnemyBall", 100.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, myParentEntity);
-			mPreviousTime = currentTime;
+			mAgent->GoToCell(mCellTarget);
+			SetCellTarget(nullptr);
 		}
 	}
 	virtual void Destroy() {}
@@ -138,7 +137,7 @@ public:
 	ScriptGrid* GetGrid() { return mAgent->GetPathFinding()->GetGrid(); }
 
 	// === Idle State Functions ===
-	static void OnBeginIdle() { Console::Log("[Idle] Begin"); }
+	/*static void OnBeginIdle() { Console::Log("[Idle] Begin"); }
 	static void OnUpdateIdle() { Console::Log("[Idle] Updating... Waiting for start request."); }
 	static void OnEndIdle() { Console::Log("[Idle] End"); }
 
@@ -160,15 +159,15 @@ public:
 	// === Die State Functions ===
 	static void OnBeginDie() { Console::Log("[Die] Begin"); }
 	static void OnUpdateDie() { Console::Log("[Die] Updating... Has no life."); }
-	static void OnEndDie() { Console::Log("[Die] End"); }
+	static void OnEndDie() { Console::Log("[Die] End"); }*/
 
-	bool Conditions()
+	/*bool Conditions()
 	{
 		if (mTimerStateMachine.IsFinish())
 		{
 			mTimerStateMachine.SetTime(0.f);
 			mIsIdle = false;
-			mTookDamage = false;
+			//mTookDamage = false;
 			mIsChasingPlayer = false;
 			mIsAttacking = false;
 			mIsDead = false;
@@ -179,57 +178,85 @@ public:
 			Vector3f32 playerPos = mPlayer->GetWorldPosition();
 			Vector3f32 myPos = GetWorldPosition();
 			float dist = abs((playerPos.x - myPos.x) + (playerPos.y - myPos.y) + (playerPos.z - myPos.z));
-			if (dist <= 0.5f)
-			{
-				targetCharacter->Damage(myCharacter->GetDamage());
-				mTookDamage = true;
-				/*mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage()); mTookDamage = true;*/
-				mTimerStateMachine.SetTime(0.5f);
-			}
-			else if (this->mAgent->mCharacter->GetLife() == 0)
+			if (mAgent->mCharacter->GetLife() == 0)
 			{
 				mIsDead = true;
 				mTimerStateMachine.SetTime(100.f);
 			}
+			else if (dist <= 0.5f)
+			{
+				targetCharacter->Damage(myCharacter->GetDamage()); //mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage()); //mTookDamage = true;
+				mIsAttacking = true;
+				mTimerStateMachine.SetTime(0.5f);
+			}
+			else //if (dist > 0.5f)
+			{
+				mCellTarget = mAgent->GetPathFinding()->GetGrid()->GetNearestCell(targetCharacter->mEntity->GetWorldPosition());
+				mIsChasingPlayer = true;
+				mTimerStateMachine.SetTime(2.f);
+			}
+
+			//if (dist <= 0.5f)
+			//{
+			//	mIsIdle = false;mIsAttacking = true;
+			//	if (this->mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage())){mTookDamage = true;}
+			//	else{mTookDamage = false;}
+			//	if (this->mAgent->mCharacter->GetLife() == 0){mIsIdle = false;mIsChasingPlayer = false;mIsAttacking = false;mTookDamage = false;mIsDead = true;}
+			//	else{mIsDead = false;}
+			//}
+			//else if (dist > 0.5f){mIsChasingPlayer = true;mIsIdle = false;}
+			//else{mIsIdle = true;}
+			//return true;
+		}
+		return false;
+	}*/
+
+	bool ChangeState()
+	{
+		if (mTimerStateMachine.IsFinish())
+		{
+			mTimerStateMachine.SetTime(0.f);
+			mIsIdle = false;
+			//mTookDamage = false;
+			mIsChasingPlayer = false;
+			mIsAttacking = false;
+			mIsDead = false;
+
+			ScriptCharacter* targetCharacter = mPlayer->mCharacter;
+			ScriptCharacter* myCharacter = mPlayer->mCharacter;
+			ScriptGrid* grid = mAgent->GetPathFinding()->GetGrid();
+
+			Vector3f32 playerPos = mPlayer->GetWorldPosition();
+			Vector3f32 myPos = GetWorldPosition();
+			float dist = abs((playerPos.x - myPos.x) + (playerPos.y - myPos.y) + (playerPos.z - myPos.z));
+			if (mAgent->mCharacter->GetLife() == 0)
+			{
+				mIsDead = true;
+				mTimerStateMachine.SetTime(100.f);
+			}
+			else if (dist <= ((float)grid->GetCellSize()) * 0.5f)
+			{
+				targetCharacter->Damage(myCharacter->GetDamage()); /*mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage()); mTookDamage = true;*/
+				mIsAttacking = true;
+				mTimerStateMachine.SetTime(0.5f);
+			}
+			else /*if (dist > ((float)grid->GetCellSize()) * 0.5f)*/
+			{
+				mCellTarget = grid->GetNearestCell(targetCharacter->mEntity->GetWorldPosition());
+				mIsChasingPlayer = true;
+				mTimerStateMachine.SetTime(2.f);
+			}
 
 			/*if (dist <= 0.5f)
 			{
-				mIsIdle = false;
-				mIsAttacking = true;
-
-				if (this->mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage()))
-				{
-					mTookDamage = true;
-				}
-				else
-				{
-					mTookDamage = false;
-				}
-
-				if (this->mAgent->mCharacter->GetLife() == 0)
-				{
-					mIsIdle = false;
-					mIsChasingPlayer = false;
-					mIsAttacking = false;
-					mTookDamage = false;
-					mIsDead = true;
-				}
-				else
-				{
-					mIsDead = false;
-				}
-
-
+				mIsIdle = false;mIsAttacking = true;
+				if (this->mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage())){mTookDamage = true;}
+				else{mTookDamage = false;}
+				if (this->mAgent->mCharacter->GetLife() == 0){mIsIdle = false;mIsChasingPlayer = false;mIsAttacking = false;mTookDamage = false;mIsDead = true;}
+				else{mIsDead = false;}
 			}
-			else if (dist > 0.5f)
-			{
-				mIsChasingPlayer = true;
-				mIsIdle = false;
-			}
-			else
-			{
-				mIsIdle = true;
-			}*/
+			else if (dist > 0.5f){mIsChasingPlayer = true;mIsIdle = false;}
+			else{mIsIdle = true;}*/
 			return true;
 		}
 		return false;
