@@ -258,13 +258,30 @@ public:
 		
 	}
 
+	static void CreateStaticObject(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptGrid* grid, bool isFix, bool isObstacle)
+	{
+		gce::GameObject& staticObject = CreateGameObject<ScriptStaticGeometry>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+		staticObject.SetName("StaticObject");
+
+		SetStaticObject(&staticObject, grid, isFix, isObstacle);
+
+	}
+
 	static void SetStaticObject(/*gce::Scene& scene,*/gce::GameObject* staticObject, ScriptGrid* grid, bool isFix, bool isObstacle)
 	{
 		//gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, gce::SHAPES.CUBE);
 		staticObject->AddComponent<gce::BoxCollider>()->SetActive(true);
 		//enemyObject.SetName("Enemy");
 
-		ScriptStaticGeometry* staticGeometry = staticObject->AddScript<ScriptStaticGeometry>();
+		ScriptStaticGeometry* staticGeometry = nullptr;
+		if (staticObject->HasScript<ScriptStaticGeometry>())
+		{
+			staticGeometry = staticObject->GetScript<ScriptStaticGeometry>();
+		}
+		else
+		{
+			staticGeometry = staticObject->AddScript<ScriptStaticGeometry>();
+		}
 		staticGeometry->SetAll(grid, isFix, isObstacle);
 	}
 
@@ -309,8 +326,27 @@ public:
 			//////////////////////Floor///////////////////////
 			else
 			{
-				currentGameObject->SetName("Floor");
-				SetStaticObject(currentGameObject);
+				if (currentGameObject->GetName() == "Wall")
+				{
+					bool isFix = false; 
+					bool isObstacle = false;
+					SetStaticObject(currentGameObject, grid, isFix, isObstacle);
+					currentGameObject->SetName("StaticObject");
+				}
+				else if (currentGameObject->GetName() == "Floor" || currentGameObject->GetName() == "Roof")
+				{
+					bool isFix = false;
+					bool isObstacle = false;
+					SetStaticObject(currentGameObject, grid, isFix, isObstacle);
+					currentGameObject->SetName("StaticObject");
+				}
+				else if (currentGameObject->GetName() == "Door")
+				{
+					bool isFix = false;
+					bool isObstacle = false;
+					SetStaticObject(currentGameObject, grid, isFix, isObstacle);
+					currentGameObject->SetName("StaticObject");
+				}
 			}
 			//////////////////////Floor Fin///////////////////////
 		}

@@ -34,7 +34,7 @@ public:
         mConfigHeight = newHeight;
     }
 
-    void SetAll(int configHeight, gce::Vector2i32 rowCol, bool isInaccessible, gce::GameObject* haveObject) { SetConfigHeight(configHeight);  SetRowCol(rowCol); SetIsInaccessible(isInaccessible); SetHaveObject(haveObject); }
+    void SetAll(int configHeight, gce::Vector2i32 rowCol, bool isInaccessible, bool isAlwaysInaccessible, gce::GameObject* haveObject) { SetConfigHeight(configHeight);  SetRowCol(rowCol); SetIsInaccessible(isInaccessible, isAlwaysInaccessible); SetHaveObject(haveObject); }
 
     void SetConfigHeight(int height) { mConfigHeight = height; }
     int GetConfigHeight() { return mConfigHeight; }

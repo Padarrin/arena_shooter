@@ -44,22 +44,7 @@ public:
 	}
 	virtual void Update() 
 	{
-		int lenghtI = (int)mAllCells.size();
-		int lenghtJ = (int)mAllCells.size();
-		for (int i = 0; i < lenghtI; i++)
-		{
-			for (int j = 0; j < lenghtJ; j++)
-			{
-				Cell* cell = mAllCells[i][j];
-				if (cell->GetIsInaccessible())
-				{
-					if (cell->GetIsAlwaysInaccessible() == false)
-					{
-						cell->SetIsInaccessible(false);
-					}
-				}
-			}
-		}
+		UpdateInacessibleCell();
 	}
 	virtual void Destroy() {}
 
@@ -71,6 +56,43 @@ public:
 		InitNodeNeighbor(rowsCols);
 	}
 	void InitNodeNeighbor() { InitNodeNeighbor(GetSizeTabCell()); }
+
+	void UpdateInacessibleCell()
+	{
+		std::vector<Cell*> allChange = std::vector<Cell*>();
+		gce::Vector2i32 rowsCols = GetSizeTabCell();
+		for (int i = 0; i < rowsCols.x; i++)
+		{
+			for (int j = 0; j < rowsCols.y; j++)
+			{
+				Cell* cell = mAllCells[i][j];
+				if (cell->GetIsInaccessible())
+				{
+					if (cell->GetIsAlwaysInaccessible() == false)
+					{
+						cell->SetIsInaccessible(false);
+						allChange.push_back(cell);
+					}
+				}
+			}
+		}
+
+		int lenght = (int)allChange.size();
+		for (int i = 0; i < lenght; i++)
+		{
+			gce::Vector2i32 indexs = allChange[i]->GetRowCol();
+			Node<Cell>* node = GetNodeInTab(indexs.x, indexs.y, GetSizeTabCell().y);
+
+			InitOneNode(indexs.x, indexs.y, rowsCols, node);
+
+			std::vector<NeighborsCost<Cell>>& tabNodeCost = node->GetNeighborsCost();
+			int lenghtNodeCost = (int)tabNodeCost.size();
+			for (int j = 0; j < lenghtNodeCost; j++)
+			{
+				InitOneNode(indexs.x, indexs.y, rowsCols, node);
+			}
+		}
+	}
 
 	void CleanGrid()
 	{
@@ -276,11 +298,12 @@ protected:
 			{
 				//gce::Vector3f32 setCellPos = gce::Vector3f32(c * (cellSize + space), MIN_HEIGHT, -r * (cellSize + space));
 				int setHeight = 1;
-				bool isInacessible = false;
+				bool isInacessible = true;
+				bool isAlwaysInacessible = false;
 				gce::GameObject* haveObject = nullptr;
 
 				Cell* cell = new Cell();
-				cell->SetAll(setHeight, gce::Vector2i32(r, c), isInacessible, haveObject);
+				cell->SetAll(setHeight, gce::Vector2i32(r, c), isInacessible, isAlwaysInacessible, haveObject);
 
 				current.push_back(cell);
 
@@ -306,166 +329,170 @@ protected:
 			for (int c = 0; c < rowsCols.y; c++)
 			{
 				Node<Cell>* node = GetNodeInTab(r, c, rowsCols.y);
+				InitOneNode(r, c, rowsCols);
+			}
+		}
+	}
 
-				std::vector<NeighborsCost<Cell>>& tabNodeCost = node->GetNeighborsCost();
-				tabNodeCost.clear();
+	void InitOneNode(int r, int c, gce::Vector2i32 rowsCols, Node<Cell>* node)
+	{
+		std::vector<NeighborsCost<Cell>>& tabNodeCost = node->GetNeighborsCost();
+		tabNodeCost.clear();
 
-				if (node->GetData()->GetIsInaccessible() == true)
+		if (node->GetData()->GetIsInaccessible() == true)
+		{
+			return;
+		}
+
+		bool right = false;
+		int diffRightHeight = 0;
+
+		bool left = false;
+		int diffLeftHeight = 0;
+
+		bool up = false;
+		int diffUpHeight = 0;
+
+		bool down = false;
+		int diffDownHeight = 0;
+
+
+		float r1 = 1;
+		float r2 = RACINE;
+
+		float nbFloor = 2;
+
+		int currentCellHeight = node->GetData()->GetConfigHeight();
+
+		auto calculateDiffHeight = [](int currentH, int neighborH) -> int
+			{
+				return abs(neighborH - currentH);
+			};
+
+		if (c != 0)
+		{
+			//î
+			Node<Cell>* nodeNeighbor = GetNodeInTab(r, c - 1, rowsCols.y);
+			int neighBorCellHeight = nodeNeighbor->GetData()->GetConfigHeight();
+
+			diffUpHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
+
+			if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffUpHeight < nbFloor)
+			{
+				tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r1 + diffUpHeight));
+				up = true;
+			}
+		}
+		if (r != 0)
+		{
+			//<-
+			Node<Cell>* nodeNeighbor = GetNodeInTab(r - 1, c, rowsCols.y);
+			int neighBorCellHeight = nodeNeighbor->GetData()->GetConfigHeight();
+
+			diffLeftHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
+
+			if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffLeftHeight < nbFloor)
+			{
+				tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r1 + diffLeftHeight));
+				left = true;
+			}
+		}
+		if (r != rowsCols.x - 1)
+		{
+			//->
+			Node<Cell>* nodeNeighbor = GetNodeInTab(r + 1, c, rowsCols.y);
+			int neighBorCellHeight = nodeNeighbor->GetData()->GetConfigHeight();
+
+			diffRightHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
+
+			if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffRightHeight < nbFloor)
+			{
+				tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r1 + diffRightHeight));
+				right = true;
+			}
+		}
+		if (c != rowsCols.y - 1)
+		{
+			//!
+			Node<Cell>* nodeNeighbor = GetNodeInTab(r, c + 1, rowsCols.y);
+			int neighBorCellHeight = nodeNeighbor->GetData()->GetConfigHeight();
+
+			diffDownHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
+
+			if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffDownHeight < nbFloor)
+			{
+				tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r1 + diffDownHeight));
+				down = true;
+			}
+		}
+
+
+		if (up && diffUpHeight == 0)
+		{
+			if (left && diffLeftHeight == 0)
+			{
+				if (r != 0 && c != 0)
 				{
-					continue;
-				}
-
-				bool right = false;
-				int diffRightHeight = 0;
-
-				bool left = false;
-				int diffLeftHeight = 0;
-
-				bool up = false;
-				int diffUpHeight = 0;
-
-				bool down = false;
-				int diffDownHeight = 0;
-
-
-				float r1 = 1;
-				float r2 = RACINE;
-
-				float nbFloor = 2;
-
-				int currentCellHeight = node->GetData()->GetConfigHeight();
-
-				auto calculateDiffHeight = [](int currentH, int neighborH) -> int
-					{
-						return abs(neighborH - currentH);
-					};
-
-				if (c != 0)
-				{
-					//î
-					Node<Cell>* nodeNeighbor = GetNodeInTab(r, c - 1, rowsCols.y);
+					Node<Cell>* nodeNeighbor = GetNodeInTab(r - 1, c - 1, rowsCols.y);
 					int neighBorCellHeight = nodeNeighbor->GetData()->GetConfigHeight();
 
-					diffUpHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
+					int diffUpLeftHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
 
-					if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffUpHeight < nbFloor)
+					if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffUpLeftHeight == 0)
 					{
-						tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r1 + diffUpHeight));
-						up = true;
+						tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r2));
 					}
+
 				}
-				if (r != 0)
+			}
+
+			if (right && diffRightHeight == 0)
+			{
+				if (r != rowsCols.x - 1 && c != 0)
 				{
-					//<-
-					Node<Cell>* nodeNeighbor = GetNodeInTab(r - 1, c, rowsCols.y);
+					Node<Cell>* nodeNeighbor = GetNodeInTab(r + 1, c - 1, rowsCols.y);
 					int neighBorCellHeight = nodeNeighbor->GetData()->GetConfigHeight();
 
-					diffLeftHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
+					int diffUpRightHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
 
-					if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffLeftHeight < nbFloor)
+					if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffUpRightHeight == 0)
 					{
-						tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r1 + diffLeftHeight));
-						left = true;
+						tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r2));
 					}
 				}
-				if (r != rowsCols.x - 1)
+			}
+		}
+
+		if (down && diffDownHeight == 0)
+		{
+			if (left && diffLeftHeight == 0)
+			{
+				if (r != 0 && c != rowsCols.y - 1)
 				{
-					//->
-					Node<Cell>* nodeNeighbor = GetNodeInTab(r + 1, c, rowsCols.y);
+					Node<Cell>* nodeNeighbor = GetNodeInTab(r - 1, c + 1, rowsCols.y);
 					int neighBorCellHeight = nodeNeighbor->GetData()->GetConfigHeight();
 
-					diffRightHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
+					int diffDownLeftHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
 
-					if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffRightHeight < nbFloor)
+					if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffDownLeftHeight == 0)
 					{
-						tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r1 + diffRightHeight));
-						right = true;
+						tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r2));
 					}
 				}
-				if (c != rowsCols.y - 1)
+			}
+
+			if (right && diffRightHeight == 0)
+			{
+				if (r != rowsCols.x - 1 && c != rowsCols.y - 1)
 				{
-					//!
-					Node<Cell>* nodeNeighbor = GetNodeInTab(r, c + 1, rowsCols.y);
+					Node<Cell>* nodeNeighbor = GetNodeInTab(r + 1, c + 1, rowsCols.y);
 					int neighBorCellHeight = nodeNeighbor->GetData()->GetConfigHeight();
 
-					diffDownHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
+					int diffDownRightHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
 
-					if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffDownHeight < nbFloor)
+					if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffDownRightHeight == 0)
 					{
-						tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r1 + diffDownHeight));
-						down = true;
-					}
-				}
-
-
-				if (up && diffUpHeight == 0)
-				{
-					if (left && diffLeftHeight == 0)
-					{
-						if (r != 0 && c != 0)
-						{
-							Node<Cell>* nodeNeighbor = GetNodeInTab(r - 1, c - 1, rowsCols.y);
-							int neighBorCellHeight = nodeNeighbor->GetData()->GetConfigHeight();
-
-							int diffUpLeftHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
-
-							if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffUpLeftHeight == 0)
-							{
-								tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r2));
-							}
-
-						}
-					}
-
-					if (right && diffRightHeight == 0)
-					{
-						if (r != rowsCols.x - 1 && c != 0)
-						{
-							Node<Cell>* nodeNeighbor = GetNodeInTab(r + 1, c - 1, rowsCols.y);
-							int neighBorCellHeight = nodeNeighbor->GetData()->GetConfigHeight();
-
-							int diffUpRightHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
-
-							if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffUpRightHeight == 0)
-							{
-								tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r2));
-							}
-						}
-					}
-				}
-
-				if (down && diffDownHeight == 0)
-				{
-					if (left && diffLeftHeight == 0)
-					{
-						if (r != 0 && c != rowsCols.y - 1)
-						{
-							Node<Cell>* nodeNeighbor = GetNodeInTab(r - 1, c + 1, rowsCols.y);
-							int neighBorCellHeight = nodeNeighbor->GetData()->GetConfigHeight();
-
-							int diffDownLeftHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
-
-							if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffDownLeftHeight == 0)
-							{
-								tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r2));
-							}
-						}
-					}
-
-					if (right && diffRightHeight == 0)
-					{
-						if (r != rowsCols.x - 1 && c != rowsCols.y - 1)
-						{
-							Node<Cell>* nodeNeighbor = GetNodeInTab(r + 1, c + 1, rowsCols.y);
-							int neighBorCellHeight = nodeNeighbor->GetData()->GetConfigHeight();
-
-							int diffDownRightHeight = calculateDiffHeight(currentCellHeight, neighBorCellHeight);
-
-							if (nodeNeighbor->GetData()->GetIsInaccessible() == false && diffDownRightHeight == 0)
-							{
-								tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r2));
-							}
-						}
+						tabNodeCost.push_back(NeighborsCost<Cell>(nodeNeighbor, r2));
 					}
 				}
 			}
