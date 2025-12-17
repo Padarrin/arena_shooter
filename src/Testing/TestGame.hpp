@@ -152,24 +152,19 @@ void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& wea
 
 }
 
-gce::GameObject& CreateUI(gce::Scene& scene, gce::Vector2f32 pos, gce::Vector2f32 size, gce::Vector3f32 scale, std::string path, D12PipelineObject& texturePso)
+gce::GameObject& CreateUI(gce::Scene& scene, std::string path)
 {
 	GameObject& crosshair = GameObject::Create(scene);
 	ImageUI* uiImage = crosshair.AddComponent<ImageUI>();
 
-	Vector2f32 posUi = pos - size * 0.5f;
-
-	uiImage->InitializeImage(posUi, size, 1.f);
-
 	uiImage->btmBrush = new BitMapBrush(path);
-	uiImage->btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, scale, 0);
-	uiImage->SetActive(true);
 
 	/*GameObject& Cube = GameObject::Create(scene);
 	MeshRenderer* meshRenderer = Cube.AddComponent<MeshRenderer>();
 	meshRenderer->pGeometry = SHAPES.CUBE;
 	meshRenderer->pPso = &texturePso;
 	Cube.transform.SetWorldPosition({ 0, 0, 10 });*/
+
 	return crosshair;
 }
 
@@ -215,9 +210,9 @@ BEGIN_TEST(Game)
 	ui->SetPlayer(player);
 	ui->SetWinParam(windowParam);
 
-	gce::GameObject& anglegringer = CreateUI(scene, { windowParam.width * 0.74f,windowParam.height * 0.68f }, { 65,65 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, "res/Textures/plastic_normal.png", texturePso);
+	gce::GameObject& anglegringer = CreateUI(scene, "res/Textures/plastic_normal.png");
 	ui->AddImage(anglegringer);
-	gce::GameObject& submachineGun = CreateUI(scene, { windowParam.width * 0.7f,windowParam.height * 0.68f }, { 72,72 }, { 1.f / 14.f, 1.f / 14.f, 1.f / 14.f }, "res/Textures/test1.png", texturePso);
+	gce::GameObject& submachineGun = CreateUI(scene, "res/Textures/test1.png");
 	ui->AddImage(submachineGun);
 	
 	CreateEnemy(scene, player, grid);
