@@ -17,12 +17,13 @@ protected:
     gce::Vector2i32 mRowCol;
 
     bool mIsInaccessible;
+    bool mIsAlwaysInaccessible;
 
     gce::GameObject* mHaveObject;
 public:
     Cell() { Start(); }
 
-    void Start() { SetConfigHeight(1);  SetRowCol(-1, -1); SetIsInaccessible(false); SetHaveObject(nullptr); }
+    void Start() { SetConfigHeight(1);  SetRowCol(-1, -1); SetIsInaccessible(false, false); SetHaveObject(nullptr); }
     
     void OnUpdate() {}
 
@@ -33,7 +34,7 @@ public:
         mConfigHeight = newHeight;
     }
 
-    void SetAll(int configHeight, gce::Vector2i32 rowCol, bool isInaccessible, gce::GameObject* haveObject) { SetConfigHeight(configHeight);  SetRowCol(rowCol); SetIsInaccessible(isInaccessible); SetHaveObject(haveObject); }
+    void SetAll(int configHeight, gce::Vector2i32 rowCol, bool isInaccessible, bool isAlwaysInaccessible, gce::GameObject* haveObject) { SetConfigHeight(configHeight);  SetRowCol(rowCol); SetIsInaccessible(isInaccessible, isAlwaysInaccessible); SetHaveObject(haveObject); }
 
     void SetConfigHeight(int height) { mConfigHeight = height; }
     int GetConfigHeight() { return mConfigHeight; }
@@ -44,8 +45,10 @@ public:
     void SetRowCol(int row, int col) { mRowCol.x = row; mRowCol.y = col; }
     void SetRowCol(gce::Vector2i32 rowcol) { mRowCol = rowcol; }
 
+    void SetIsInaccessible(bool isInaccessible, bool isAlwaysInaccessible) { mIsInaccessible = isInaccessible; mIsAlwaysInaccessible = isAlwaysInaccessible;}
     void SetIsInaccessible(bool isInaccessible) { mIsInaccessible = isInaccessible; }
     bool GetIsInaccessible() { return mIsInaccessible; }
+    bool GetIsAlwaysInaccessible() { return mIsAlwaysInaccessible; }
 
     void SetHaveObject(gce::GameObject* haveObject) { mHaveObject = haveObject; }
     gce::GameObject* GetHaveObject() { return mHaveObject; }

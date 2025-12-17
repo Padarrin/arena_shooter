@@ -13,6 +13,7 @@
 
 #include "../Gameplay/UI.hpp"
 #include "../Gameplay/Enemy.hpp"
+#include "../Gameplay/StaticGeometry.hpp"
 #include "../Gameplay/Grid.hpp"
 #include "../Gameplay/SubMachineGun.hpp"
 #include "../Gameplay/Ball.hpp"
@@ -222,19 +223,10 @@ public:
 	{
 		//Life = 20 a 200, Damage = 1 a 5
 		gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-		enemyObject.AddComponent<gce::BoxCollider>()->SetActive(true);
-		enemyObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
 		enemyObject.SetName("Enemy");
 
-		ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
-		enemy->SetWorldPosition({ 10,-8,10 });
-		enemy->SetPlayer(player);
-		enemy->SetMaxLife(20);
-		enemy->SetDamage(10);
-		enemy->mAgent->mCharacter->SetSpeed(5.f);
-		enemy->mAgent->GetPathFinding()->SetGrid(grid);
-		enemy->SetCellTarget(grid->GetCell(player->GetWorldPosition()));
-		enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
+		SetNail(&enemyObject, player, grid);
+
 	}
 
 	static void SetNail(/*gce::Scene& scene,*/gce::GameObject*/*&*/ enemyObject, ScriptPlayer* player, ScriptGrid* grid)
@@ -245,8 +237,15 @@ public:
 		enemyObject->AddComponent<gce::PhysicComponent>()->SetActive(false);
 		//enemyObject.SetName("Enemy");
 
-
-		ScriptEnemy* enemy = enemyObject->AddScript<ScriptEnemy>();
+		ScriptEnemy* enemy = nullptr;
+		if (enemyObject->HasScript<ScriptEnemy>())
+		{
+			enemy = enemyObject->GetScript<ScriptEnemy>();
+		}
+		else
+		{
+			enemy = enemyObject->AddScript<ScriptEnemy>();
+		}
 		//ScriptEnemy* enemy = enemyObject->GetScript<ScriptEnemy>();
 		enemy->SetWorldPosition({ 10,-8,10 });
 		enemy->SetPlayer(player);
@@ -254,18 +253,36 @@ public:
 		enemy->SetDamage(10);
 		enemy->mAgent->mCharacter->SetSpeed(5.f);
 		enemy->mAgent->GetPathFinding()->SetGrid(grid);
-		enemy->SetCellTarget(grid->GetCell(player->GetWorldPosition()));
+		enemy->SetCellTarget(grid->GetNearestCell(player->GetWorldPosition()));
 		enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
 		
 	}
 
-	static void SetFloor(/*gce::Scene& scene,*/gce::GameObject* floorObject)
+	static void CreateStaticObject(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptGrid* grid, bool isFix, bool isObstacle)
+	{
+		gce::GameObject& staticObject = CreateGameObject<ScriptStaticGeometry>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+		staticObject.SetName("StaticObject");
+
+		SetStaticObject(&staticObject, grid, isFix, isObstacle);
+
+	}
+
+	static void SetStaticObject(/*gce::Scene& scene,*/gce::GameObject* staticObject, ScriptGrid* grid, bool isFix, bool isObstacle)
 	{
 		//gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, gce::SHAPES.CUBE);
-		floorObject->AddComponent<gce::BoxCollider>()->SetActive(true);
+		staticObject->AddComponent<gce::BoxCollider>()->SetActive(true);
 		//enemyObject.SetName("Enemy");
 
-		ScriptEntity* floor = floorObject->AddScript<ScriptEntity>();
+		ScriptStaticGeometry* staticGeometry = nullptr;
+		if (staticObject->HasScript<ScriptStaticGeometry>())
+		{
+			staticGeometry = staticObject->GetScript<ScriptStaticGeometry>();
+		}
+		else
+		{
+			staticGeometry = staticObject->AddScript<ScriptStaticGeometry>();
+		}
+		staticGeometry->SetAll(grid, isFix, isObstacle);
 	}
 
 
@@ -309,8 +326,27 @@ public:
 			//////////////////////Floor///////////////////////
 			else
 			{
-				currentGameObject->SetName("Floor");
-				SetFloor(currentGameObject);
+				if (currentGameObject->GetName() == "Wall")
+				{
+					bool isFix = false; 
+					bool isObstacle = false;
+					SetStaticObject(currentGameObject, grid, isFix, isObstacle);
+					currentGameObject->SetName("StaticObject");
+				}
+				else if (currentGameObject->GetName() == "Floor" || currentGameObject->GetName() == "Roof")
+				{
+					bool isFix = false;
+					bool isObstacle = false;
+					SetStaticObject(currentGameObject, grid, isFix, isObstacle);
+					currentGameObject->SetName("StaticObject");
+				}
+				else if (currentGameObject->GetName() == "Door")
+				{
+					bool isFix = false;
+					bool isObstacle = false;
+					SetStaticObject(currentGameObject, grid, isFix, isObstacle);
+					currentGameObject->SetName("StaticObject");
+				}
 			}
 			//////////////////////Floor Fin///////////////////////
 		}
@@ -461,7 +497,6 @@ public:
 		button->pHoverBitMapBrush = &imageButtonCollide;
 		return buttonObject;
 	}*/
-
 	static void DeleteGameObject()
 	{
 		auto* mapGameObject = gMenuObject->m_pScene->GetGameObject();
