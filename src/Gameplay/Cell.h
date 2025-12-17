@@ -6,7 +6,8 @@
 #define MIN_HEIGHT 0
 #define TALL_HEIGHT 50
 
-class GameObject;
+
+class gce::GameObject;
 
 class Cell
 {
@@ -18,7 +19,7 @@ protected:
     bool mIsInaccessible;
     bool mIsAlwaysInaccessible;
 
-    GameObject* mHaveObject;
+    gce::GameObject* mHaveObject;
 public:
     Cell() { Start(); }
 
@@ -33,7 +34,7 @@ public:
         mConfigHeight = newHeight;
     }
 
-    void SetAll(int configHeight, gce::Vector2i32 rowCol, bool isInaccessible, GameObject* haveObject) { SetConfigHeight(configHeight);  SetRowCol(rowCol); SetIsInaccessible(isInaccessible); SetHaveObject(haveObject); }
+    void SetAll(int configHeight, gce::Vector2i32 rowCol, bool isInaccessible, gce::GameObject* haveObject) { SetConfigHeight(configHeight);  SetRowCol(rowCol); SetIsInaccessible(isInaccessible); SetHaveObject(haveObject); }
 
     void SetConfigHeight(int height) { mConfigHeight = height; }
     int GetConfigHeight() { return mConfigHeight; }
@@ -49,8 +50,8 @@ public:
     bool GetIsInaccessible() { return mIsInaccessible; }
     bool GetIsAlwaysInaccessible() { return mIsAlwaysInaccessible; }
 
-    void SetHaveObject(GameObject* haveObject) { mHaveObject = haveObject; }
-    GameObject* GetHaveObject() { return mHaveObject; }
+    void SetHaveObject(gce::GameObject* haveObject) { mHaveObject = haveObject; }
+    gce::GameObject* GetHaveObject() { return mHaveObject; }
 
     ~Cell() = default;
 };
