@@ -46,8 +46,6 @@ BEGIN_TEST(Game)
 
 	gPlayerObject = &CreatePlayer(scene, gCameraObject);
 
-	//gce::Vector3f32 posCameraInMenu = gce::Vector3f32(0.f, 0.f, 0.f);
-
 	////Main Menu////
 	//Image
 	gce::BitMapBrush imageButtonStart{ "res/Testing/Button/Button.png" };
@@ -129,9 +127,6 @@ BEGIN_TEST(Game)
 	gce::Vector3f32 scaleButtonEnd = gce::Vector3f32(216.0f, 69.0f, 1.0f);
 	gce::GameObject& buttonEndObject = gce::GameObject::Create(scene); buttonEndObject.transform.LocalTranslate(posButtonEnd); buttonEndObject.transform.LocalScale(scaleButtonEnd);
 	gce::UIButton* buttonEnd = buttonEndObject.AddComponent<gce::UIButton>(); buttonEnd->AddListener(TestGame::Quit); buttonEnd->pBitMapBrush = &imageButtonEnd; buttonEnd->pHoverBitMapBrush = &imageCollideButtonEnd;
-
-	/*menu->SetCamera(gCameraObject);
-	menu->SetWorldPositionCamera(posCameraInMenu);*/
 
 	menu->AddImage(&imageMainMenuObject, MAIN_MENU);
 	menu->AddButton(&buttonStartObject, MAIN_MENU);

@@ -88,7 +88,9 @@ public:
 		{
 			myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
 		}
-		//mCellTarget = mAgent->GetPathFinding()->GetGrid()->GetNearestCell(mPlayer->GetWorldPosition());
+		
+		mCellTarget = mAgent->GetPathFinding()->GetGrid()->GetNearestCell(mPlayer->GetWorldPosition());
+		
 		if (mAgent->GetPaths()->Size() < 1)
 		{
 			mIsNoPath = true;
