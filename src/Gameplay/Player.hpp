@@ -126,7 +126,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		void TurnCamera()
 		{
 			gce::WindowParam param = gce::GameManager::GetWindowParam();
-			gce::Vector2i32 centerSizeWindow = gce::Vector2i32((int)(param.height * 0.5f), (int)(param.width * 0.5f));
+			gce::Vector2i32 centerSizeWindow = gce::Vector2i32((int)(param.width * 0.5f), (int)(param.height * 0.5f));
 
 			if (gce::GetKeyDown(gce::Keyboard::LSHIFT)) {
 				mIsCursorLocked = !mIsCursorLocked;
