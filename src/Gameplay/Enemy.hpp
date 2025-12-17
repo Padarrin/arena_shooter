@@ -79,9 +79,9 @@ public:
 
 	}
 	virtual void Update() 
-	{
+	{ 
 		float deltaTime = gce::GameManager::GameDeltaTime();
-		if (deltaTime > 0)
+		if (deltaTime > 0.f)
 		{
 			ScriptEntity* myParentEntity = mAgent->mCharacter->mEntity;
 			if (mPlayer != nullptr)
