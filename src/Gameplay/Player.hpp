@@ -59,23 +59,30 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			//std::cout << "zP : " << GetWorldPosition().z << std::endl;
 			float deltaTime = gce::GameManager::GameDeltaTime();
 
-			if (deltaTime > 0.f && mCurrentWeapon != nullptr)
+			if (deltaTime > 0.f)
 			{
-				gce::HideMouseCursor();
-				InputMove(deltaTime);
-				InputShoot(deltaTime);
-				TurnCamera();
+				if (mCurrentWeapon != nullptr)
+				{
+					gce::HideMouseCursor();
+					InputMove(deltaTime);
+					InputShoot(deltaTime);
+					TurnCamera();
+				}
+
+				mCharacter->Damage(1);
+				if (mCharacter->GetLife() <= 0)
+				{
+					mMenu->GetScript<ScriptMenu>()->ShowMenu(LOSE_MENU);
+					mCharacter->mEntity->DestroyEntity();
+				}
+				
+
 			}
 			else
 			{
 				gce::ShowMouseCursor();
 			}
-			mCharacter->Damage(1);
-			if (mCharacter->GetLife() <= 0)
-			{
-				mMenu->GetScript<ScriptMenu>()->ShowMenu(LOSE_MENU);
-				mCharacter->mEntity->DestroyEntity();
-			}
+			
 				
 		}
 
