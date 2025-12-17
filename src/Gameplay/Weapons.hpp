@@ -17,7 +17,14 @@ public:
 
     virtual void Initia() { mEntity = m_pOwner->AddScript<ScriptEntity>(); mEntity->Initia(); mMagazine = m_pOwner->AddScript<ScriptPistolMagazine>(); mMagazine->Initia(); mEntity->SetLocalPosition(gce::Vector3f32(0.f, 0.f, 0.f)); mShape = gce::SHAPES.CUBE; }
     virtual void Start() { mEntity->Start(); mMagazine->Start(); }
-    virtual void Update() {}
+    virtual void Update() 
+    {
+        /*float deltaTime = gce::GameManager::GameDeltaTime();
+        if (deltaTime > 0.f)
+        {
+
+        }*/
+    }
     virtual void Destroy() {}
 
     virtual void CollisionEnter() {}

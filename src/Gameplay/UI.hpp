@@ -62,7 +62,11 @@ public:
 
 	virtual void Update()
 	{
-		InputWeapon();
+		float deltaTime = gce::GameManager::GameDeltaTime();
+		if (deltaTime > 0.f)
+		{
+			InputWeapon();
+		}
 	}
 
 	void InputWeapon()
