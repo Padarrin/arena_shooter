@@ -299,7 +299,7 @@ protected:
 				//gce::Vector3f32 setCellPos = gce::Vector3f32(c * (cellSize + space), MIN_HEIGHT, -r * (cellSize + space));
 				int setHeight = 1;
 				bool isInacessible = true;
-				bool isAlwaysInacessible = false;
+				bool isAlwaysInacessible = true;
 				gce::GameObject* haveObject = nullptr;
 
 				Cell* cell = new Cell();
@@ -329,7 +329,7 @@ protected:
 			for (int c = 0; c < rowsCols.y; c++)
 			{
 				Node<Cell>* node = GetNodeInTab(r, c, rowsCols.y);
-				InitOneNode(r, c, rowsCols);
+				InitOneNode(r, c, rowsCols, node);
 			}
 		}
 	}
