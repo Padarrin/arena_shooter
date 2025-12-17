@@ -80,26 +80,28 @@ public:
 	}
 
 	virtual void Update() 
-	{
-		float deltaTime = gce::GameManager::DeltaTime();
-		
-		ScriptEntity* myParentEntity = mAgent->mCharacter->mEntity;
-		if (mPlayer != nullptr)
+	{ 
+		float deltaTime = gce::GameManager::GameDeltaTime();
+		if (deltaTime > 0.f)
 		{
-			myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
+			
+			ScriptEntity* myParentEntity = mAgent->mCharacter->mEntity;
+			if (mPlayer != nullptr)
+			{
+				myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
+			}
+			
+			if (mAgent->GetPaths()->Size() < 1)
+			{
+				mIsNoPath = true;
+				PathIsFinish();
+			}
+			else
+			{
+				mIsNoPath = false;
+			}
 		}
 		
-		mCellTarget = mAgent->GetPathFinding()->GetGrid()->GetNearestCell(mPlayer->GetWorldPosition());
-		
-		if (mAgent->GetPaths()->Size() < 1)
-		{
-			mIsNoPath = true;
-			PathIsFinish();
-		}
-		else
-		{
-			mIsNoPath = false;
-		}
 
 		mTimerStateMachine.Update(deltaTime);
 		ChangeState();

@@ -2,6 +2,7 @@
 #include "../Engine/GameManager.h"
 #include "Character.hpp"
 #include "SubMachineGun.hpp"
+#include "Menu.hpp"
 
 enum WEAPON_ORDER
 {
@@ -23,6 +24,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 	protected:
 		gce::GameObject* mObjectCamera;
 		gce::Window* mWindow;
+		gce::GameObject* mMenu;
 
 		float mJump;
 		float mYaw;
@@ -38,7 +40,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		
 		ScriptCharacter* mCharacter;
 
-		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); mYaw = 0.f; mPitch = 0.f; mIsCursorLocked = true; mCurrentWeapon = nullptr; mObjectCamera = nullptr; mAllWeapons = std::vector<ScriptWeapons*>(); }
+		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mJump = 6.f; mCharacter->SetMaxLife(10000); mCharacter->SetDamage(5); mYaw = 0.f; mPitch = 0.f; mIsCursorLocked = true; mCurrentWeapon = nullptr; mObjectCamera = nullptr; mAllWeapons = std::vector<ScriptWeapons*>(); mMenu = nullptr; }
 		virtual void Start() 
 		{ 
 			mWindow = gce::GameManager::GetWindow(); 
@@ -57,20 +59,31 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			//std::cout << "zP : " << GetWorldPosition().z << std::endl;
 			float deltaTime = gce::GameManager::GameDeltaTime();
 
-			if (deltaTime > 0.f && mCurrentWeapon != nullptr)
+			if (deltaTime > 0.f)
 			{
-				gce::HideMouseCursor();
-				InputMove(deltaTime);
-				InputShoot(deltaTime);
-				TurnCamera();
+				if (mCurrentWeapon != nullptr)
+				{
+					gce::HideMouseCursor();
+					InputMove(deltaTime);
+					InputShoot(deltaTime);
+					TurnCamera();
+				}
+
+				mCharacter->Damage(1);
+				if (mCharacter->GetLife() <= 0)
+				{
+					mMenu->GetScript<ScriptMenu>()->ShowMenu(LOSE_MENU);
+					mCharacter->mEntity->DestroyEntity();
+				}
+				
+
 			}
 			else
 			{
 				gce::ShowMouseCursor();
 			}
-
-			if (mCharacter->GetLife() <= 0)
-				mCharacter->mEntity->DestroyEntity();
+			
+				
 		}
 
 		virtual void Destroy() {}
@@ -161,6 +174,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		}
 
 		void SetCamera(gce::GameObject* cameraObject) { mObjectCamera = cameraObject; }
+		void SetMenu(gce::GameObject* menuObject) { mMenu = menuObject; }
+		gce::GameObject* GetMenu() { return mMenu; }
 
 		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
 		gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }
