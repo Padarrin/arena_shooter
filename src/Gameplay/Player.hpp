@@ -30,6 +30,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		bool mIsJumping;
 		bool mIsCursorLocked;
+		bool mIsWindowInitialised;
 
 		ScriptWeapons* mCurrentWeapon;
 
@@ -41,7 +42,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		
 		ScriptCharacter* mCharacter;
 
-		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); mYaw = 0.f; mPitch = 0.f; mIsCursorLocked = true; mCurrentWeapon = nullptr; mObjectCamera = nullptr; mAllWeapons = std::vector<ScriptWeapons*>(); }
+		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); mYaw = 0.f; mPitch = 0.f; mIsCursorLocked = true; mCurrentWeapon = nullptr; mObjectCamera = nullptr; mAllWeapons = std::vector<ScriptWeapons*>(); mIsWindowInitialised = false; }
 		virtual void Start() 
 		{ 
 			mWindow = gce::GameManager::GetWindow(); 
@@ -115,12 +116,27 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		void TurnCamera()
 		{
-			gce::WindowParam param = gce::GameManager::GetWindowParam();
-			gce::Vector2i32 centerSizeWindow = gce::Vector2i32((int)(param.height * 0.5f), (int)(param.width * 0.5f));
+			const float sensitivity = 0.001f;
+
+			const int centerHeight = (int)(gce::GameManager::GetWindowParam().height * 0.5f);
+			const int centerWidth = (int)(gce::GameManager::GetWindowParam().width * 0.5f);
+
+			const float degToRad = PI / 360.0f;
+
+			// limites en radians
+			const float pitchMin = -89.0f * degToRad;
+			const float pitchMax = 89.0f * degToRad;
 
 			if (gce::GetKeyDown(gce::Keyboard::LSHIFT)) {
 				mIsCursorLocked = !mIsCursorLocked;
 				gce::ShowMouseCursor();
+			}
+
+			if (mIsWindowInitialised == false)
+			{
+				gce::HideMouseCursor();
+				gce::SetMousePosition(gce::Vector2i32(centerWidth, centerHeight));
+				mIsWindowInitialised = true;
 			}
 
 			if (!mIsCursorLocked)
@@ -128,16 +144,23 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 			gce::HideMouseCursor();
 
-			gce::Vector2i32 delta = gce::GetMousePosition() - centerSizeWindow;
+			gce::Vector2i32 currentMousePos = gce::GetMousePosition();
+
+			gce::Vector2i32 delta;
+			delta.x = currentMousePos.x - centerWidth;
+			delta.y = currentMousePos.y - centerHeight;
 
 			// Rotation
-			mYaw += delta.x * SENSITIVITY_CAMERA;
-			mPitch += delta.y * SENSITIVITY_CAMERA;
+			mYaw += delta.x * sensitivity;
+			mPitch += delta.y * sensitivity;
 
-			mPitch = gce::Clamp(mPitch, -PITCH, PITCH);
+			mPitch = gce::Clamp(mPitch, pitchMin, pitchMax);
+
 			m_pOwner->transform.SetWorldRotation(gce::Vector3f32(mPitch, mYaw, 0.f));
-			mObjectCamera->transform.SetLocalRotation(gce::Vector3f32(mPitch, 0.f, 0.f));
-			gce::SetMousePosition(centerSizeWindow);
+
+			m_pOwner->GetChildren()[0]->transform.SetLocalRotation(gce::Vector3f32(mPitch, 0.f, 0.f));
+
+			gce::SetMousePosition(gce::Vector2i32(centerWidth, centerHeight));
 			
 		}
 

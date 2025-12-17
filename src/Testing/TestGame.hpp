@@ -1,7 +1,7 @@
 #ifndef TEST_Game_HPP_INCLUDED
 #define TEST_Game_HPP_INCLUDED
 
-#include <ImageLoader.h>
+
 #include <Render.h>
 #include <Engine.h>
 
@@ -22,18 +22,11 @@ gce::GameObject* gCameraObject;
 gce::GameObject* gMenuObject;
 gce::GameObject* gPlayerObject;
 
+
 BEGIN_TEST(Game)
 
 	gce::GameManager::Create();
 	gce::Scene& scene = gce::Scene::Create();
-
-	D12PipelineObject texturePso(
-		SHADERS.VERTEX,
-		SHADERS.PIXEL,
-		SHADERS.HULL,
-		SHADERS.DOMAIN_,
-		SHADERS.ROOT_SIGNATURE
-	);
 
 	WindowParam windowParam;
 	windowParam.title = L"Test Light";
@@ -445,6 +438,14 @@ public:
 
 	static void Start()
 	{
+		D12PipelineObject texturePso(
+			SHADERS.VERTEX,
+			SHADERS.PIXEL,
+			SHADERS.HULL,
+			SHADERS.DOMAIN_,
+			SHADERS.ROOT_SIGNATURE
+		);
+
 		gce::GameObject* cameraObject = gCameraObject;
 		gce::Scene& scene = *(gCameraObject->m_pScene);
 		gce::GameObject* playerObject = gPlayerObject;
@@ -467,11 +468,12 @@ public:
 		gce::GameObject& uiObject = gce::GameObject::Create(scene);
 		ScriptUI* ui = uiObject.AddScript<ScriptUI>();
 		ui->SetPlayer(player);
-		ui->SetWinParam(windowParam);
 
 		std::string anglegringerPath = "res/Textures/plastic_normal.png";
 		std::string submachineGunPath = "res/Textures/test1.png";
 		std::string bazookaPath = "res/Textures/plastic_roughness.png";
+
+		gce::WindowParam windowParam = gce::GameManager::GetWindowParam();
 
 		gce::GameObject& mainWeapon = CreateUI(scene, { windowParam.width -430.f,windowParam.height - 275.f }, { 72,72 }, { 1.f / 14.f, 1.f / 14.f, 1.f / 14.f }, submachineGunPath, texturePso);
 		gce::GameObject& secondWeapon = CreateUI(scene, { windowParam.width - 350.f,windowParam.height - 275.f }, { 65,65 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, anglegringerPath, texturePso);

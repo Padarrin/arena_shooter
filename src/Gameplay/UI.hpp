@@ -88,6 +88,8 @@ public:
 
 	virtual void Start()
 	{
+		mWindowParam = &gce::GameManager::GetWindowParam();
+
 		mWeaponPrincipal.SetPos(gce::Vector2f32{ mWindowParam->width * 0.7f,mWindowParam->height * 0.68f });
 		mWeaponSecond.SetPos(gce::Vector2f32{ mWindowParam->width * 0.74f,mWindowParam->height * 0.68f });
 
