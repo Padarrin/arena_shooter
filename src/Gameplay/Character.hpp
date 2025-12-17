@@ -40,7 +40,7 @@ public:
 	}
 	virtual void Update() 
 	{
-		float dt = gce::GameManager::DeltaTime();
+		float dt = gce::GameManager::GameDeltaTime();
 		float distance = dt * mSpeed;
 
 		if (mTarget.isSet) 

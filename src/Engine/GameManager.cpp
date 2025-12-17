@@ -66,6 +66,10 @@ namespace gce {
         while (m_pWindow->IsOpen())
         {
             m_deltaTime = m_chrono.Reset();
+            if (m_gameDeltaTime != -1)
+            {
+                m_gameDeltaTime = m_deltaTime;
+            }
             HandleFPS();
 
             InputSystem::HandleInputs();
