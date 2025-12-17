@@ -110,7 +110,7 @@ void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 	gameObjectLoad.push_back(outside);
 
 	hangar[0]->transform.SetWorldPosition({ hangar[0]->transform.GetWorldPosition().x + 0.f, hangar[0]->transform.GetWorldPosition().y + 2.229f, hangar[0]->transform.GetWorldPosition().z + 0.f });
-	outside[0]->transform.SetWorldPosition({ outside[0]->transform.GetWorldPosition().x + 45.f, outside[0]->transform.GetWorldPosition().y + 2.229f, outside[0]->transform.GetWorldPosition().z + 0.f });
+	outside[0]->transform.SetWorldPosition({ outside[0]->transform.GetWorldPosition().x + 35.f, outside[0]->transform.GetWorldPosition().y, outside[0]->transform.GetWorldPosition().z + 0.f });
 
 	int lenghtLoad = (int)gameObjectLoad.size();
 	for (int i = 0; i < lenghtLoad; i++)
