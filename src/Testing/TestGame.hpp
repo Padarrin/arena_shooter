@@ -316,15 +316,6 @@ public:
 		}
 		///////////////////////////////////////////////////////////
 
-		//gce::GameObject& floorObject;
-		//floorObject.AddComponent<gce::BoxCollider>()->SetActive(true);
-		//floorObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
-		//floorObject.SetName("Floor");
-
-		//ScriptEntity* entity = floorObject.GetScript<ScriptEntity>();
-		//entity->SetWorldPosition({ 0.f ,-10.f ,0.f });
-		//entity->SetWorldScale({ 50.f,16.f,50.f });
-
 	}
 
 	static ScriptGrid* CreateGrid(gce::Scene& scene, gce::Vector2f32 sizeTabCell, gce::Vector3f32 positionCenter, int sizeCell)
