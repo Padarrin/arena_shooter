@@ -61,9 +61,9 @@ public:
 
 		SetIsNoPath(false);
 
+		// StateMachine
 		mStateMachine = GameManager::GetStatesSystem().CreateStateMachine(m_pOwner);
 
-		// StateMachine
 		mStateMachine->AddAction(idle, OnBeginIdle, OnUpdateIdle, OnEndIdle);
 		mStateMachine->AddAction(running, OnBeginRunning, OnUpdateRunning, OnEndRunning);
 		mStateMachine->AddAction(attack, OnBeginAttack, OnUpdateAttack, OnEndAttack);
