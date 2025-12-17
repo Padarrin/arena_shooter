@@ -23,7 +23,7 @@ protected:
 	// StateMachine
 	StateMachine* mStateMachine;
 
-	String idle = "Idle";
+	String mIdle = "Idle";
 	String running = "Running";
 	String attack = "Attack";
 	String hit = "Hit";
@@ -64,16 +64,16 @@ public:
 		mStateMachine = GameManager::GetStatesSystem().CreateStateMachine(m_pOwner);
 
 		// StateMachine
-		mStateMachine->AddAction(idle, OnBeginIdle, OnUpdateIdle, OnEndIdle);
+		mStateMachine->AddAction(mIdle, OnBeginIdle, OnUpdateIdle, OnEndIdle);
 		mStateMachine->AddAction(running, OnBeginRunning, OnUpdateRunning, OnEndRunning);
 		mStateMachine->AddAction(attack, OnBeginAttack, OnUpdateAttack, OnEndAttack);
 		mStateMachine->AddAction(hit, OnBeginHit, OnUpdateHit, OnEndHit);
 		mStateMachine->AddAction(die, OnBeginDie, OnUpdateDie, OnEndDie);
 
-		mStateMachine->AddTransition(conditionRun, idle, running);
-		mStateMachine->AddTransition(condittionAttack, running, idle);
-		mStateMachine->AddTransition(conditionHit, idle, hit);
-		mStateMachine->AddTransition(conditionDie, idle, die);
+		mStateMachine->AddTransition(conditionRun, mIdle, running);
+		mStateMachine->AddTransition(condittionAttack, running, mIdle);
+		mStateMachine->AddTransition(conditionHit, mIdle, hit);
+		mStateMachine->AddTransition(conditionDie, mIdle, die);
 
 	}
 	virtual void Update() 
@@ -218,16 +218,9 @@ public:
 		return true;
 	}
 
-	bool IsIdle()
-	{
-		return isIdle;
-	}
-	bool IsChasingPlayer() 
-	{
-		return isChasingPlayer;
-	}
-	bool IsAttacking() 
-	{ return isAttacking; }
+	bool IsIdle() { return isIdle; }
+	bool IsChasingPlayer() { return isChasingPlayer; }
+	bool IsAttacking() { return isAttacking; }
 	bool TookDamage() { return tookDamage; }
 	bool IsDead() { return isDead; }
 
