@@ -44,42 +44,40 @@ BEGIN_TEST(Game)
 	gce::GameObject& menuObject = CreateGameObject<ScriptMenu>(scene);
 	ScriptMenu* menu = menuObject.GetScript<ScriptMenu>();
 
-	gPlayerObject = &CreatePlayer(scene, gCameraObject);
-
-	//gce::Vector3f32 posCameraInMenu = gce::Vector3f32(0.f, 0.f, 0.f);
+	gPlayerObject = &CreatePlayer(scene, gCameraObject, &menuObject);
 
 	////Main Menu////
 	//Image
-	gce::BitMapBrush imageButtonStart{ "res/Testing/Button/Button.png" };
-	gce::BitMapBrush imageCollideButtonStart{ "res/Testing/Button/Button2.png" };
-	gce::BitMapBrush imageButtonQuit{ "res/Testing/Button/Button.png" };
-	gce::BitMapBrush imageCollideButtonQuit{ "res/Testing/Button/Button2.png" };
+	gce::BitMapBrush imageButtonStart{ "/res/Gameplay/Texture/Jouer.png" };
+	gce::BitMapBrush imageCollideButtonStart{ "/res/Gameplay/Texture/Jouer_Cliquer.png" };
+	gce::BitMapBrush imageButtonQuit{ "/res/Gameplay/Texture/Quitter.png" };
+	gce::BitMapBrush imageCollideButtonQuit{ "/res/Gameplay/Texture/Jouer_Cliquer.png" };
 
-	gce::Vector3f32 posImageMainMenu = gce::Vector3f32(600.f, 400.f, 5.f)/* + posCameraInMenu*/;
-	gce::Vector3f32 scaleImageMainMenu = gce::Vector3f32(1000.f, 1000.f, 1.f);
-	gce::BitMapBrush imageBackgroundButtonMainMenu{ "res/Testing/Button/Button2.png" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
+	gce::Vector3f32 posImageMainMenu = gce::Vector3f32(700.f, 400.f, 5.f);
+	gce::Vector3f32 scaleImageMainMenu = gce::Vector3f32(1400.f, 800.f, 1.f);
+	gce::BitMapBrush imageBackgroundButtonMainMenu{ "/res/Gameplay/Texture/Winner.jpg" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
 	gce::GameObject& imageMainMenuObject = gce::GameObject::Create(scene); imageMainMenuObject.transform.LocalTranslate(posImageMainMenu); imageMainMenuObject.transform.SetWorldScale(scaleImageMainMenu); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
 	gce::UIButton* imageMainMenu = imageMainMenuObject.AddComponent<gce::UIButton>(); imageMainMenu->pBitMapBrush = &imageBackgroundButtonMainMenu; imageMainMenu->pHoverBitMapBrush = &imageBackgroundButtonMainMenu;
 
 	//Start Button
 	gce::Vector3f32 posButtonStart = gce::Vector3f32(600.0f, 300.0f, 0.0f);
-	gce::Vector3f32 scaleButtonStart = gce::Vector3f32(216.0f, 69.0f, 1.0f);
+	gce::Vector3f32 scaleButtonStart = gce::Vector3f32(200.0f, 100.0f, 1.0f);
 	gce::GameObject& buttonStartObject = gce::GameObject::Create(scene); buttonStartObject.transform.LocalTranslate(posButtonStart); buttonStartObject.transform.LocalScale(scaleButtonStart);
 	gce::UIButton* buttonStart = buttonStartObject.AddComponent<gce::UIButton>(); buttonStart->AddListener(TestGame::Start); buttonStart->pBitMapBrush = &imageButtonStart; buttonStart->pHoverBitMapBrush = &imageCollideButtonStart;
 
 	//Quit Button
 	gce::Vector3f32 posButtonQuit = gce::Vector3f32(600.0f, 500.0f, 0.0f);
-	gce::Vector3f32 scaleButtonQuit = gce::Vector3f32(216.0f, 69.0f, 1.0f);
+	gce::Vector3f32 scaleButtonQuit = gce::Vector3f32(200.0f, 100.0f, 1.0f);
 	gce::GameObject& buttonQuitObject = gce::GameObject::Create(scene); buttonQuitObject.transform.LocalTranslate(posButtonQuit); buttonQuitObject.transform.LocalScale(scaleButtonQuit);
 	gce::UIButton* buttonQuit = buttonQuitObject.AddComponent<gce::UIButton>(); buttonQuit->AddListener(TestGame::Quit); buttonQuit->pBitMapBrush = &imageButtonQuit; buttonQuit->pHoverBitMapBrush = &imageCollideButtonQuit;
 	////Pause Menu////
 	//Image
-	gce::BitMapBrush imageButtonResume{ "res/Testing/Button/Button.png" };
-	gce::BitMapBrush imageCollideButtonResume{ "res/Testing/Button/Button2.png" };
-	gce::BitMapBrush imageButtonRestart{ "res/Testing/Button/Button.png" };
-	gce::BitMapBrush imageCollideButtonRestart{ "res/Testing/Button/Button2.png" };
-	gce::BitMapBrush imageButtonExit{ "res/Testing/Button/Button.png" };
-	gce::BitMapBrush imageCollideButtonExit{ "res/Testing/Button/Button2.png" };
+	gce::BitMapBrush imageButtonResume{ "/res/Gameplay/Texture/Reprendre.png" };
+	gce::BitMapBrush imageCollideButtonResume{ "/res/Gameplay/Texture/Reprendre_Cliquer.png" };
+	gce::BitMapBrush imageButtonRestart{ "/res/Gameplay/Texture/Recommencer.png" };
+	gce::BitMapBrush imageCollideButtonRestart{ "/res/Gameplay/Texture/Reprendre_Cliquer.png" };
+	gce::BitMapBrush imageButtonExit{ "/res/Gameplay/Texture/Quitter.png" };
+	gce::BitMapBrush imageCollideButtonExit{ "/res/Gameplay/Texture/Jouer_Cliquer.png" };
 
 	gce::Vector3f32 posImagePauseMenu = gce::Vector3f32(600.f, 400.f, 5.f);
 	gce::Vector3f32 scaleImagePauseMenu = gce::Vector3f32(1000.f, 1000.f, 1.f);
@@ -89,49 +87,53 @@ BEGIN_TEST(Game)
 	
 	//Resume Button
 	gce::Vector3f32 posButtonResume = gce::Vector3f32(600.0f, 200.0f, 0.0f);
-	gce::Vector3f32 scaleButtonResume = gce::Vector3f32(216.0f, 69.0f, 1.0f);
+	gce::Vector3f32 scaleButtonResume = gce::Vector3f32(200.0f, 100.0f, 1.0f);
 	gce::GameObject& buttonResumeObject = gce::GameObject::Create(scene); buttonResumeObject.transform.LocalTranslate(posButtonResume); buttonResumeObject.transform.LocalScale(scaleButtonResume);
 	gce::UIButton* buttonResume = buttonResumeObject.AddComponent<gce::UIButton>(); buttonResume->AddListener(TestGame::Resume); buttonResume->pBitMapBrush = &imageButtonResume; buttonResume->pHoverBitMapBrush = &imageCollideButtonResume;
 	
 	//Restart Button
 	gce::Vector3f32 posButtonRestart = gce::Vector3f32(600.0f, 400.0f, 0.0f);
-	gce::Vector3f32 scaleButtonRestart = gce::Vector3f32(216.0f, 69.0f, 1.0f);
+	gce::Vector3f32 scaleButtonRestart = gce::Vector3f32(200.0f, 100.0f, 1.0f);
 	gce::GameObject& buttonRestartObject = gce::GameObject::Create(scene); buttonRestartObject.transform.LocalTranslate(posButtonRestart); buttonRestartObject.transform.LocalScale(scaleButtonRestart);
 	gce::UIButton* buttonRestart = buttonRestartObject.AddComponent<gce::UIButton>(); buttonRestart->AddListener(TestGame::Restart); buttonRestart->pBitMapBrush = &imageButtonRestart; buttonRestart->pHoverBitMapBrush = &imageCollideButtonRestart;
 	
 	//Exit Button
 	gce::Vector3f32 posButtonExit = gce::Vector3f32(600.0f, 600.0f, 0.0f);
-	gce::Vector3f32 scaleButtonExit = gce::Vector3f32(216.0f, 69.0f, 1.0f);
+	gce::Vector3f32 scaleButtonExit = gce::Vector3f32(200.0f, 100.0f, 1.0f);
 	gce::GameObject& buttonExitObject = gce::GameObject::Create(scene); buttonExitObject.transform.LocalTranslate(posButtonExit); buttonExitObject.transform.LocalScale(scaleButtonExit);
 	gce::UIButton* buttonExit = buttonExitObject.AddComponent<gce::UIButton>(); buttonExit->AddListener(TestGame::Exit); buttonExit->pBitMapBrush = &imageButtonExit; buttonExit->pHoverBitMapBrush = &imageCollideButtonExit;
 	
 	//// WinLose Menu ////
 	//Image
-	gce::BitMapBrush imageButtonReplay{ "res/Testing/Button/Button.png" };
-	gce::BitMapBrush imageCollideButtonReplay{ "res/Testing/Button/Button2.png" };
-	gce::BitMapBrush imageButtonEnd{ "res/Testing/Button/Button.png" };
-	gce::BitMapBrush imageCollideButtonEnd{ "res/Testing/Button/Button2.png" };
+	gce::BitMapBrush imageButtonReplay{ "/res/Gameplay/Texture/Recommencer.png" };
+	gce::BitMapBrush imageCollideButtonReplay{ "/res/Gameplay/Texture/Reprendre_Cliquer.png" };
+	gce::BitMapBrush imageButtonEnd{ "/res/Gameplay/Texture/Quitter.png" };
+	gce::BitMapBrush imageCollideButtonEnd{ "/res/Gameplay/Texture/Jouer_Cliquer.png" };
 
-	gce::Vector3f32 posImageWinLoseMenu = gce::Vector3f32(600.f, 400.f, 5.f)/* + posCameraInMenu*/;
-	gce::Vector3f32 scaleImageWinLoseMenu = gce::Vector3f32(1000.f, 1000.f, 1.f);
-	gce::BitMapBrush imageBackgroundButtonWinLoseMenu{ "res/Testing/Button/Button2.png" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
-	gce::GameObject& imageWinLoseMenuObject = gce::GameObject::Create(scene); imageWinLoseMenuObject.transform.LocalTranslate(posImageWinLoseMenu); imageWinLoseMenuObject.transform.SetWorldScale(scaleImageWinLoseMenu); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
-	gce::UIButton* imageWinLoseMenu = imageWinLoseMenuObject.AddComponent<gce::UIButton>(); imageWinLoseMenu->pBitMapBrush = &imageBackgroundButtonWinLoseMenu; imageWinLoseMenu->pHoverBitMapBrush = &imageBackgroundButtonWinLoseMenu;
+	gce::Vector3f32 posImageWinMenu = gce::Vector3f32(700.f, 400.f, 5.f);
+	gce::Vector3f32 scaleImageWinMenu = gce::Vector3f32(1400.f, 800.f, 1.f);
+	gce::BitMapBrush imageBackgroundButtonWinMenu{ "/res/Gameplay/Texture/Winner.jpg" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
+	gce::GameObject& imageWinMenuObject = gce::GameObject::Create(scene); imageWinMenuObject.transform.LocalTranslate(posImageWinMenu); imageWinMenuObject.transform.SetWorldScale(scaleImageWinMenu); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
+	gce::UIButton* imageWinMenu = imageWinMenuObject.AddComponent<gce::UIButton>(); imageWinMenu->pBitMapBrush = &imageBackgroundButtonWinMenu; imageWinMenu->pHoverBitMapBrush = &imageBackgroundButtonWinMenu;
+
+	gce::Vector3f32 posImageLoseMenu = gce::Vector3f32(700.f, 400.f, 5.f);
+	gce::Vector3f32 scaleImageLoseMenu = gce::Vector3f32(1400.f, 800.f, 1.f);
+	gce::BitMapBrush imageBackgroundButtonLoseMenu{ "/res/Gameplay/Texture/Loser.jpg" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
+	gce::GameObject& imageLoseMenuObject = gce::GameObject::Create(scene); imageLoseMenuObject.transform.LocalTranslate(posImageLoseMenu); imageLoseMenuObject.transform.SetWorldScale(scaleImageLoseMenu); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
+	gce::UIButton* imageLoseMenu = imageLoseMenuObject.AddComponent<gce::UIButton>(); imageLoseMenu->pBitMapBrush = &imageBackgroundButtonLoseMenu; imageLoseMenu->pHoverBitMapBrush = &imageBackgroundButtonLoseMenu;
+
 
 	//Replay Button
 	gce::Vector3f32 posButtonReplay = gce::Vector3f32(600.0f, 200.0f, 0.0f);
-	gce::Vector3f32 scaleButtonReplay = gce::Vector3f32(216.0f, 69.0f, 1.0f);
+	gce::Vector3f32 scaleButtonReplay = gce::Vector3f32(200.0f, 100.0f, 1.0f);
 	gce::GameObject& buttonReplayObject = gce::GameObject::Create(scene); buttonReplayObject.transform.LocalTranslate(posButtonReplay); buttonReplayObject.transform.LocalScale(scaleButtonReplay);
 	gce::UIButton* buttonReplay = buttonReplayObject.AddComponent<gce::UIButton>(); buttonReplay->AddListener(TestGame::Restart); buttonReplay->pBitMapBrush = &imageButtonReplay; buttonReplay->pHoverBitMapBrush = &imageCollideButtonReplay;
 
 	//End Button
 	gce::Vector3f32 posButtonEnd = gce::Vector3f32(600.0f, 800.0f, 0.0f);
-	gce::Vector3f32 scaleButtonEnd = gce::Vector3f32(216.0f, 69.0f, 1.0f);
+	gce::Vector3f32 scaleButtonEnd = gce::Vector3f32(200.0f, 100.0f, 1.0f);
 	gce::GameObject& buttonEndObject = gce::GameObject::Create(scene); buttonEndObject.transform.LocalTranslate(posButtonEnd); buttonEndObject.transform.LocalScale(scaleButtonEnd);
 	gce::UIButton* buttonEnd = buttonEndObject.AddComponent<gce::UIButton>(); buttonEnd->AddListener(TestGame::Quit); buttonEnd->pBitMapBrush = &imageButtonEnd; buttonEnd->pHoverBitMapBrush = &imageCollideButtonEnd;
-
-	/*menu->SetCamera(gCameraObject);
-	menu->SetWorldPositionCamera(posCameraInMenu);*/
 
 	menu->AddImage(&imageMainMenuObject, MAIN_MENU);
 	menu->AddButton(&buttonStartObject, MAIN_MENU);
@@ -142,9 +144,13 @@ BEGIN_TEST(Game)
 	menu->AddButton(&buttonRestartObject, PAUSE_MENU);
 	menu->AddButton(&buttonExitObject, PAUSE_MENU);
 
-	menu->AddImage(&imageWinLoseMenuObject, WINLOSE_MENU);
-	menu->AddButton(&buttonReplayObject, WINLOSE_MENU);
-	menu->AddButton(&buttonEndObject, WINLOSE_MENU);
+	menu->AddImage(&imageWinMenuObject, WIN_MENU);
+	menu->AddButton(&buttonReplayObject, WIN_MENU);
+	menu->AddButton(&buttonEndObject, WIN_MENU);
+
+	menu->AddImage(&imageLoseMenuObject, LOSE_MENU);
+	menu->AddButton(&buttonReplayObject, LOSE_MENU);
+	menu->AddButton(&buttonEndObject, LOSE_MENU);
 
 	menu->ShowMenu(MAIN_MENU);
 	gMenuObject = &menuObject;
@@ -191,7 +197,7 @@ public:
 		camera.perspective.up = { 0.0f, 1.0f, 0.0f };
 	}
 
-	static gce::GameObject& CreatePlayer(gce::Scene& scene, gce::GameObject* cameraObject)
+	static gce::GameObject& CreatePlayer(gce::Scene& scene, gce::GameObject* cameraObject, gce::GameObject* menuObject)
 	{
 		gce::GameObject& playerObject = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 		playerObject.AddComponent<gce::BoxCollider>()->SetActive(true);
@@ -200,14 +206,15 @@ public:
 		playerObject.AddChild(*cameraObject);
 
 		ScriptPlayer* player = playerObject.GetScript<ScriptPlayer>();
-		ResetPlayerBegin(player, cameraObject);
+		ResetPlayerBegin(player, cameraObject, menuObject);
 		return playerObject;
 	}
 
-	static void ResetPlayerBegin(ScriptPlayer* player, gce::GameObject* cameraObject)
+	static void ResetPlayerBegin(ScriptPlayer* player, gce::GameObject* cameraObject, gce::GameObject* menuObject)
 	{
 		player->Initia();
 		player->SetCamera(cameraObject);
+		player->SetMenu(menuObject);
 		player->SetWorldPosition(gce::Vector3f32(0.f, 10.f, 0.f));
 		player->mCharacter->SetSpeed(9.f);
 		player->SetJump(6.f);
@@ -446,7 +453,7 @@ public:
 		//ImageData data = ImageLoader::LoadTexture(String(RES_PATH) + path);
 
 		ScriptPlayer* player = playerObject->GetScript<ScriptPlayer>();
-		ResetPlayerBegin(player, cameraObject);
+		ResetPlayerBegin(player, cameraObject, menuObject);
 
 		gce::GameObject& weaponParent = gce::GameObject::Create(scene);
 		cameraObject->AddChild(weaponParent);

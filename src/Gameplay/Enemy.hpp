@@ -35,25 +35,30 @@ public:
 	}
 	virtual void Update() 
 	{ 
-		ScriptEntity* myParentEntity = mAgent->mCharacter->mEntity;
-		if (mPlayer != nullptr)
+		float deltaTime = gce::GameManager::GameDeltaTime();
+		if (deltaTime > 0.f)
 		{
-			myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
-		}
-		mCellTarget = mAgent->GetPathFinding()->GetGrid()->GetNearestCell(mPlayer->GetWorldPosition());
-		if (mAgent->GetPaths()->Size() < 1)
-		{
-			mIsNoPath = true;
-			if (mCellTarget != nullptr)
+			ScriptEntity* myParentEntity = mAgent->mCharacter->mEntity;
+			if (mPlayer != nullptr)
 			{
-				mAgent->GoToCell(mCellTarget);
-				SetCellTarget(nullptr);
+				myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
+			}
+			mCellTarget = mAgent->GetPathFinding()->GetGrid()->GetNearestCell(mPlayer->GetWorldPosition());
+			if (mAgent->GetPaths()->Size() < 1)
+			{
+				mIsNoPath = true;
+				if (mCellTarget != nullptr)
+				{
+					mAgent->GoToCell(mCellTarget);
+					SetCellTarget(nullptr);
+				}
+			}
+			else
+			{
+				mIsNoPath = false;
 			}
 		}
-		else
-		{
-			mIsNoPath = false;
-		}
+		
 
 		//auto currentTime = mClock::now();
 		//auto elapsed = currentTime - mPreviousTime;
