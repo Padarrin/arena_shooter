@@ -10,7 +10,7 @@ public:
     Scripty* mY;
 
     virtual void Initia() { mY = m_pOwner->AddScript<ScriptY>(); mY->Initia();}
-    virtual void Start() { }
+    virtual void Start() { mY->Start();}
     virtual void Update() {}
     virtual void Destroy() {}
 

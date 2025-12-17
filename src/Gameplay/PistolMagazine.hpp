@@ -23,7 +23,7 @@ public:
     {
         IsEmpty();
 
-        float deltatime = gce::GameManager::GameDeltaTime();
+        float deltatime = gce::GameManager::DeltaTime();
         mShootTime.Update(deltatime);
         mReloadTime.Update(deltatime);
 

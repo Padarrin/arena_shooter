@@ -18,7 +18,7 @@ public:
 
 	virtual void Initia() { mObject = m_pOwner->AddScript<ScriptObject>(); mObject->Initia(); mDestroyTime = Time(5);  SetDamage(0); }
 	virtual void Start() { }
-	virtual void Update() { UpdateDirection(); UpdateOutTime(); mDestroyTime.Update(GameManager::GameDeltaTime());}
+	virtual void Update() { UpdateDirection(); UpdateOutTime(); mDestroyTime.Update(GameManager::DeltaTime());}
 	virtual void Destroy() {}
 
 	virtual void CollisionEnter(gce::GameObject* other) {}
@@ -29,7 +29,7 @@ public:
 	{
 		if (mSpeed != 0.f)
 		{
-			float dt = gce::GameManager::GameDeltaTime();
+			float dt = gce::GameManager::DeltaTime();
 			float distance = dt * mSpeed;
 			gce::Vector3f32 translation = mDirection * distance;
 			WorldTranslate(translation);

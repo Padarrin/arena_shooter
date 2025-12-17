@@ -10,7 +10,6 @@ inline void GameManager::Run(WindowParam& param) { if ( s_pInstance == nullptr )
 inline void GameManager::Destroy() { delete s_pInstance; }
 
 inline float32 GameManager::DeltaTime() { return s_pInstance->m_deltaTime; }
-inline float32 GameManager::GameDeltaTime() { return s_pInstance->m_gameDeltaTime; }
 inline float32 GameManager::FixedDeltaTime() { return s_pInstance->m_fixedDeltaTime; }
 inline float32 GameManager::FPS() { return s_pInstance->m_fps; }
 inline Window* GameManager::GetWindow() { return s_pInstance->m_pWindow; }

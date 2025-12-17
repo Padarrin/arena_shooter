@@ -63,11 +63,10 @@ public:
     Event<GameObject*>* pCollision2DEvents = nullptr;
 
     Scene* m_pScene = nullptr;
-
-    ~GameObject() = default;
 private:
     explicit GameObject( cstr name = "GameObject" );
     // GameObject( GameObject const& ) = default;
+    ~GameObject() = default;
 
     bool m_created = false;
     bool m_destroyed = false;

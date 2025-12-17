@@ -34,7 +34,6 @@ public:
     static void Destroy();
 
     [[nodiscard]] static float32 DeltaTime();
-    [[nodiscard]] static float32 GameDeltaTime();
     [[nodiscard]] static float32 FixedDeltaTime();
     [[nodiscard]] static float32 FPS();
 	[[nodiscard]] static Window* GetWindow();
@@ -66,7 +65,6 @@ public: // Temporary (should be named and used as private)
 
     Chrono m_chrono;
     float32 m_deltaTime;
-    float32 m_gameDeltaTime;
     float32 m_fixedDeltaTime = 1.0f / 120.0f;
     float32 m_timeSinceFixedUpdate;
     float32 m_fps;

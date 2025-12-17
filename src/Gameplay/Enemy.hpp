@@ -47,8 +47,9 @@ protected:
 public:
 	ScriptAgent* mAgent;
 
-	virtual void Initia() { mAgent = m_pOwner->AddScript<ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); mAgent->mCharacter->SetMaxLife(100); mAgent->mCharacter->SetDamage(5); }
-	virtual void Start() 
+	// Fonctions
+	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); mAgent->mCharacter->SetMaxLife(100); mAgent->mCharacter->SetDamage(5); }
+	virtual void Start()
 	{
 		ScriptGrid* grid = GetGrid();
 		Cell* nearestCell = grid->GetNearestCell(GetWorldPosition());
@@ -74,7 +75,6 @@ public:
 		mStateMachine->AddTransition(conditionHit, idle, hit);
 		mStateMachine->AddTransition(conditionDie, idle, die);
 
-		mPlayer->Start();
 	}
 	virtual void Update() 
 	{ 
