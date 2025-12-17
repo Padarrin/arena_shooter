@@ -18,8 +18,8 @@ protected:
 	Cell* mCellTarget;
 	bool mIsNoPath;
 
-	//using mClock = std::chrono::steady_clock;
-	//mClock::time_point mPreviousTime = mClock::now();
+	using mClock = std::chrono::steady_clock;
+	mClock::time_point mPreviousTime = mClock::now();
 
 	// StateMachine
 	Time mTimerStateMachine;
@@ -49,8 +49,9 @@ protected:
 public:
 	ScriptAgent* mAgent;
 
-	virtual void Initia() { mAgent = m_pOwner->AddScript<ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); mAgent->mCharacter->SetMaxLife(100); mAgent->mCharacter->SetDamage(5); mTimerStateMachine = Time(1.f);}
-	virtual void Start() 
+	// Fonctions
+	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); mAgent->mCharacter->SetMaxLife(100); mAgent->mCharacter->SetDamage(5); mTimerStateMachine = Time(1.f); }
+	virtual void Start()
 	{
 		ScriptGrid* grid = GetGrid();
 		Cell* nearestCell = grid->GetNearestCell(GetWorldPosition());
@@ -61,8 +62,6 @@ public:
 		}
 
 		SetIsNoPath(false);
-
-		mPlayer->Start();
 
 		//mStateMachine = GameManager::GetStatesSystem().CreateStateMachine(m_pOwner);
 
@@ -77,34 +76,33 @@ public:
 		mStateMachine->AddTransition(mConditionAttack, mRunning, mIdle);
 		mStateMachine->AddTransition(mConditionHit, mIdle, mHit);
 		mStateMachine->AddTransition(mConditionDie, mIdle, mDie);*/
-	}
 
+	}
 	virtual void Update() 
 	{
-		float deltaTime = gce::GameManager::DeltaTime();
-		
-		ScriptEntity* myParentEntity = mAgent->mCharacter->mEntity;
-		if (mPlayer != nullptr)
+		float deltaTime = gce::GameManager::GameDeltaTime();
+		if (deltaTime > 0)
 		{
-			myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
-		}
-		
-		mCellTarget = mAgent->GetPathFinding()->GetGrid()->GetNearestCell(mPlayer->GetWorldPosition());
-		
-		if (mAgent->GetPaths()->Size() < 1)
-		{
-			mIsNoPath = true;
-			PathIsFinish();
-		}
-		else
-		{
-			mIsNoPath = false;
-		}
+			ScriptEntity* myParentEntity = mAgent->mCharacter->mEntity;
+			if (mPlayer != nullptr)
+			{
+				myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
+			}
 
-		mTimerStateMachine.Update(deltaTime);
-		ChangeState();
+			if (mAgent->GetPaths()->Size() < 1)
+			{
+				mIsNoPath = true;
+				PathIsFinish();
+			}
+			else
+			{
+				mIsNoPath = false;
+			}
+
+			mTimerStateMachine.Update(deltaTime);
+			ChangeState();
+		}
 	}
-
 	virtual void PathIsFinish()
 	{
 		if (mCellTarget != nullptr)
@@ -113,7 +111,6 @@ public:
 			SetCellTarget(nullptr);
 		}
 	}
-	
 	virtual void Destroy() {}
 
 	virtual void CollisionEnter(gce::GameObject* other){}
@@ -236,6 +233,7 @@ public:
 			float dist = abs((playerPos.x - myPos.x) + (playerPos.y - myPos.y) + (playerPos.z - myPos.z));
 			if (mAgent->mCharacter->GetLife() == 0)
 			{
+
 				mIsDead = true;
 				mTimerStateMachine.SetTime(100.f);
 			}
