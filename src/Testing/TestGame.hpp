@@ -5,6 +5,7 @@
 #include <Engine.h>
 #include "../Gameplay/UI.hpp"
 #include "../Gameplay/Enemy.hpp"
+#include "../Gameplay/StaticGeometry.hpp"
 #include "../Gameplay/Grid.hpp"
 #include "../Gameplay/SubMachineGun.hpp"
 #include "../Gameplay/Ball.hpp"
@@ -54,21 +55,12 @@ void CreateNail(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
 	//Life = 20 a 200, Damage = 1 a 5
 
-	gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
-	enemyObject.AddComponent<gce::BoxCollider>()->SetActive(true);
-	enemyObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
-	enemyObject.SetName("Enemy");
-
-	ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
-	enemy->SetWorldPosition({ 10,-8,10 });
-	enemy->SetPlayer(player);
-	enemy->SetMaxLife(20);
-	enemy->SetDamage(10);
-	enemy->mAgent->mCharacter->SetSpeed(5.f);
-	enemy->mAgent->GetPathFinding()->SetGrid(grid);
-	enemy->SetCellTarget(grid->GetCell(player->GetWorldPosition()));
-	enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
-}
+	////Main Menu////
+	//Image
+	gce::BitMapBrush imageButtonStart{ "res/Testing/Button/Button.png" };
+	gce::BitMapBrush imageCollideButtonStart{ "res/Testing/Button/Button2.png" };
+	gce::BitMapBrush imageButtonQuit{ "res/Testing/Button/Button.png" };
+	gce::BitMapBrush imageCollideButtonQuit{ "res/Testing/Button/Button2.png" };
 
 void SetNail(/*gce::Scene& scene,*/gce::GameObject*/*&*/ enemyObject, ScriptPlayer* player, ScriptGrid* grid)
 {
@@ -101,60 +93,234 @@ void SetFloor(/*gce::Scene& scene,*/gce::GameObject* floorObject)
 
 void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 {
-	///////////////////////////////////////////////////////////
-	// Map json
-	std::vector<gce::GameObject*> hangar = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/Hangar.json", &scene);
-	std::vector<gce::GameObject*> outside = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/outside.json", &scene);
-	std::vector<std::vector<gce::GameObject*>> gameObjectLoad;
-	gameObjectLoad.push_back(hangar);
-	gameObjectLoad.push_back(outside);
+	menu->AddImage(&imageMainMenuObject, MAIN_MENU);
+	menu->AddButton(&buttonStartObject, MAIN_MENU);
+	menu->AddButton(&buttonQuitObject, MAIN_MENU);
 
-	hangar[0]->transform.SetWorldPosition({ hangar[0]->transform.GetWorldPosition().x + 0.f, hangar[0]->transform.GetWorldPosition().y + 2.229f, hangar[0]->transform.GetWorldPosition().z + 0.f });
-	outside[0]->transform.SetWorldPosition({ outside[0]->transform.GetWorldPosition().x + 35.f, outside[0]->transform.GetWorldPosition().y, outside[0]->transform.GetWorldPosition().z + 0.f });
+	menu->AddImage(&imagePauseMenuObject, PAUSE_MENU);
+	menu->AddButton(&buttonResumeObject, PAUSE_MENU);
+	menu->AddButton(&buttonRestartObject, PAUSE_MENU);
+	menu->AddButton(&buttonExitObject, PAUSE_MENU);
 
-	int lenghtLoad = (int)gameObjectLoad.size();
-	for (int i = 0; i < lenghtLoad; i++)
+	menu->AddImage(&imageWinLoseMenuObject, WINLOSE_MENU);
+	menu->AddButton(&buttonReplayObject, WINLOSE_MENU);
+	menu->AddButton(&buttonEndObject, WINLOSE_MENU);
+
+	menu->ShowMenu(MAIN_MENU);
+	gMenuObject = &menuObject;
+	//	//	//	//	 Menu Fin   //	//	//	//
+
+	gce::WindowParam windowParam;
+	/*windowParam.height = 992;
+	windowParam.width = 1768;*/
+	gce::GameManager::Run(windowParam);
+
+	gce::GameManager::Destroy();
+
+END_TEST_MAIN_FUNCTION()
+
+public:
+
+	static gce::GameObject* CreateCamera(gce::Scene& scene)
 	{
-		int geoLoad = (int)gameObjectLoad[i].size();
-		for (int j = 0; j < geoLoad; j++)
-		{
-			gce::GameObject* currentGameObject = gameObjectLoad[i][j];
+		gce::GameObject& cameraObject = gce::GameObject::Create(scene);
+		gce::Camera& camera = *cameraObject.AddComponent<gce::Camera>();
+		cameraObject.SetName("Camera");
+		ResetCamera(&cameraObject);
+		return &cameraObject;
+	}
 
-			//////////////////////Enemy///////////////////////
-			if (currentGameObject->GetName() == "Nail")
-			{
-				currentGameObject->SetName("Enemy");
-				SetNail(currentGameObject, player, grid);
-			}
-			else if (currentGameObject->GetName() == "Bot")
-			{
-				currentGameObject->SetName("Bot");
-				//SetNail(currentGameObject, player, grid);
-			}
-			//////////////////////Enemy Fin///////////////////////
-			//////////////////////Item///////////////////////
-			else if (currentGameObject->GetName() == "Item")
-			{
-				currentGameObject->SetName("Item");
-				//SetNail(currentGameObject, player, grid);
-			}
-			//////////////////////Item Fin///////////////////////
-			//////////////////////Furniture///////////////////////
-			else if (currentGameObject->GetName() == "Box")
-			{
-				currentGameObject->SetName("Box");
-				//SetNail(currentGameObject, player, grid);
-			}
-			//////////////////////Furniture Fin///////////////////////
-			//////////////////////Floor///////////////////////
-			else
-			{
-				currentGameObject->SetName("Floor");
-				SetFloor(currentGameObject);
-			}
-			//////////////////////Floor Fin///////////////////////
+	static void ResetCamera(gce::GameObject* cameraObject)
+	{
+		cameraObject->transform.SetWorldPosition({ 0.f, 0.f, 0.f });
+		cameraObject->transform.SetLocalPosition({ 0.f, 0.f, 0.f });
+
+		cameraObject->transform.SetWorldRotation({ 0.f, 0.f, 0.f });
+		cameraObject->transform.SetLocalRotation({ 0.f, 0.f, 0.f });
+
+		cameraObject->transform.SetWorldScale({ 1.f, 1.f, 1.f });
+		cameraObject->transform.SetLocalScale({ 1.f, 1.f, 1.f });
+		
+		gce::Camera& camera = *cameraObject->GetComponent<gce::Camera>();
+		camera.SetMainCamera();
+		camera.SetType(gce::PERSPECTIVE);
+		camera.perspective.fov = XM_PIDIV4;
+		camera.perspective.nearPlane = 0.001f;
+		camera.perspective.farPlane = 500.0f;
+		camera.perspective.aspectRatio = 600.0f / 400.0f;
+		camera.perspective.up = { 0.0f, 1.0f, 0.0f };
+	}
+
+	static gce::GameObject& CreatePlayer(gce::Scene& scene, gce::GameObject* cameraObject)
+	{
+		gce::GameObject& playerObject = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+		playerObject.AddComponent<gce::BoxCollider>()->SetActive(true);
+		playerObject.AddComponent<gce::PhysicComponent>()->SetActive(true);
+		playerObject.SetName("Player");
+		playerObject.AddChild(*cameraObject);
+
+		ScriptPlayer* player = playerObject.GetScript<ScriptPlayer>();
+		ResetPlayerBegin(player, cameraObject);
+		return playerObject;
+	}
+
+	static void ResetPlayerBegin(ScriptPlayer* player, gce::GameObject* cameraObject)
+	{
+		player->Initia();
+		player->SetCamera(cameraObject);
+		player->SetWorldPosition(gce::Vector3f32(0.f, 10.f, 0.f));
+		player->mCharacter->SetSpeed(9.f);
+		player->SetJump(6.f);
+	}
+
+	static void ResetPlayerEnd(ScriptPlayer* player)
+	{
+		player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
+		player->Start();
+	}
+
+	static void CreateNail(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptPlayer* player, ScriptGrid* grid)
+	{
+		//Life = 20 a 200, Damage = 1 a 5
+		gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+		enemyObject.SetName("Enemy");
+
+		SetNail(&enemyObject, player, grid);
+
+	}
+
+	static void SetNail(/*gce::Scene& scene,*/gce::GameObject*/*&*/ enemyObject, ScriptPlayer* player, ScriptGrid* grid)
+	{
+		//Life = 20 a 200, Damage = 1 a 5
+		//gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
+		enemyObject->AddComponent<gce::BoxCollider>()->SetActive(true);
+		enemyObject->AddComponent<gce::PhysicComponent>()->SetActive(false);
+		//enemyObject.SetName("Enemy");
+
+		ScriptEnemy* enemy = nullptr;
+		if (enemyObject->HasScript<ScriptEnemy>())
+		{
+			enemy = enemyObject->GetScript<ScriptEnemy>();
 		}
+		else
+		{
+			enemy = enemyObject->AddScript<ScriptEnemy>();
+		}
+		//ScriptEnemy* enemy = enemyObject->GetScript<ScriptEnemy>();
+		enemy->SetWorldPosition({ 10,-8,10 });
+		enemy->SetPlayer(player);
+		enemy->SetMaxLife(20);
+		enemy->SetDamage(10);
+		enemy->mAgent->mCharacter->SetSpeed(5.f);
+		enemy->mAgent->GetPathFinding()->SetGrid(grid);
+		enemy->SetCellTarget(grid->GetNearestCell(player->GetWorldPosition()));
+		enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
+		
+	}
+
+	static void CreateStaticObject(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptGrid* grid, bool isFix, bool isObstacle)
+	{
+		gce::GameObject& staticObject = CreateGameObject<ScriptStaticGeometry>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+		staticObject.SetName("StaticObject");
+
+		SetStaticObject(&staticObject, grid, isFix, isObstacle);
+
+	}
+
+	static void SetStaticObject(/*gce::Scene& scene,*/gce::GameObject* staticObject, ScriptGrid* grid, bool isFix, bool isObstacle)
+	{
+		//gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, gce::SHAPES.CUBE);
+		staticObject->AddComponent<gce::BoxCollider>()->SetActive(true);
+		//enemyObject.SetName("Enemy");
+
+		ScriptStaticGeometry* staticGeometry = nullptr;
+		if (staticObject->HasScript<ScriptStaticGeometry>())
+		{
+			staticGeometry = staticObject->GetScript<ScriptStaticGeometry>();
+		}
+		else
+		{
+			staticGeometry = staticObject->AddScript<ScriptStaticGeometry>();
+		}
+		staticGeometry->SetAll(grid, isFix, isObstacle);
+	}
+
+
+	static void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
+	{
+		
 		///////////////////////////////////////////////////////////
+		// Map json
+		std::vector<gce::GameObject*> hangar = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/Hangar.json", &scene);
+		std::vector<gce::GameObject*> outside = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/outside.json", &scene);
+		std::vector<std::vector<gce::GameObject*>> gameObjectLoad;
+		gameObjectLoad.push_back(hangar);
+		gameObjectLoad.push_back(outside);
+
+		hangar[0]->transform.SetWorldPosition({ hangar[0]->transform.GetWorldPosition().x + 0.f, hangar[0]->transform.GetWorldPosition().y + 2.229f, hangar[0]->transform.GetWorldPosition().z + 0.f });
+		outside[0]->transform.SetWorldPosition({ outside[0]->transform.GetWorldPosition().x + 35.f, outside[0]->transform.GetWorldPosition().y, outside[0]->transform.GetWorldPosition().z + 0.f });
+
+		int lenghtLoad = (int)gameObjectLoad.size();
+		for (int i = 0; i < lenghtLoad; i++)
+		{
+			int geoLoad = (int)gameObjectLoad[i].size();
+			for (int j = 0; j < geoLoad; j++)
+			{
+				//////////////////////Enemy///////////////////////
+				if (currentGameObject->GetName() == "Nail")
+				{
+					currentGameObject->SetName("Enemy");
+					SetNail(currentGameObject, player, grid);
+				}
+				else if (currentGameObject->GetName() == "Bot")
+				{
+					currentGameObject->SetName("Bot");
+					//SetNail(currentGameObject, player, grid);
+				}
+				//////////////////////Enemy Fin///////////////////////
+				//////////////////////Item///////////////////////
+				else if (currentGameObject->GetName() == "Item")
+				{
+					currentGameObject->SetName("Item");
+					//SetNail(currentGameObject, player, grid);
+				}
+				//////////////////////Item Fin///////////////////////
+				//////////////////////Furniture///////////////////////
+				else if (currentGameObject->GetName() == "Box")
+				{
+					currentGameObject->SetName("Box");
+					//SetNail(currentGameObject, player, grid);
+				}
+				//////////////////////Furniture Fin///////////////////////
+				//////////////////////Floor///////////////////////
+				else
+				{
+					if (currentGameObject->GetName() == "Wall")
+					{
+						bool isFix = false; 
+						bool isObstacle = false;
+						SetStaticObject(currentGameObject, grid, isFix, isObstacle);
+						currentGameObject->SetName("StaticObject");
+					}
+					else if (currentGameObject->GetName() == "Floor" || currentGameObject->GetName() == "Roof")
+					{
+						bool isFix = false;
+						bool isObstacle = false;
+						SetStaticObject(currentGameObject, grid, isFix, isObstacle);
+						currentGameObject->SetName("StaticObject");
+					}
+					else if (currentGameObject->GetName() == "Door")
+					{
+						bool isFix = false;
+						bool isObstacle = false;
+						SetStaticObject(currentGameObject, grid, isFix, isObstacle);
+						currentGameObject->SetName("StaticObject");
+					}
+				}
+				//////////////////////Floor Fin///////////////////////
+			}
+			///////////////////////////////////////////////////////////
+		}
 	}
 }
 
@@ -267,10 +433,24 @@ gce::WindowParam windowParam;
 windowParam.width = 1768;*/
 gce::GameManager::Run(windowParam);
 
-gce::GameManager::Destroy();
-
-END_TEST_MAIN_FUNCTION()
-
+		gce::UIButton* button = buttonObject.AddComponent<gce::UIButton>();
+		button->AddListener(fonctionUse);
+		button->pBitMapBrush = &imageButton;
+		button->pHoverBitMapBrush = &imageButtonCollide;
+		return buttonObject;
+	}*/
+	static void DeleteGameObject()
+	{
+		auto* mapGameObject = gMenuObject->m_pScene->GetGameObject();
+		//gCameraObject->RemoveParent();
+		for (auto& [id, gameObject] : *mapGameObject)
+		{
+			if ((gameObject->GetScript<ScriptEntity>() != nullptr && gameObject->GetScript<ScriptPlayer>() == nullptr) || gameObject->GetScript<ScriptGrid>() != nullptr)
+			{
+				gameObject->SetActive(false);
+			}
+		}
+	}
 
 
 END_TEST(Game)

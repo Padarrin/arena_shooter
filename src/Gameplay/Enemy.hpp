@@ -17,8 +17,8 @@ protected:
 	Cell* mCellTarget;
 	bool mIsNoPath;
 
-	using mClock = std::chrono::steady_clock;
-	mClock::time_point mPreviousTime = mClock::now();
+	//using mClock = std::chrono::steady_clock;
+	//mClock::time_point mPreviousTime = mClock::now();
 
 	// StateMachine
 	StateMachine* mStateMachine;
@@ -83,7 +83,9 @@ public:
 		{
 			myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
 		}
-
+		
+		mCellTarget = mAgent->GetPathFinding()->GetGrid()->GetNearestCell(mPlayer->GetWorldPosition());
+		
 		if (mAgent->GetPaths()->Size() < 1)
 		{
 			mIsNoPath = true;
@@ -97,16 +99,6 @@ public:
 		else
 		{
 			mIsNoPath = false;
-		}
-
-		auto currentTime = mClock::now();
-		auto elapsed = currentTime - mPreviousTime;
-
-		if (elapsed >= std::chrono::seconds(1))
-		{
-			//mAgent->mCharacter->CreateBallInFront<ScriptBall>(100.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, myParentEntity);
-			//mAgent->mCharacter->CreateBallInFront<ScriptBall>("EnemyBall", 100.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, myParentEntity);
-			mPreviousTime = currentTime;
 		}
 	}
 	virtual void Destroy() {}
