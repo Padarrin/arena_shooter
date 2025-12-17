@@ -40,7 +40,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		
 		ScriptCharacter* mCharacter;
 
-		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mJump = 6.f; mCharacter->SetMaxLife(10000); mCharacter->SetDamage(5); mYaw = 0.f; mPitch = 0.f; mIsCursorLocked = true; mCurrentWeapon = nullptr; mObjectCamera = nullptr; mAllWeapons = std::vector<ScriptWeapons*>(); mMenu = nullptr; }
+		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); mYaw = 0.f; mPitch = 0.f; mIsCursorLocked = true; mCurrentWeapon = nullptr; mObjectCamera = nullptr; mAllWeapons = std::vector<ScriptWeapons*>(); mMenu = nullptr; }
 		virtual void Start() 
 		{ 
 			mWindow = gce::GameManager::GetWindow(); 
@@ -66,11 +66,10 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 					TurnCamera();
 				}
 
-				mCharacter->Damage(1);
 				if (mCharacter->GetLife() <= 0)
 				{
 					mMenu->GetScript<ScriptMenu>()->ShowMenu(LOSE_MENU);
-					mCharacter->mEntity->DestroyEntity();
+					mCharacter->mEntity->DestroyCharacter();
 				}
 			}
 			else
@@ -86,6 +85,10 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			if (other->GetName() == "Floor")
 			{
 				ColliderFloor();
+			}
+			else if(other->GetName() == "StaticObject" || other->GetName() == "OutSide")
+			{
+				int i = 0;
 			}
 		}
 		virtual void CollisionStay(gce::GameObject* other) {}

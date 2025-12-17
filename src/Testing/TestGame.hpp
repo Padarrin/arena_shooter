@@ -218,6 +218,7 @@ public:
 		player->SetWorldPosition(gce::Vector3f32(0.f, 10.f, 0.f));
 		player->mCharacter->SetSpeed(9.f);
 		player->SetJump(6.f);
+		player->mCharacter->SetMaxLife(100);
 	}
 	
 	static void ResetPlayerEnd(ScriptPlayer* player)
@@ -265,7 +266,7 @@ public:
 		enemy->SetWorldPosition({ 10,-8,10 });
 		enemy->SetPlayer(player);
 		enemy->SetMaxLife(20);
-		enemy->SetDamage(10);
+		enemy->SetDamage(2);
 		enemy->mAgent->mCharacter->SetSpeed(5.f);
 		enemy->mAgent->GetPathFinding()->SetGrid(grid);
 		enemy->SetCellTarget(grid->GetNearestCell(player->GetWorldPosition()));
@@ -300,69 +301,108 @@ public:
 		staticGeometry->SetAll(grid, isFix, isObstacle);
 	}
 
-	static void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
+	static void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid, cstr name, const String& path)
 	{
 		///////////////////////////////////////////////////////////
 		// Map json
-		std::vector<gce::GameObject*> gameObjectLoad = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/outside.json", &scene);
+		std::vector<gce::GameObject*> gameObjectLoad = JsonLoader::LoadMap(path, &scene);
+		auto* mapGameObject = gMenuObject->m_pScene->GetGameObject();
 
 		int lenghtLoad = (int)gameObjectLoad.size();
 		for (int i = 0; i < lenghtLoad; i++)
 		{
-			gce::GameObject* currentGameObject= gameObjectLoad[i];
-			
-			//////////////////////Enemy///////////////////////
-			if (currentGameObject->GetName() == "Nail")
+			gameObjectLoad[i]->SetName(name);
+		}
+
+		for (auto& [id, currentGameObject] : *mapGameObject)
+		{
+			//gce::GameObject* currentGameObject= gameObjectLoad[i];
+			if (currentGameObject->GetName() == "GameObject")
 			{
-				currentGameObject->SetName("Enemy");
-				SetNail(currentGameObject, player, grid);
-			}
-			else if (currentGameObject->GetName() == "Bot")
-			{
-				currentGameObject->SetName("Bot");
-				//SetNail(currentGameObject, player, grid);
-			}
-			//////////////////////Enemy Fin///////////////////////
-			//////////////////////Item///////////////////////
-			else if (currentGameObject->GetName() == "Item")
-			{
-				currentGameObject->SetName("Item");
-				//SetNail(currentGameObject, player, grid);
-			}
-			//////////////////////Item Fin///////////////////////
-			//////////////////////Furniture///////////////////////
-			else if (currentGameObject->GetName() == "Box")
-			{
-				currentGameObject->SetName("Box");
-				//SetNail(currentGameObject, player, grid);
-			}
-			//////////////////////Furniture Fin///////////////////////
-			//////////////////////Floor///////////////////////
-			else
-			{
-				if (currentGameObject->GetName() == "Wall")
+				//////////////////////Enemy///////////////////////
+				/*if ()//currentGameObject->GetName() == "Nail"
 				{
-					bool isFix = false; 
-					bool isObstacle = false;
-					SetStaticObject(currentGameObject, grid, isFix, isObstacle);
-					currentGameObject->SetName("StaticObject");
+					currentGameObject->SetName("Enemy");
+					SetNail(currentGameObject, player, grid);
 				}
-				else if (currentGameObject->GetName() == "Floor" || currentGameObject->GetName() == "Roof")
+				else if ()//currentGameObject->GetName() == "Bot"
+				{
+					currentGameObject->SetName("Bot");
+					//SetNail(currentGameObject, player, grid);
+				}
+				//////////////////////Enemy Fin///////////////////////
+				//////////////////////Item///////////////////////
+				else if ()//currentGameObject->GetName() == "Item"
+				{
+					currentGameObject->SetName("Item");
+					//SetNail(currentGameObject, player, grid);
+				}
+				//////////////////////Item Fin///////////////////////
+				//////////////////////Furniture///////////////////////
+				else if ()//currentGameObject->GetName() == "Box"
+				{
+					currentGameObject->SetName("Box");
+					//SetNail(currentGameObject, player, grid);
+				}
+				//////////////////////Furniture Fin///////////////////////
+				//////////////////////Floor///////////////////////
+				else
+				{*/
+				auto isCube = [](Vector3f32 scale, float tolerance = 0.25f) -> bool
+					{
+						float minV = min(scale.x, min(scale.y, scale.z));
+						float maxV = max(scale.x, max(scale.y, scale.z));
+						return (maxV / minV) < (1.0f + tolerance);
+					};
+				auto isFloor = [](Vector3f32 scale, float ratio = 0.35f) -> bool
+					{
+						return scale.y < scale.x * ratio && scale.y < scale.z * ratio;
+					};
+				auto isWall = [](Vector3f32 scale, float ratio = 2.0f) -> bool
+					{
+						return scale.y > scale.x * ratio || scale.y > scale.z * ratio;
+					};
+				
+
+				gce::Vector3f32 scale = currentGameObject->transform.GetWorldPosition();
+				if (isWall(scale) && !isCube(scale))//currentGameObject->GetName() == "Wall"
 				{
 					bool isFix = false;
 					bool isObstacle = false;
 					SetStaticObject(currentGameObject, grid, isFix, isObstacle);
 					currentGameObject->SetName("StaticObject");
 				}
-				else if (currentGameObject->GetName() == "Door")
+				else if (isFloor(scale) && !isCube(scale))//currentGameObject->GetName() == "Floor" || currentGameObject->GetName() == "Roof"
 				{
 					bool isFix = false;
 					bool isObstacle = false;
 					SetStaticObject(currentGameObject, grid, isFix, isObstacle);
 					currentGameObject->SetName("StaticObject");
 				}
+				//else if ()//currentGameObject->GetName() == "Door"
+				//{
+					//bool isFix = false;
+					//bool isObstacle = false;
+					//SetStaticObject(currentGameObject, grid, isFix, isObstacle);
+					//currentGameObject->SetName("StaticObject");
+				//}
+				else //if ()//currentGameObject->GetName() == "GameObject"
+				{
+					bool isFix = false;
+					bool isObstacle = false;
+					SetStaticObject(currentGameObject, grid, isFix, isObstacle);
+					currentGameObject->SetName("StaticObject");
+				}
+				//////////////////////Autre///////////////////////
+				/*else
+				{
+					auto n = currentGameObject->GetName();
+					n = n;
+				}*/
+				//////////////////////Autre Fin///////////////////////
+				//}
+				//////////////////////Floor Fin///////////////////////
 			}
-			//////////////////////Floor Fin///////////////////////
 		}
 		///////////////////////////////////////////////////////////
 
@@ -448,7 +488,6 @@ public:
 		ResetCamera(cameraObject);
 
 		//ImageData data = ImageLoader::LoadTexture(String(RES_PATH) + path);
-
 		ScriptPlayer* player = playerObject->GetScript<ScriptPlayer>();
 		ResetPlayerBegin(player, cameraObject, menuObject);
 
@@ -463,7 +502,7 @@ public:
 
 		CreateNail(scene, player, grid);
 
-		CreateMap(scene, player, grid);
+		CreateMap(scene, player, grid, "OutSide", RES_PATH"res/Gameplay/Json/outside.json");
 
 		CreateAngleGringer(scene, player, weaponParent);
 		CreateSubmachineGun(scene, player, weaponParent);
@@ -516,7 +555,10 @@ public:
 		//gCameraObject->RemoveParent();
 		for (auto& [id, gameObject] : *mapGameObject)
 		{
-			if ((gameObject->GetScript<ScriptEntity>() != nullptr && gameObject->GetScript<ScriptPlayer>() == nullptr) || gameObject->GetScript<ScriptGrid>() != nullptr)
+			bool scriptE = gameObject->GetScript<ScriptEntity>() != nullptr;
+			bool scriptP = gameObject->GetScript<ScriptPlayer>() == nullptr;
+			bool scriptG = gameObject->GetScript<ScriptGrid>() != nullptr;
+			if ((scriptE && scriptP) || scriptG)
 			{
 				gameObject->SetActive(false);
 			}

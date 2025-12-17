@@ -225,15 +225,15 @@ public:
 			mIsDead = false;
 
 			ScriptCharacter* targetCharacter = mPlayer->mCharacter;
-			ScriptCharacter* myCharacter = mPlayer->mCharacter;
+			ScriptCharacter* myCharacter = mAgent->mCharacter;
 			ScriptGrid* grid = mAgent->GetPathFinding()->GetGrid();
 
 			Vector3f32 playerPos = mPlayer->GetWorldPosition();
 			Vector3f32 myPos = GetWorldPosition();
 			float dist = abs((playerPos.x - myPos.x) + (playerPos.y - myPos.y) + (playerPos.z - myPos.z));
-			if (mAgent->mCharacter->GetLife() == 0)
+			if (myCharacter->GetLife() == 0)
 			{
-
+				myCharacter->mEntity->DestroyEntity();
 				mIsDead = true;
 				mTimerStateMachine.SetTime(100.f);
 			}

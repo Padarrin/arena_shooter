@@ -39,8 +39,10 @@ public:
 				mShootable->mObject->mEntity->DestroyEntity();
 				other->GetScript<ScriptEntity>()->DestroyEntity();
 			}
-			if(other->GetName() == "Floor")
+			if (other->GetName() == "Floor")
+			{
 				mShootable->mObject->mEntity->DestroyEntity();
+			}
 		}
 	}
 	virtual void CollisionStay(GameObject* other) {}

@@ -55,6 +55,8 @@ protected:
     std::vector<Image*> mAllImages;
     INTERFACE_SHOW mInterfaceShow;
     bool mShowMenu;
+
+    int delai;
 public:
 
     virtual void Initia() { mAllButtons = std::vector<Button*>(); mAllImages = std::vector<Image*>(); mInterfaceShow = NOTHING; mShowMenu = false; }
@@ -64,14 +66,14 @@ public:
         float32 &deltaTime = gce::GameManager::s_pInstance->m_gameDeltaTime;
         if (deltaTime > 0.f)
         {
-            if (gce::GetKey(gce::Keyboard::ENTER) || gce::GetKey(gce::Keyboard::ESCAPE))
+            if (gce::GetKeyDown(gce::Keyboard::ENTER) || gce::GetKeyDown(gce::Keyboard::ESCAPE))
             {
                 ShowMenu(PAUSE_MENU);
             }
         }
         else
         {
-            if (gce::GetKey(gce::Keyboard::ENTER) || gce::GetKey(gce::Keyboard::ESCAPE))
+            if ((gce::GetKeyDown(gce::Keyboard::ENTER) || gce::GetKeyDown(gce::Keyboard::ESCAPE)) && GetInterfaceShow() == PAUSE_MENU)
             {
                 HideMenu();
                 SetInterfaceShow(NOTHING);
