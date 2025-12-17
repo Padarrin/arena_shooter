@@ -24,24 +24,24 @@ protected:
 	StateMachine* mStateMachine;
 
 	String mIdle = "Idle";
-	String running = "Running";
-	String attack = "Attack";
-	String hit = "Hit";
-	String die = "Die";
+	String mRunning = "Running";
+	String mAttack = "Attack";
+	String mHit = "Hit";
+	String mDie = "Die";
 
-	inline static bool isIdle = false;
-	inline static bool isChasingPlayer = false;
-	inline static bool isAttacking = false;
-	inline static bool tookDamage = false;
-	inline static bool isDead = false;
+	inline static bool mIsIdle = false;
+	inline static bool mIsChasingPlayer = false;
+	inline static bool mIsAttacking = false;
+	inline static bool mTookDamage = false;
+	inline static bool mIsDead = false;
 
-	StateMachine::Condition conditions{ [this] {return this->Conditions(); } };
+	StateMachine::Condition mConditions{ [this] { return this->Conditions(); } };
 
-	Vector<StateMachine::Condition> conditionIdle{ conditions };
-	Vector<StateMachine::Condition> conditionRun{ conditions };
-	Vector<StateMachine::Condition> condittionAttack{ conditions };
-	Vector<StateMachine::Condition> conditionHit{ conditions };
-	Vector<StateMachine::Condition> conditionDie{ conditions };
+	Vector<StateMachine::Condition> mConditionIdle{ mConditions };
+	Vector<StateMachine::Condition> mConditionRun{ mConditions };
+	Vector<StateMachine::Condition> mConditionAttack{ mConditions };
+	Vector<StateMachine::Condition> mConditionHit{ mConditions };
+	Vector<StateMachine::Condition> mConditionDie{ mConditions };
 
 
 public:
@@ -65,15 +65,15 @@ public:
 
 		// StateMachine
 		mStateMachine->AddAction(mIdle, OnBeginIdle, OnUpdateIdle, OnEndIdle);
-		mStateMachine->AddAction(running, OnBeginRunning, OnUpdateRunning, OnEndRunning);
-		mStateMachine->AddAction(attack, OnBeginAttack, OnUpdateAttack, OnEndAttack);
-		mStateMachine->AddAction(hit, OnBeginHit, OnUpdateHit, OnEndHit);
-		mStateMachine->AddAction(die, OnBeginDie, OnUpdateDie, OnEndDie);
+		mStateMachine->AddAction(mRunning, OnBeginRunning, OnUpdateRunning, OnEndRunning);
+		mStateMachine->AddAction(mAttack, OnBeginAttack, OnUpdateAttack, OnEndAttack);
+		mStateMachine->AddAction(mHit, OnBeginHit, OnUpdateHit, OnEndHit);
+		mStateMachine->AddAction(mDie, OnBeginDie, OnUpdateDie, OnEndDie);
 
-		mStateMachine->AddTransition(conditionRun, mIdle, running);
-		mStateMachine->AddTransition(condittionAttack, running, mIdle);
-		mStateMachine->AddTransition(conditionHit, mIdle, hit);
-		mStateMachine->AddTransition(conditionDie, mIdle, die);
+		mStateMachine->AddTransition(mConditionRun, mIdle, mRunning);
+		mStateMachine->AddTransition(mConditionAttack, mRunning, mIdle);
+		mStateMachine->AddTransition(mConditionHit, mIdle, mHit);
+		mStateMachine->AddTransition(mConditionDie, mIdle, mDie);
 
 	}
 	virtual void Update() 
@@ -91,7 +91,7 @@ public:
 			{
 				mAgent->GoToCell(mCellTarget);
 				SetCellTarget(nullptr);
-				isChasingPlayer = true;
+				mIsChasingPlayer = true;
 			}
 		}
 		else
@@ -104,7 +104,6 @@ public:
 
 		if (elapsed >= std::chrono::seconds(1))
 		{
-			//mAgent->mCharacter->CreateBallInFront<ScriptBall>(100.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, myParentEntity);
 			//mAgent->mCharacter->CreateBallInFront<ScriptBall>("EnemyBall", 100.f, DEFAULT_BALL_DAMAGE, gce::SHAPES.CUBE, myParentEntity);
 			mPreviousTime = currentTime;
 		}
@@ -128,23 +127,11 @@ public:
 	void SetPlayer(ScriptPlayer* player) { mPlayer = player; }
 	ScriptPlayer* GetPlayer() { return mPlayer; }
 
-	void SetMaxLife(int life)
-	{
-		mAgent->mCharacter->SetMaxLife(life);
-	}
-	int GetMaxLife()
-	{
-		return mAgent->mCharacter->GetMaxLife();
-	}
+	void SetMaxLife(int life) { mAgent->mCharacter->SetMaxLife(life); }
+	int GetMaxLife() { return mAgent->mCharacter->GetMaxLife(); }
 
-	void SetDamage(int damage)
-	{
-		mAgent->mCharacter->SetDamage(damage);
-	}
-	int GetDamage()
-	{
-		return mAgent->mCharacter->GetDamage();
-	}
+	void SetDamage(int damage) { mAgent->mCharacter->SetDamage(damage); }
+	int GetDamage() { return mAgent->mCharacter->GetDamage(); }
 	
 	ScriptGrid* GetGrid() { return mAgent->GetPathFinding()->GetGrid(); }
 
@@ -175,54 +162,70 @@ public:
 
 	bool Conditions()
 	{
-		Vector3f32 posPlayer = mPlayer->GetWorldPosition();
-		Vector3f32 posThis = this->GetWorldPosition();
+		mIsIdle = false;
+		mTookDamage = false;
+		mIsChasingPlayer = false;
+		mIsAttacking = false;
+		mIsDead = false;
 
-		float dist = abs((posPlayer.x - posThis.x) + (posPlayer.y - posThis.y) + (posPlayer.z - posThis.z));
+		ScriptCharacter* targetCharacter = mPlayer->mCharacter;
+		ScriptCharacter* myCharacter = mPlayer->mCharacter;
 
+		Vector3f32 playerPos = mPlayer->GetWorldPosition();
+		Vector3f32 myPos = GetWorldPosition();
+		float dist = abs((playerPos.x - myPos.x) + (playerPos.y - myPos.y) + (playerPos.z - myPos.z));
 		if (dist <= 0.5f)
 		{
-			isIdle = true;
-			isAttacking = true;
+			targetCharacter->Damage(myCharacter->GetDamage());
+			mTookDamage = true;
+		}
 
-			if (this->mAgent->GetLife() == 0)
-			{
-				isIdle = false;
-				isChasingPlayer = false;
-				isAttacking = false;
-				tookDamage = false;
-				isDead = true;
-			}
-			else
-			{
-				isDead = false;
-			}
+		/*if (dist <= 0.5f)
+		{
+			mIsIdle = false;
+			mIsAttacking = true;
+
 			if (this->mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage()))
 			{
-				tookDamage = true;
+				mTookDamage = true;
 			}
 			else
 			{
-				tookDamage = false;
+				mTookDamage = false;
 			}
+
+			if (this->mAgent->mCharacter->GetLife() == 0)
+			{
+				mIsIdle = false;
+				mIsChasingPlayer = false;
+				mIsAttacking = false;
+				mTookDamage = false;
+				mIsDead = true;
+			}
+			else
+			{
+				mIsDead = false;
+			}
+
+			
 		}
 		else if (dist > 0.5f)
 		{
-			isChasingPlayer = true;
-			isIdle = false;
+			mIsChasingPlayer = true;
+			mIsIdle = false;
 		}
 		else
 		{
-			isIdle = true;
-		}
+			mIsIdle = true;
+		}*/
 		return true;
 	}
 
-	bool IsIdle() { return isIdle; }
-	bool IsChasingPlayer() { return isChasingPlayer; }
-	bool IsAttacking() { return isAttacking; }
-	bool TookDamage() { return tookDamage; }
-	bool IsDead() { return isDead; }
+	bool IsIdle() { return mIsIdle; }
+	bool IsChasingPlayer() { return mIsChasingPlayer; }
+	bool IsAttacking() { return mIsAttacking; }
+	bool TookDamage() { return mTookDamage; }
+	bool IsDead() { return mIsDead; }
 
 
 END_SCRIPT
