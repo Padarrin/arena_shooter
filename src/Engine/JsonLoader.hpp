@@ -5,6 +5,8 @@
 #include <fstream>
 #include <wincodec.h>
 
+#include "../Gameplay/Functions.h"
+
 #include "Core/nlohmann.hpp"
 #include "Core/Maths/Quaternion.h"
 
@@ -76,7 +78,7 @@ struct JsonLoader
             {
                 Vector3f32 position;
                 position.x = currObject["position"][0].get<float>();
-                position.y = currObject["position"][2].get<float>();
+                position.y = currObject["position"][2].get<float>() + 7.5f;
                 position.z = currObject["position"][1].get<float>();
                 gameObject.transform.SetLocalPosition(position);
 

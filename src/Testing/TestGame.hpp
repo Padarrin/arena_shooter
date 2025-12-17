@@ -212,7 +212,7 @@ public:
 		player->mCharacter->SetSpeed(9.f);
 		player->SetJump(6.f);
 	}
-
+	
 	static void ResetPlayerEnd(ScriptPlayer* player)
 	{
 		player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
@@ -228,6 +228,14 @@ public:
 		SetNail(&enemyObject, player, grid);
 
 	}
+
+	/*
+
+
+
+	
+	
+	*/
 
 	static void SetNail(/*gce::Scene& scene,*/gce::GameObject*/*&*/ enemyObject, ScriptPlayer* player, ScriptGrid* grid)
 	{
@@ -285,12 +293,11 @@ public:
 		staticGeometry->SetAll(grid, isFix, isObstacle);
 	}
 
-
 	static void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 	{
 		///////////////////////////////////////////////////////////
 		// Map json
-		std::vector<gce::GameObject*> gameObjectLoad = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/map_test.json", &scene);
+		std::vector<gce::GameObject*> gameObjectLoad = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/outside.json", &scene);
 
 		int lenghtLoad = (int)gameObjectLoad.size();
 		for (int i = 0; i < lenghtLoad; i++)
@@ -397,7 +404,6 @@ public:
 	{
 		gce::GameObject& subMachineGunObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
 		subMachineGunObject.SetName("SubmachineGun");
-
 		weaponParent.AddChild(subMachineGunObject);
 
 		ScriptSubMachineGun* subMachineGun = subMachineGunObject.GetScript<ScriptSubMachineGun>();
