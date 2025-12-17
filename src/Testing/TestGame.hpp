@@ -223,19 +223,10 @@ public:
 	{
 		//Life = 20 a 200, Damage = 1 a 5
 		gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-		enemyObject.AddComponent<gce::BoxCollider>()->SetActive(true);
-		enemyObject.AddComponent<gce::PhysicComponent>()->SetActive(false);
 		enemyObject.SetName("Enemy");
 
-		ScriptEnemy* enemy = enemyObject.GetScript<ScriptEnemy>();
-		enemy->SetWorldPosition({ 10,-8,10 });
-		enemy->SetPlayer(player);
-		enemy->SetMaxLife(20);
-		enemy->SetDamage(10);
-		enemy->mAgent->mCharacter->SetSpeed(5.f);
-		enemy->mAgent->GetPathFinding()->SetGrid(grid);
-		enemy->SetCellTarget(grid->GetCell(player->GetWorldPosition()));
-		enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
+		SetNail(&enemyObject, player, grid);
+
 	}
 
 	static void SetNail(/*gce::Scene& scene,*/gce::GameObject*/*&*/ enemyObject, ScriptPlayer* player, ScriptGrid* grid)
@@ -246,8 +237,15 @@ public:
 		enemyObject->AddComponent<gce::PhysicComponent>()->SetActive(false);
 		//enemyObject.SetName("Enemy");
 
-
-		ScriptEnemy* enemy = enemyObject->AddScript<ScriptEnemy>();
+		ScriptEnemy* enemy = nullptr;
+		if (enemyObject->HasScript<ScriptEnemy>())
+		{
+			enemy = enemyObject->GetScript<ScriptEnemy>();
+		}
+		else
+		{
+			enemy = enemyObject->AddScript<ScriptEnemy>();
+		}
 		//ScriptEnemy* enemy = enemyObject->GetScript<ScriptEnemy>();
 		enemy->SetWorldPosition({ 10,-8,10 });
 		enemy->SetPlayer(player);
@@ -312,7 +310,7 @@ public:
 			else
 			{
 				currentGameObject->SetName("Floor");
-				SetFloor(currentGameObject);
+				SetStaticObject(currentGameObject);
 			}
 			//////////////////////Floor Fin///////////////////////
 		}
