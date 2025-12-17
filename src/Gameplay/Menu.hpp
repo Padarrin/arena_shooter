@@ -60,7 +60,7 @@ public:
     virtual void Start() { }
     virtual void Update()
     {
-        float32 &deltatime = gce::GameManager::s_pInstance->m_deltaTime;
+        float32 &deltatime = gce::GameManager::s_pInstance->m_gameDeltaTime;
 
         if (gce::GetKey(gce::Keyboard::ENTER) || gce::GetKey(gce::Keyboard::ESCAPE))
         {

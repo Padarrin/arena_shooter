@@ -29,8 +29,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		float mPitch;
 
 		bool mIsJumping;
-		bool isWindowInitialised; 
-		bool isCursorLocked;
+		bool mIsCursorLocked;
 
 		ScriptWeapons* mCurrentWeapon;
 		std::vector<ScriptWeapons*> mAllWeapons;
@@ -39,28 +38,35 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		
 		ScriptCharacter* mCharacter;
 
-		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); mYaw = 0.f; mPitch = 0.f; isWindowInitialised = false; isCursorLocked = true; }
+		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); mYaw = 0.f; mPitch = 0.f; mIsCursorLocked = true; mCurrentWeapon = nullptr; mObjectCamera = nullptr; mAllWeapons = std::vector<ScriptWeapons*>(); }
 		virtual void Start() 
 		{ 
 			mWindow = gce::GameManager::GetWindow(); 
 			mIsJumping = true;
-			gce::Vector3f32 posPlayer = gce::Vector3f32(0.f, 10.f, 0.f);
-			SetWorldPosition(posPlayer);
+
+			if (mCurrentWeapon != nullptr)
+			{
+				gce::Vector3f32 posPlayer = GetWorldPosition();
+				mCurrentWeapon->mEntity->SetWorldPosition(gce::Vector3f32(posPlayer.x + 2.f, posPlayer.y + 0.5f, posPlayer.z + 3.f));
+			}
 		}
 
 		virtual void Update()
 		{ 
-			
-			std::cout << GetWorldPosition().y << std::endl;
-			float deltaTime = gce::GameManager::DeltaTime();
+			//std::cout << "xP : " << GetWorldPosition().x << std::endl;
+			//std::cout << "zP : " << GetWorldPosition().z << std::endl;
+			float deltaTime = gce::GameManager::GameDeltaTime();
 
-			gce::HideMouseCursor();
-
-			if (deltaTime > 0.f)
+			if (deltaTime > 0.f && mCurrentWeapon != nullptr)
 			{
+				gce::HideMouseCursor();
 				InputMove(deltaTime);
 				InputShoot(deltaTime);
 				TurnCamera();
+			}
+			else
+			{
+				gce::ShowMouseCursor();
 			}
 
 			if (mCharacter->GetLife() <= 0)
@@ -106,32 +112,15 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		void TurnCamera()
 		{
-			/*if (mObjectCamera == nullptr)
-				return;
-
-			uint32 width = mWindow->GetWidth();
-			uint32 height = mWindow->GetHeight();
-			float degree = 360.f / ((gce::Sqrt(width * width + height * height) * 100.f));
-
-			mObjectCamera->transform.SetLocalRotation(gce::Vector3f32((float)gce::GetMousePosition().y * degree, 0.f, 0.f));
-			m_pOwner->transform.SetWorldRotation(gce::Vector3f32(0.f, (float)gce::GetMousePosition().x * degree, 0.f));
-			*/
 			gce::WindowParam param = gce::GameManager::GetWindowParam();
 			gce::Vector2i32 centerSizeWindow = gce::Vector2i32((int)(param.height * 0.5f), (int)(param.width * 0.5f));
 
 			if (gce::GetKeyDown(gce::Keyboard::LSHIFT)) {
-				isCursorLocked = !isCursorLocked;
+				mIsCursorLocked = !mIsCursorLocked;
 				gce::ShowMouseCursor();
 			}
 
-			if (isWindowInitialised == false)
-			{
-				//gce::HideMouseCursor();
-				gce::SetMousePosition(centerSizeWindow);
-				isWindowInitialised = true;
-			}
-
-			if (!isCursorLocked)
+			if (!mIsCursorLocked)
 				return;
 
 			gce::HideMouseCursor();

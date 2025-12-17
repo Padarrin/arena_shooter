@@ -65,13 +65,10 @@ namespace gce {
 
         while (m_pWindow->IsOpen())
         {
-            if (m_deltaTime != -1)
+            m_deltaTime = m_chrono.Reset();
+            if (m_gameDeltaTime != -1)
             {
-                m_deltaTime = m_chrono.Reset();
-            }
-            else
-            {
-                m_chrono.Reset();
+                m_gameDeltaTime = m_deltaTime;
             }
             HandleFPS();
 

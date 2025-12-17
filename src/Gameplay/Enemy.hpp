@@ -30,6 +30,8 @@ public:
 		}
 
 		SetIsNoPath(false);
+
+		mPlayer->Start();
 	}
 	virtual void Update() 
 	{ 

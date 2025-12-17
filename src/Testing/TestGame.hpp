@@ -44,7 +44,6 @@ BEGIN_TEST(Game)
 	ScriptMenu* menu = menuObject.GetScript<ScriptMenu>();
 
 	gPlayerObject = &CreatePlayer(scene, gCameraObject);
-	gPlayerObject->SetActive(false);
 
 	//gce::Vector3f32 posCameraInMenu = gce::Vector3f32(0.f, 0.f, 0.f);
 
@@ -55,11 +54,11 @@ BEGIN_TEST(Game)
 	gce::BitMapBrush imageButtonQuit{ "res/Testing/Button/Button.png" };
 	gce::BitMapBrush imageCollideButtonQuit{ "res/Testing/Button/Button2.png" };
 
-	//gce::Vector3f32 posImageMainMenu = gce::Vector3f32(600.f, 400.f, 5.f)/* + posCameraInMenu*/;
-	//gce::Vector3f32 scaleImageMainMenu = gce::Vector3f32(1000.f, 1000.f, 1.f);
-	//gce::BitMapBrush imageBackgroundButtonMainMenu{ "res/Testing/Button/Button2.png" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
-	//gce::GameObject& imageMainMenuObject = gce::GameObject::Create(scene); imageMainMenuObject.transform.LocalTranslate(posImageMainMenu); imageMainMenuObject.transform.SetWorldScale(scaleImageMainMenu); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
-	//gce::UIButton* imageMainMenu = imageMainMenuObject.AddComponent<gce::UIButton>(); imageMainMenu->pBitMapBrush = &imageBackgroundButtonMainMenu; imageMainMenu->pHoverBitMapBrush = &imageBackgroundButtonMainMenu;
+	gce::Vector3f32 posImageMainMenu = gce::Vector3f32(600.f, 400.f, 5.f)/* + posCameraInMenu*/;
+	gce::Vector3f32 scaleImageMainMenu = gce::Vector3f32(1000.f, 1000.f, 1.f);
+	gce::BitMapBrush imageBackgroundButtonMainMenu{ "res/Testing/Button/Button2.png" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
+	gce::GameObject& imageMainMenuObject = gce::GameObject::Create(scene); imageMainMenuObject.transform.LocalTranslate(posImageMainMenu); imageMainMenuObject.transform.SetWorldScale(scaleImageMainMenu); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
+	gce::UIButton* imageMainMenu = imageMainMenuObject.AddComponent<gce::UIButton>(); imageMainMenu->pBitMapBrush = &imageBackgroundButtonMainMenu; imageMainMenu->pHoverBitMapBrush = &imageBackgroundButtonMainMenu;
 
 	//Start Button
 	gce::Vector3f32 posButtonStart = gce::Vector3f32(600.0f, 300.0f, 0.0f);
@@ -81,16 +80,12 @@ BEGIN_TEST(Game)
 	gce::BitMapBrush imageButtonExit{ "res/Testing/Button/Button.png" };
 	gce::BitMapBrush imageCollideButtonExit{ "res/Testing/Button/Button2.png" };
 
-	gce::Vector3f32 posImagePauseMenu = gce::Vector3f32(600.f, 400.f, 5.f)/* + posCameraInMenu*/;
+	gce::Vector3f32 posImagePauseMenu = gce::Vector3f32(600.f, 400.f, 5.f);
 	gce::Vector3f32 scaleImagePauseMenu = gce::Vector3f32(1000.f, 1000.f, 1.f);
 	gce::BitMapBrush imageBackgroundButtonPauseMenu{ "res/Testing/Button/Button2.png" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
 	gce::GameObject& imagePauseMenuObject = gce::GameObject::Create(scene); imagePauseMenuObject.transform.LocalTranslate(posImagePauseMenu); imagePauseMenuObject.transform.SetWorldScale(scaleImagePauseMenu); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
 	gce::UIButton* imagePauseMenu = imagePauseMenuObject.AddComponent<gce::UIButton>(); imagePauseMenu->pBitMapBrush = &imageBackgroundButtonPauseMenu; imagePauseMenu->pHoverBitMapBrush = &imageBackgroundButtonPauseMenu;
-	//gce::Vector3f32 posImagePauseMenu = gce::Vector3f32(0.f, 0.f, 5.f) + posCameraInMenu;
-	//gce::Vector3f32 scaleImagePauseMenu = gce::Vector3f32(5.f, 5.f, 0.1f);
-	//gce::BitMapBrush imageBackgroundButtonPauseMenu{ "res/Testing/Button/Button2.png" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
-	//gce::GameObject& imagePauseMenuObject = gce::GameObject::Create(scene); imagePauseMenuObject.transform.LocalTranslate(posImagePauseMenu); imagePauseMenuObject.transform.SetWorldScale(scaleImagePauseMenu); imagePauseMenuObject.transform.SetWorldScale(scaleImagePauseMenu); AddMeshRenderer(imagePauseMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
-
+	
 	//Resume Button
 	gce::Vector3f32 posButtonResume = gce::Vector3f32(600.0f, 200.0f, 0.0f);
 	gce::Vector3f32 scaleButtonResume = gce::Vector3f32(216.0f, 69.0f, 1.0f);
@@ -137,7 +132,7 @@ BEGIN_TEST(Game)
 	/*menu->SetCamera(gCameraObject);
 	menu->SetWorldPositionCamera(posCameraInMenu);*/
 
-	//menu->AddImage(&imageMainMenuObject, MAIN_MENU);
+	menu->AddImage(&imageMainMenuObject, MAIN_MENU);
 	menu->AddButton(&buttonStartObject, MAIN_MENU);
 	menu->AddButton(&buttonQuitObject, MAIN_MENU);
 
@@ -204,12 +199,23 @@ public:
 		playerObject.AddChild(*cameraObject);
 
 		ScriptPlayer* player = playerObject.GetScript<ScriptPlayer>();
+		ResetPlayerBegin(player, cameraObject);
+		return playerObject;
+	}
+
+	static void ResetPlayerBegin(ScriptPlayer* player, gce::GameObject* cameraObject)
+	{
+		player->Initia();
 		player->SetCamera(cameraObject);
 		player->SetWorldPosition(gce::Vector3f32(0.f, 10.f, 0.f));
 		player->mCharacter->SetSpeed(90.f);
 		player->SetJump(6.f);
+	}
 
-		return playerObject;
+	static void ResetPlayerEnd(ScriptPlayer* player)
+	{
+		player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
+		player->Start();
 	}
 
 	static void CreateNail(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptPlayer* player, ScriptGrid* grid)
@@ -345,6 +351,7 @@ public:
 		angleGringer->mWeapons->mMagazine->SetMaxBullets(30);
 		angleGringer->mWeapons->mMagazine->SetShootTime(0.1f);
 		angleGringer->mWeapons->mMagazine->SetReloadTime(2.5f);
+		angleGringer->mWeapons->mEntity->SetWorldPosition(gce::Vector3f32(0.f, 0.f, 0.f));
 		angleGringer->mWeapons->mEntity->SetLocalPosition(gce::Vector3f32(2.f, 0.f, 3.f));
 
 		player->AddWeapon(angleGringer->mWeapons);//1
@@ -361,6 +368,7 @@ public:
 		subMachineGun->mWeapons->mMagazine->SetMaxBullets(30);
 		subMachineGun->mWeapons->mMagazine->SetShootTime(0.1f);
 		subMachineGun->mWeapons->mMagazine->SetReloadTime(2.5f);
+		subMachineGun->mWeapons->mEntity->SetWorldPosition(gce::Vector3f32(0.f, 0.f, 0.f));
 		subMachineGun->mWeapons->mEntity->SetLocalPosition(gce::Vector3f32(2.f, 0.f, 3.f));
 
 		player->AddWeapon(subMachineGun->mWeapons);//2
@@ -379,6 +387,7 @@ public:
 		bazooka->mWeapons->mMagazine->SetMaxBullets(30);
 		bazooka->mWeapons->mMagazine->SetShootTime(0.1f);
 		bazooka->mWeapons->mMagazine->SetReloadTime(2.5f);
+		bazooka->mWeapons->mEntity->SetWorldPosition(gce::Vector3f32(0.f, 0.f, 0.f));
 		bazooka->mWeapons->mEntity->SetLocalPosition(gce::Vector3f32(2.f, 0.f, 3.f));
 
 		player->AddWeapon(bazooka->mWeapons);//3
@@ -400,16 +409,13 @@ public:
 
 		//ImageData data = ImageLoader::LoadTexture(String(RES_PATH) + path);
 
+		ScriptPlayer* player = playerObject->GetScript<ScriptPlayer>();
+		ResetPlayerBegin(player, cameraObject);
+
 		gce::GameObject& weaponParent = gce::GameObject::Create(scene);
 		cameraObject->AddChild(weaponParent);
 
-		float yyyy = gPlayerObject->GetComponent<gce::PhysicComponent>()->GetVelocity().y;
-		playerObject->SetActive(true);
-		ScriptPlayer* player = playerObject->GetScript<ScriptPlayer>();
-		player->Start();
-
 		gce::Vector3f32 posPlayer = gce::Vector3f32(0.f, 10.f, 0.f);
-		player->SetWorldPosition(posPlayer);
 		gce::Vector2f32 sizeGrid = gce::Vector2f32(40.f, 80.f);
 		gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 2.5f), posPlayer.z + 20.f);
 
@@ -422,8 +428,8 @@ public:
 		CreateAngleGringer(scene, player, weaponParent);
 		CreateSubmachineGun(scene, player, weaponParent);
 		CreateBazooka(scene, player, weaponParent);
-		player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
 
+		ResetPlayerEnd(player);
 	}
 
 	static void Quit()
@@ -468,10 +474,10 @@ public:
 	static void DeleteGameObject()
 	{
 		auto* mapGameObject = gMenuObject->m_pScene->GetGameObject();
-		gCameraObject->RemoveParent();
+		//gCameraObject->RemoveParent();
 		for (auto& [id, gameObject] : *mapGameObject)
 		{
-			if (gameObject->GetScript<ScriptEntity>() != nullptr || gameObject->GetScript<ScriptGrid>() != nullptr)
+			if ((gameObject->GetScript<ScriptEntity>() != nullptr && gameObject->GetScript<ScriptPlayer>() == nullptr) || gameObject->GetScript<ScriptGrid>() != nullptr)
 			{
 				gameObject->SetActive(false);
 			}
