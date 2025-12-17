@@ -98,7 +98,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			float verticalInput = (float)(horizontalInput > 0.f || deepInput > 0.f);
 
 			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * deepInput;
-			direction.y += verticalInput * 0.20;
+			direction.y += verticalInput * 0.20f;
 			WorldTranslate(direction * mCharacter->GetSpeed() * deltaTime);
 
 			if (gce::GetKeyDown(gce::Keyboard::Key::SPACE))
