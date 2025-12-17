@@ -23,7 +23,7 @@ private:
 	gce::Vector2f32 pos;
 	gce::Vector2f32 size;
 	gce::Vector3f32 scale;
-	gce::Vector3f32 posUi;
+	gce::Vector2f32 posUi;
 	float32 opacity;
 
 public:
@@ -36,8 +36,8 @@ public:
 	void SetScale(gce::Vector3f32 scaleImage) { scale = scaleImage; }
 	gce::Vector3f32 GetScale() { return scale; }
 
-	void SetPosUi(gce::Vector3f32 PositionUi) { posUi = PositionUi; }
-	gce::Vector3f32 GetPosUi() { return posUi; }
+	void SetPosUi(gce::Vector2f32 PositionUi) { posUi = PositionUi; }
+	gce::Vector2f32 GetPosUi() { return posUi; }
 
 	void SetOpacity(float32 opacityImage) { opacity = opacityImage; }
 	float32 GetOpacity() { return opacity; }
@@ -68,6 +68,7 @@ private:
 
 	std::vector<gce::GameObject*> mAllTextures;
 	std::vector<SettingImage*> mSettingsImages;
+	std::vector< std::string*> mAllImages;
 
 	gce::WindowParam* mWindowParam;
 
@@ -81,7 +82,7 @@ public:
 		mWeaponPrincipal.SetOpacity(1.f);
 
 		mWeaponSecond.SetSize(gce::Vector2f32{ 65,65 });
-		mWeaponSecond.SetScale(gce::Vector3f32{ 1.f / 15.f, 1.f / 15.f, 1.f / 15.f });
+		mWeaponSecond.SetScale(gce::Vector3f32{ 1.f / 14.f, 1.f / 14.f, 1.f / 14.f });
 		mWeaponSecond.SetOpacity(1.f);
 	}
 
@@ -90,8 +91,11 @@ public:
 		mWeaponPrincipal.SetPos(gce::Vector2f32{ mWindowParam->width * 0.7f,mWindowParam->height * 0.68f });
 		mWeaponSecond.SetPos(gce::Vector2f32{ mWindowParam->width * 0.74f,mWindowParam->height * 0.68f });
 
-		mWeaponPrincipal.SetPosUi({ mWeaponPrincipal.GetPos().x - mWeaponPrincipal.GetSize().x * 0.5f, mWeaponPrincipal.GetPos().y - mWeaponPrincipal.GetSize().y * 0.5f, 0 });
-		mWeaponSecond.SetPosUi({ mWeaponSecond.GetPos().x - mWeaponSecond.GetSize().x * 0.5f, mWeaponSecond.GetPos().y - mWeaponSecond.GetSize().y * 0.5f, 0 });
+		mWeaponPrincipal.SetPosUi(mWeaponPrincipal.GetPos() - mWeaponPrincipal.GetSize() * 0.5f);
+		mWeaponSecond.SetPosUi(mWeaponSecond.GetPos() - mWeaponSecond.GetSize() * 0.5f);
+
+		mSettingsImages.push_back(&mWeaponPrincipal);
+		mSettingsImages.push_back(&mWeaponSecond);
 
 		mUiWeapon = mPlayer->GetAllWeapons();
 		mCurrentWeapon = mPlayer->GetCurrentWeapon();
@@ -109,6 +113,7 @@ public:
 		mImprPiece.SetInStock(0);
 
 		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
+
 	}
 
 	virtual void Update()
@@ -124,13 +129,15 @@ public:
 			mCurrentWeapon = mPlayer->GetCurrentWeapon();
 			mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 
-			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix(mWeaponPrincipal.GetPosUi(), mWeaponPrincipal.GetScale(), 0.f);
-			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush->SetOpacity(mWeaponPrincipal.GetOpacity());
-			mAllTextures[0]->SetActive(true);
+			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[0]);
+			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 490.f,mWindowParam->height - 310.f, 0 }, { 1 / 14.f,1 / 14.f,1 / 14.f }, 0.f);
 
-			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix(mWeaponSecond.GetPosUi(), mWeaponSecond.GetScale(), 0.f);
-			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush->SetOpacity(mWeaponSecond.GetOpacity());
-			mAllTextures[1]->SetActive(true);
+			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[1]);
+			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 390.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+
+			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[2]);
+			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+
 		}
 
 		else if (gce::GetKeyDown(gce::Keyboard::Key::_2) && mName != "SubmachineGun")
@@ -139,9 +146,15 @@ public:
 			mCurrentWeapon = mPlayer->GetCurrentWeapon();
 			mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 
-			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix(gce::Vector3f32{ posUiPrincipal.x, posUiPrincipal.y, 0 }, mWeaponPrincipal.GetScale(), 0.f);
-			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush->SetOpacity(mWeaponPrincipal.GetOpacity());
-			mAllTextures[1]->SetActive(true);
+			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[1]);
+			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 490.f,mWindowParam->height - 310.f, 0 }, { 1 / 14.f,1 / 14.f,1 / 14.f }, 0.f);
+
+			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[0]);
+			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 390.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+
+			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[2]);
+			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+
 		}
 
 		else if (gce::GetKeyDown(gce::Keyboard::Key::_3) && mName != "Bazooka")
@@ -149,13 +162,24 @@ public:
 			mPlayer->SetCurrentWeapon(BAZOOKA);
 			mCurrentWeapon = mPlayer->GetCurrentWeapon();
 			mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
+
+			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[2]);
+			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 490.f,mWindowParam->height - 310.f, 0 }, { 1 / 14.f,1 / 14.f,1 / 14.f }, 0.f);
+
+			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[0]);
+			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 390.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+
+			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[1]);
+			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+
 		}
 	}
 
 	void SetPlayer(ScriptPlayer* player) { mPlayer = player; }
 	ScriptPlayer* GetPlayer() { return mPlayer; }
 
-	void AddImage(gce::GameObject& imageObject) { mAllTextures.push_back(&imageObject); }
+	void AddTexture(gce::GameObject& textureObject) { mAllTextures.push_back(&textureObject); }
+	void AddImage(std::string& imagePath) { mAllImages.push_back(&imagePath); }
 
 	void SetWinParam(gce::WindowParam windowPa) { mWindowParam = &windowPa; }
 

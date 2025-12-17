@@ -152,12 +152,18 @@ void CreateBazooka(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& wea
 
 }
 
-gce::GameObject& CreateUI(gce::Scene& scene, std::string path)
+gce::GameObject& CreateUI(gce::Scene& scene, gce::Vector2f32 pos, gce::Vector2f32 size, gce::Vector3f32 scale, std::string path, D12PipelineObject& texturePso)
 {
 	GameObject& crosshair = GameObject::Create(scene);
 	ImageUI* uiImage = crosshair.AddComponent<ImageUI>();
 
+	Vector2f32 posUi = pos - size * 0.5f;
+
+	uiImage->InitializeImage(posUi, size, 1.f);
+
 	uiImage->btmBrush = new BitMapBrush(path);
+	uiImage->btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, scale, 0);
+	uiImage->SetActive(true);
 
 	/*GameObject& Cube = GameObject::Create(scene);
 	MeshRenderer* meshRenderer = Cube.AddComponent<MeshRenderer>();
@@ -210,10 +216,20 @@ BEGIN_TEST(Game)
 	ui->SetPlayer(player);
 	ui->SetWinParam(windowParam);
 
-	gce::GameObject& anglegringer = CreateUI(scene, "res/Textures/plastic_normal.png");
-	ui->AddImage(anglegringer);
-	gce::GameObject& submachineGun = CreateUI(scene, "res/Textures/test1.png");
-	ui->AddImage(submachineGun);
+	std::string anglegringerPath = "res/Textures/plastic_normal.png";
+	std::string submachineGunPath = "res/Textures/test1.png";
+	std::string bazookaPath = "res/Textures/plastic_roughness.png";
+
+	gce::GameObject& mainWeapon = CreateUI(scene, { windowParam.width -430.f,windowParam.height - 275.f }, { 72,72 }, { 1.f / 14.f, 1.f / 14.f, 1.f / 14.f }, submachineGunPath, texturePso);
+	gce::GameObject& secondWeapon = CreateUI(scene, { windowParam.width - 350.f,windowParam.height - 275.f }, { 65,65 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, anglegringerPath, texturePso);
+	gce::GameObject& thirdWeapon = CreateUI(scene, { windowParam.width - 275.f,windowParam.height - 275.f }, { 65,65 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, bazookaPath, texturePso);
+	ui->AddTexture(mainWeapon);
+	ui->AddTexture(secondWeapon);
+	ui->AddTexture(thirdWeapon);
+
+	ui->AddImage(anglegringerPath);
+	ui->AddImage(submachineGunPath);
+	ui->AddImage(bazookaPath);
 	
 	CreateEnemy(scene, player, grid);
 

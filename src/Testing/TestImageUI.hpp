@@ -7,7 +7,7 @@
 #include <Engine.h>
 #include <Render.h>
 
-#include "Components/UiImage.h"
+#include "Components.h"
 
 using namespace gce;
 
