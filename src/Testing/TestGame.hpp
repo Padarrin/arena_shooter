@@ -440,7 +440,7 @@ public:
 		gce::GameObject* menuObject = gMenuObject;
 		ScriptMenu* menu = menuObject->GetScript<ScriptMenu>();
 		menu->HideMenu();
-		menu->SetInterfaceShow(NOTHING);
+		menu->SetInterfaceShow(MAIN_MENU);
 
 		ResetCamera(cameraObject);
 
