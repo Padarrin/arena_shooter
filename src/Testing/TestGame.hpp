@@ -1,5 +1,6 @@
 #ifndef TEST_Game_HPP_INCLUDED
 #define TEST_Game_HPP_INCLUDED
+END_TEST_MAIN_FUNCTION()
 
 #include <Render.h>
 #include <Engine.h>
@@ -152,7 +153,6 @@ gce::GameManager::Run(windowParam);
 
 gce::GameManager::Destroy();
 
-END_TEST_MAIN_FUNCTION()
 
 public:
 
