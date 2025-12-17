@@ -3,6 +3,7 @@
 #include "Ball.hpp"
 #include "Player.hpp"
 #include "Grid.hpp"
+#include "Time.h"
 #include <chrono>
 #include <Engine.h>
 #include <Render.h>
@@ -21,6 +22,7 @@ protected:
 	mClock::time_point mPreviousTime = mClock::now();
 
 	// StateMachine
+	Time mTimerStateMachine;
 	StateMachine* mStateMachine;
 
 	String mIdle = "Idle";
@@ -48,7 +50,7 @@ public:
 	ScriptAgent* mAgent;
 
 	// Fonctions
-	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); mAgent->mCharacter->SetMaxLife(100); mAgent->mCharacter->SetDamage(5); }
+	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); mAgent->mCharacter->SetMaxLife(100); mAgent->mCharacter->SetDamage(5); mTimerStateMachine = Time(1.f); }
 	virtual void Start()
 	{
 		ScriptGrid* grid = GetGrid();
@@ -162,63 +164,75 @@ public:
 
 	bool Conditions()
 	{
-		mIsIdle = false;
-		mTookDamage = false;
-		mIsChasingPlayer = false;
-		mIsAttacking = false;
-		mIsDead = false;
-
-		ScriptCharacter* targetCharacter = mPlayer->mCharacter;
-		ScriptCharacter* myCharacter = mPlayer->mCharacter;
-
-		Vector3f32 playerPos = mPlayer->GetWorldPosition();
-		Vector3f32 myPos = GetWorldPosition();
-		float dist = abs((playerPos.x - myPos.x) + (playerPos.y - myPos.y) + (playerPos.z - myPos.z));
-		if (dist <= 0.5f)
+		if (mTimerStateMachine.IsFinish())
 		{
-			targetCharacter->Damage(myCharacter->GetDamage());
-			mTookDamage = true;
-		}
-
-		/*if (dist <= 0.5f)
-		{
+			mTimerStateMachine.SetTime(0.f);
 			mIsIdle = false;
-			mIsAttacking = true;
+			mTookDamage = false;
+			mIsChasingPlayer = false;
+			mIsAttacking = false;
+			mIsDead = false;
 
-			if (this->mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage()))
+			ScriptCharacter* targetCharacter = mPlayer->mCharacter;
+			ScriptCharacter* myCharacter = mPlayer->mCharacter;
+
+			Vector3f32 playerPos = mPlayer->GetWorldPosition();
+			Vector3f32 myPos = GetWorldPosition();
+			float dist = abs((playerPos.x - myPos.x) + (playerPos.y - myPos.y) + (playerPos.z - myPos.z));
+			if (dist <= 0.5f)
 			{
+				targetCharacter->Damage(myCharacter->GetDamage());
 				mTookDamage = true;
+				/*mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage()); mTookDamage = true;*/
+				mTimerStateMachine.SetTime(0.5f);
 			}
-			else
+			else if (this->mAgent->mCharacter->GetLife() == 0)
 			{
-				mTookDamage = false;
+				mIsDead = true;
+				mTimerStateMachine.SetTime(100.f);
 			}
 
-			if (this->mAgent->mCharacter->GetLife() == 0)
+			/*if (dist <= 0.5f)
 			{
 				mIsIdle = false;
-				mIsChasingPlayer = false;
-				mIsAttacking = false;
-				mTookDamage = false;
-				mIsDead = true;
+				mIsAttacking = true;
+
+				if (this->mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage()))
+				{
+					mTookDamage = true;
+				}
+				else
+				{
+					mTookDamage = false;
+				}
+
+				if (this->mAgent->mCharacter->GetLife() == 0)
+				{
+					mIsIdle = false;
+					mIsChasingPlayer = false;
+					mIsAttacking = false;
+					mTookDamage = false;
+					mIsDead = true;
+				}
+				else
+				{
+					mIsDead = false;
+				}
+
+
+			}
+			else if (dist > 0.5f)
+			{
+				mIsChasingPlayer = true;
+				mIsIdle = false;
 			}
 			else
 			{
-				mIsDead = false;
-			}
-
-			
+				mIsIdle = true;
+			}*/
+			return true;
 		}
-		else if (dist > 0.5f)
-		{
-			mIsChasingPlayer = true;
-			mIsIdle = false;
-		}
-		else
-		{
-			mIsIdle = true;
-		}*/
-		return true;
+		return false;
 	}
 
 	bool IsIdle() { return mIsIdle; }
