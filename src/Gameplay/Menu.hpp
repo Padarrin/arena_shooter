@@ -61,22 +61,32 @@ public:
     virtual void Start() { }
     virtual void Update()
     {
-        float32 &deltatime = gce::GameManager::s_pInstance->m_gameDeltaTime;
-
-        if (gce::GetKey(gce::Keyboard::ENTER) || gce::GetKey(gce::Keyboard::ESCAPE))
+        float32 &deltaTime = gce::GameManager::s_pInstance->m_gameDeltaTime;
+        if (deltaTime > 0.f)
         {
-            ShowMenu(PAUSE_MENU);
+            if (gce::GetKey(gce::Keyboard::ENTER) || gce::GetKey(gce::Keyboard::ESCAPE))
+            {
+                ShowMenu(PAUSE_MENU);
+            }
+        }
+        else
+        {
+            if (gce::GetKey(gce::Keyboard::ENTER) || gce::GetKey(gce::Keyboard::ESCAPE))
+            {
+                HideMenu();
+                SetInterfaceShow(NOTHING);
+            }
         }
 
         if (mShowMenu)
         {
-            deltatime = -1.f;
+            deltaTime = -1.f;
         }
         else
         {
-            if (deltatime == -1.f)
+            if (deltaTime == -1.f)
             {
-                deltatime = 0.f;
+                deltaTime = 0.f;
             }
         }
     }

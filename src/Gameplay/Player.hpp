@@ -16,7 +16,7 @@ enum WEAPON_ORDER
 #define PI  3.14159265359f
 #define SENSITIVITY_CAMERA 0.001f
 
-#define DEGREE_TO_RADIAN PI / 180.0f
+#define DEGREE_TO_RADIAN PI / 360.0f
 #define PITCH 89.0f * DEGREE_TO_RADIAN
 
 DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
@@ -55,10 +55,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		virtual void Update()
 		{ 
-			//std::cout << "xP : " << GetWorldPosition().x << std::endl;
-			//std::cout << "zP : " << GetWorldPosition().z << std::endl;
 			float deltaTime = gce::GameManager::GameDeltaTime();
-
 			if (deltaTime > 0.f)
 			{
 				if (mCurrentWeapon != nullptr)
@@ -75,15 +72,11 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 					mMenu->GetScript<ScriptMenu>()->ShowMenu(LOSE_MENU);
 					mCharacter->mEntity->DestroyEntity();
 				}
-				
-
 			}
 			else
 			{
 				gce::ShowMouseCursor();
 			}
-			
-				
 		}
 
 		virtual void Destroy() {}
@@ -91,7 +84,9 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		virtual void CollisionEnter(gce::GameObject* other) 
 		{ 
 			if (other->GetName() == "Floor")
+			{
 				ColliderFloor();
+			}
 		}
 		virtual void CollisionStay(gce::GameObject* other) {}
 		virtual void CollisionExit(gce::GameObject* other) {}
@@ -99,9 +94,11 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		void InputMove(float deltaTime)
 		{
 			float horizontalInput = gce::GetKey(gce::Keyboard::Key::D) - gce::GetKey(gce::Keyboard::Key::Q);
-			float verticalInput = gce::GetKey(gce::Keyboard::Key::Z) - gce::GetKey(gce::Keyboard::Key::S);
+			float deepInput = gce::GetKey(gce::Keyboard::Key::Z) - gce::GetKey(gce::Keyboard::Key::S);
+			float verticalInput = (float)(horizontalInput > 0.f || deepInput > 0.f);
 
-			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * verticalInput;
+			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * deepInput;
+			direction.y += verticalInput * 0.20f;
 			WorldTranslate(direction * mCharacter->GetSpeed() * deltaTime);
 
 			if (gce::GetKeyDown(gce::Keyboard::Key::SPACE))
