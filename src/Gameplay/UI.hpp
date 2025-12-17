@@ -68,7 +68,7 @@ private:
 
 	std::vector<gce::GameObject*> mAllTextures;
 	std::vector<SettingImage*> mSettingsImages;
-	std::vector< std::string*> mAllImages;
+	std::vector< std::string> mAllImages;
 
 	gce::WindowParam* mWindowParam;
 
@@ -131,13 +131,13 @@ public:
 			mCurrentWeapon = mPlayer->GetCurrentWeapon();
 			mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 
-			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[0]);
+			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[0]);
 			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 490.f,mWindowParam->height - 310.f, 0 }, { 1 / 14.f,1 / 14.f,1 / 14.f }, 0.f);
 
-			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[1]);
+			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[1]);
 			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 390.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
 
-			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[2]);
+			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[2]);
 			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
 
 		}
@@ -148,13 +148,13 @@ public:
 			mCurrentWeapon = mPlayer->GetCurrentWeapon();
 			mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 
-			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[1]);
+			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[1]);
 			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 490.f,mWindowParam->height - 310.f, 0 }, { 1 / 14.f,1 / 14.f,1 / 14.f }, 0.f);
 
-			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[0]);
+			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[0]);
 			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 390.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
 
-			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[2]);
+			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[2]);
 			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
 
 		}
@@ -165,13 +165,13 @@ public:
 			mCurrentWeapon = mPlayer->GetCurrentWeapon();
 			mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 
-			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[2]);
+			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[2]);
 			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 490.f,mWindowParam->height - 310.f, 0 }, { 1 / 14.f,1 / 14.f,1 / 14.f }, 0.f);
 
-			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[0]);
+			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[0]);
 			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 390.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
 
-			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(*mAllImages[1]);
+			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[1]);
 			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
 
 		}
@@ -181,7 +181,7 @@ public:
 	ScriptPlayer* GetPlayer() { return mPlayer; }
 
 	void AddTexture(gce::GameObject& textureObject) { mAllTextures.push_back(&textureObject); }
-	void AddImage(std::string& imagePath) { mAllImages.push_back(&imagePath); }
+	void AddImage(std::string imagePath) { mAllImages.push_back(imagePath); }
 
 	void SetWinParam(gce::WindowParam windowPa) { mWindowParam = &windowPa; }
 

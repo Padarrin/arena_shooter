@@ -473,6 +473,10 @@ public:
 		std::string submachineGunPath = "res/Textures/test1.png";
 		std::string bazookaPath = "res/Textures/plastic_roughness.png";
 
+		ui->AddImage(anglegringerPath);
+		ui->AddImage(submachineGunPath);
+		ui->AddImage(bazookaPath);
+
 		gce::WindowParam windowParam = gce::GameManager::GetWindowParam();
 
 		gce::GameObject& mainWeapon = CreateUI(scene, { windowParam.width -430.f,windowParam.height - 275.f }, { 72,72 }, { 1.f / 14.f, 1.f / 14.f, 1.f / 14.f }, submachineGunPath, texturePso);
@@ -481,10 +485,6 @@ public:
 		ui->AddTexture(mainWeapon);
 		ui->AddTexture(secondWeapon);
 		ui->AddTexture(thirdWeapon);
-
-		ui->AddImage(anglegringerPath);
-		ui->AddImage(submachineGunPath);
-		ui->AddImage(bazookaPath);
 
 		gce::Vector3f32 posPlayer = gce::Vector3f32(0.f, 10.f, 0.f);
 		gce::Vector2f32 sizeGrid = gce::Vector2f32(40.f, 80.f);
