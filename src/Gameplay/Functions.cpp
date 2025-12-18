@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Functions.h"
+#include "Agent.hpp"
 
 bool Normalize(gce::Vector3f32& vector)
 {
@@ -38,21 +39,25 @@ Entity* GetNearestEntity(gce::Vector3f32 pos)
     return nullptr;
 }
 
-Entity* GetNearestAgent(gce::Vector3f32 pos)
+/*ScriptAgent* GetNearestAgent(gce::Vector3f32 pos, gce::GameObject* menu)
 {
-    /*for (Entity* e : GameManager::Get()->GetEntities())
+    ScriptAgent* agentNeraest = nullptr;
+    gce::Vector3f32 posNeraest = gce::Vector3f32(INT_MAX, INT_MAX, INT_MAX);
+    auto* mapGameObject = menu->m_pScene->GetGameObject();
+    for (auto& [id, gameObject] : *mapGameObject)
     {
-        if (e->IsType(Tag::AGENT) == false)
-            continue;
-
-        if (e->IsInside(pos.x, pos.y, pos.z))
+        if (gameObject->HasScript<ScriptAgent>())
         {
-            return e;
+            ScriptAgent* agent = gameObject->GetScript<ScriptAgent>();
+            gce::Vector3f32 agentPos = agent->GetWorldPosition();
+            if (posNeraest.x > agentPos.x && posNeraest.y > agentPos.y && posNeraest.z > agentPos.z)
+            {
+                agentNeraest = agent;
+            }
         }
-    }*/
-
-    return nullptr;
-}
+    }
+    return agentNeraest;
+}*/
 
 float DisManhattan(gce::Vector3f32 currentPos, gce::Vector3f32 endPos, int sizeCell)
 {

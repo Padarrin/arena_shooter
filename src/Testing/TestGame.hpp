@@ -28,7 +28,7 @@ BEGIN_TEST(Game)
 gce::GameManager::Create();
 gce::Scene& scene = gce::Scene::Create();
 
-	WindowParam windowParam;
+WindowParam windowParam;
 	windowParam.title = L"Test Light";
 	windowParam.width = 1700;
 	windowParam.height = 800;
@@ -399,6 +399,9 @@ public:
 		weaponParent.AddChild(angleGringerObject);
 
 		ScriptAngleGringer* angleGringer = angleGringerObject.GetScript<ScriptAngleGringer>();
+		angleGringer->mWeapons->mMagazine->SetMaxBullets(3);
+		angleGringer->mWeapons->mMagazine->SetShootTime(0.1f);
+		angleGringer->mWeapons->mMagazine->SetReloadTime(0.5f);
 		angleGringer->mWeapons->mEntity->SetWorldPosition(gce::Vector3f32(0.f, 0.f, 0.f));
 		angleGringer->mWeapons->mEntity->SetLocalPosition(gce::Vector3f32(2.f, 0.f, 3.f));
 		angleGringer->mWeapons->mEntity->SetLocalScale(gce::Vector3f32(1, 1, 5));
@@ -554,8 +557,8 @@ public:
 
 		ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-		gce::Vector3f32 posNail = gce::Vector3f32(5.f, 0.f, 5.f);
-		// CreateNail(scene, player, grid, posNail);
+		gce::Vector3f32 posNail = gce::Vector3f32(posPlayer.x, 2.f, posPlayer.z + 30.f);
+		CreateNail(scene, player, grid, posNail);
 
 		gce::Vector3f32 posCube = gce::Vector3f32(10.f, 10.f, 5.f);
 		gce::Vector3f32 posScale = gce::Vector3f32(10.f, 2.f, 5.f);
@@ -598,7 +601,6 @@ public:
 	static void DeleteGameObject()
 	{
 		auto* mapGameObject = gMenuObject->m_pScene->GetGameObject();
-		//gCameraObject->RemoveParent();
 		for (auto& [id, gameObject] : *mapGameObject)
 		{
 			bool scriptE = gameObject->GetScript<ScriptEntity>() != nullptr;
