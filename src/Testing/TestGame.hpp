@@ -157,7 +157,6 @@ menu->ShowMenu(MAIN_MENU);
 gMenuObject = &menuObject;
 //	//	//	//	 Menu Fin   //	//	//	//
 
-gce::WindowParam windowParam;
 gce::GameManager::Run(windowParam);
 
 gce::GameManager::Destroy();
