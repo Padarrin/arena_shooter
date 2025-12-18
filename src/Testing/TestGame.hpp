@@ -28,12 +28,6 @@ BEGIN_TEST(Game)
 gce::GameManager::Create();
 gce::Scene& scene = gce::Scene::Create();
 
-	WindowParam windowParam;
-	windowParam.title = L"Test Light";
-	windowParam.width = 1700;
-	windowParam.height = 800;
-	windowParam.isFullScreen = true;
-
 	gCameraObject = CreateCamera(scene);
 
 gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
@@ -107,22 +101,22 @@ gce::UIButton* buttonExit = buttonExitObject.AddComponent<gce::UIButton>(); butt
 
 //// WinLose Menu ////
 //Image
-	gce::BitMapBrush imageButtonReplay{ "/res/Gameplay/Texture/Recommencer.png" };
-	gce::BitMapBrush imageCollideButtonReplay{ "/res/Gameplay/Texture/Reprendre_Cliquer.png" };
-	gce::BitMapBrush imageButtonEnd{ "/res/Gameplay/Texture/Quitter.png" };
-	gce::BitMapBrush imageCollideButtonEnd{ "/res/Gameplay/Texture/Jouer_Cliquer.png" };
+gce::BitMapBrush imageButtonReplay{ "/res/Gameplay/Texture/Recommencer.png" };
+gce::BitMapBrush imageCollideButtonReplay{ "/res/Gameplay/Texture/Reprendre_Cliquer.png" };
+gce::BitMapBrush imageButtonEnd{ "/res/Gameplay/Texture/Quitter.png" };
+gce::BitMapBrush imageCollideButtonEnd{ "/res/Gameplay/Texture/Jouer_Cliquer.png" };
 
-	gce::Vector3f32 posImageWinMenu = gce::Vector3f32(700.f, 400.f, 5.f);
-	gce::Vector3f32 scaleImageWinMenu = gce::Vector3f32(1400.f, 800.f, 1.f);
-	gce::BitMapBrush imageBackgroundButtonWinMenu{ "/res/Gameplay/Texture/Winner.jpg" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
-	gce::GameObject& imageWinMenuObject = gce::GameObject::Create(scene); imageWinMenuObject.transform.LocalTranslate(posImageWinMenu); imageWinMenuObject.transform.SetWorldScale(scaleImageWinMenu); imageWinMenuObject.SetName("ImageButton"); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
-	gce::UIButton* imageWinMenu = imageWinMenuObject.AddComponent<gce::UIButton>(); imageWinMenu->pBitMapBrush = &imageBackgroundButtonWinMenu; imageWinMenu->pHoverBitMapBrush = &imageBackgroundButtonWinMenu;
+gce::Vector3f32 posImageWinMenu = gce::Vector3f32(700.f, 400.f, 5.f);
+gce::Vector3f32 scaleImageWinMenu = gce::Vector3f32(1400.f, 800.f, 1.f);
+gce::BitMapBrush imageBackgroundButtonWinMenu{ "/res/Gameplay/Texture/Winner.jpg" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
+gce::GameObject& imageWinMenuObject = gce::GameObject::Create(scene); imageWinMenuObject.transform.LocalTranslate(posImageWinMenu); imageWinMenuObject.transform.SetWorldScale(scaleImageWinMenu); imageWinMenuObject.SetName("ImageButton"); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
+gce::UIButton* imageWinMenu = imageWinMenuObject.AddComponent<gce::UIButton>(); imageWinMenu->pBitMapBrush = &imageBackgroundButtonWinMenu; imageWinMenu->pHoverBitMapBrush = &imageBackgroundButtonWinMenu;
 
-	gce::Vector3f32 posImageLoseMenu = gce::Vector3f32(700.f, 400.f, 5.f);
-	gce::Vector3f32 scaleImageLoseMenu = gce::Vector3f32(1400.f, 800.f, 1.f);
-	gce::BitMapBrush imageBackgroundButtonLoseMenu{ "/res/Gameplay/Texture/Loser.jpg" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
-	gce::GameObject& imageLoseMenuObject = gce::GameObject::Create(scene); imageLoseMenuObject.transform.LocalTranslate(posImageLoseMenu); imageLoseMenuObject.transform.SetWorldScale(scaleImageLoseMenu); imageLoseMenuObject.SetName("ImageButton");//AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
-	gce::UIButton* imageLoseMenu = imageLoseMenuObject.AddComponent<gce::UIButton>(); imageLoseMenu->pBitMapBrush = &imageBackgroundButtonLoseMenu; imageLoseMenu->pHoverBitMapBrush = &imageBackgroundButtonLoseMenu;
+gce::Vector3f32 posImageLoseMenu = gce::Vector3f32(700.f, 400.f, 5.f);
+gce::Vector3f32 scaleImageLoseMenu = gce::Vector3f32(1400.f, 800.f, 1.f);
+gce::BitMapBrush imageBackgroundButtonLoseMenu{ "/res/Gameplay/Texture/Loser.jpg" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
+gce::GameObject& imageLoseMenuObject = gce::GameObject::Create(scene); imageLoseMenuObject.transform.LocalTranslate(posImageLoseMenu); imageLoseMenuObject.transform.SetWorldScale(scaleImageLoseMenu); imageLoseMenuObject.SetName("ImageButton");//AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
+gce::UIButton* imageLoseMenu = imageLoseMenuObject.AddComponent<gce::UIButton>(); imageLoseMenu->pBitMapBrush = &imageBackgroundButtonLoseMenu; imageLoseMenu->pHoverBitMapBrush = &imageBackgroundButtonLoseMenu;
 
 //Replay Button
 gce::Vector3f32 posButtonReplay = gce::Vector3f32(600.0f, 200.0f, 0.0f);
@@ -157,6 +151,7 @@ menu->ShowMenu(MAIN_MENU);
 gMenuObject = &menuObject;
 //	//	//	//	 Menu Fin   //	//	//	//
 
+gce::WindowParam windowParam;
 gce::GameManager::Run(windowParam);
 
 gce::GameManager::Destroy();
