@@ -138,9 +138,13 @@ menu->AddButton(&buttonResumeObject, PAUSE_MENU);
 menu->AddButton(&buttonRestartObject, PAUSE_MENU);
 menu->AddButton(&buttonExitObject, PAUSE_MENU);
 
-//menu->AddImage(&imageWinLoseMenuObject, WINLOSE_MENU);
-//menu->AddButton(&buttonReplayObject, WINLOSE_MENU);
-//menu->AddButton(&buttonEndObject, WINLOSE_MENU);
+menu->AddImage(&imageWinMenuObject, WIN_MENU);
+menu->AddButton(&buttonReplayObject, WIN_MENU);
+menu->AddButton(&buttonEndObject, WIN_MENU);
+
+menu->AddImage(&imageLoseMenuObject, LOSE_MENU);
+menu->AddButton(&buttonReplayObject, LOSE_MENU);
+menu->AddButton(&buttonEndObject, LOSE_MENU);
 
 menu->ShowMenu(MAIN_MENU);
 gMenuObject = &menuObject;
