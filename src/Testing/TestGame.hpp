@@ -6,10 +6,7 @@
 
 #include <ImageLoader.h>
 
-#include "../Engine/Components/MeshRenderer.h"
-#include "../Engine/Components/Light.h"
-#include "../Engine/Components/ColliderBase3D.h"
-#include "../Engine/Components/BoxCollider.h"
+#include "../Engine/Components.h"
 
 #include "../Gameplay/UI.hpp"
 #include "../Gameplay/Enemy.hpp"
@@ -22,7 +19,6 @@
 
 #include "define.h"
 #include "JsonLoader.hpp"
-using namespace gce;
 
 gce::GameObject* gCameraObject;
 gce::GameObject* gMenuObject;
@@ -52,7 +48,7 @@ BEGIN_TEST(Game)
 	gce::BitMapBrush imageButtonStart{ "/res/Gameplay/Texture/Jouer.png" };
 	gce::BitMapBrush imageCollideButtonStart{ "/res/Gameplay/Texture/Jouer_Cliquer.png" };
 	gce::BitMapBrush imageButtonQuit{ "/res/Gameplay/Texture/Quitter.png" };
-	gce::BitMapBrush imageCollideButtonQuit{ "/res/Gameplay/Texture/Jouer_Cliquer.png" };
+	gce::BitMapBrush imageCollideButtonQuit{ "/res/Gameplay/Texture/Quitter_Cliquer.png" };
 
 	gce::Vector3f32 posImageMainMenu = gce::Vector3f32(675.f, 325.f, 5.f);
 	gce::Vector3f32 scaleImageMainMenu = gce::Vector3f32(1400.f, 800.f, 1.f);
@@ -76,9 +72,9 @@ BEGIN_TEST(Game)
 	gce::BitMapBrush imageButtonResume{ "/res/Gameplay/Texture/Reprendre.png" };
 	gce::BitMapBrush imageCollideButtonResume{ "/res/Gameplay/Texture/Reprendre_Cliquer.png" };
 	gce::BitMapBrush imageButtonRestart{ "/res/Gameplay/Texture/Recommencer.png" };
-	gce::BitMapBrush imageCollideButtonRestart{ "/res/Gameplay/Texture/Reprendre_Cliquer.png" };
+	gce::BitMapBrush imageCollideButtonRestart{ "/res/Gameplay/Texture/Recommencer_Cliquer.png" };
 	gce::BitMapBrush imageButtonExit{ "/res/Gameplay/Texture/Quitter.png" };
-	gce::BitMapBrush imageCollideButtonExit{ "/res/Gameplay/Texture/Jouer_Cliquer.png" };
+	gce::BitMapBrush imageCollideButtonExit{ "/res/Gameplay/Texture/Quitter_Cliquer.png" };
 
 	//gce::Vector3f32 posImagePauseMenu = gce::Vector3f32(600.f, 400.f, 5.f);
 	//gce::Vector3f32 scaleImagePauseMenu = gce::Vector3f32(1000.f, 1000.f, 1.f);
@@ -107,9 +103,9 @@ BEGIN_TEST(Game)
 	//// WinLose Menu ////
 	//Image
 	gce::BitMapBrush imageButtonReplay{ "/res/Gameplay/Texture/Recommencer.png" };
-	gce::BitMapBrush imageCollideButtonReplay{ "/res/Gameplay/Texture/Reprendre_Cliquer.png" };
+	gce::BitMapBrush imageCollideButtonReplay{ "/res/Gameplay/Texture/Recommencer_Cliquer.png" };
 	gce::BitMapBrush imageButtonEnd{ "/res/Gameplay/Texture/Quitter.png" };
-	gce::BitMapBrush imageCollideButtonEnd{ "/res/Gameplay/Texture/Jouer_Cliquer.png" };
+	gce::BitMapBrush imageCollideButtonEnd{ "/res/Gameplay/Texture/Quitter_Cliquer.png" };
 
 	gce::Vector3f32 posImageWinMenu = gce::Vector3f32(700.f, 400.f, 5.f);
 	gce::Vector3f32 scaleImageWinMenu = gce::Vector3f32(1400.f, 800.f, 1.f);
@@ -228,10 +224,11 @@ public:
 		player->Start();
 	}
 
-	static void CreateNail(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptPlayer* player, ScriptGrid* grid, gce::Vector3f32 pos)
+	static void CreateNail(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptPlayer* player, ScriptGrid* grid, gce::Vector3f32 pos, const std::string_view path)
 	{
 		//Life = 20 a 200, Damage = 1 a 5
-		gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+		Geometry* geo = GeometryFactory::LoadGeometry(path);
+		gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, geo, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 		enemyObject.SetName("Enemy");
 
 		SetNail(&enemyObject, player, grid, pos);
@@ -264,6 +261,7 @@ public:
 		enemy->SetCellTarget(grid->GetNearestCell(player->GetWorldPosition()));
 		enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(pos.x, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, pos.z));
 		
+		enemy->mAgent->mCharacter->mEntity->SetWorldScale(gce::Vector3f32(10.f, 10.f, 10.f));
 	}
 
 	static void CreateStaticObject(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptGrid* grid, bool isFix, bool isObstacle, gce::Vector3f32 pos, gce::Vector3f32 scale)
@@ -292,7 +290,7 @@ public:
 		}
 		staticGeometry->SetAll(grid, isFix, isObstacle);
 		staticGeometry->mEntity->SetWorldPosition(pos);
-		staticGeometry->mEntity->SetWorldScale(pos);
+		staticGeometry->mEntity->SetWorldScale(scale);
 	}
 
 	static void SetStaticObject(/*gce::Scene& scene,*/gce::GameObject* staticObject, ScriptGrid* grid, bool isFix, bool isObstacle)
@@ -518,10 +516,10 @@ public:
 		ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
 		gce::Vector3f32 posNail = gce::Vector3f32(5.f, 0.f, 5.f);
-		CreateNail(scene, player, grid, posNail);
+		CreateNail(scene, player, grid, posNail, RES_PATH"res/Gameplay/Obj/robo.obj");
 
 		gce::Vector3f32 posCube = gce::Vector3f32(10.f, 10.f, 5.f);
-		gce::Vector3f32 posScale = gce::Vector3f32(10.f, 2.f, 5.f);
+		gce::Vector3f32 posScale = gce::Vector3f32(10.f, 10.f, 5.f);
 		CreateStaticObject(scene, grid, true, true, posCube, posScale);
 
 		CreateMap(scene, player, grid, "OutSide", RES_PATH"res/Gameplay/Json/outside.json");
