@@ -521,10 +521,27 @@ public:
 		return crosshair;
 	}
 
-	static gce::GameObject& CreateUIText(gce::Scene& scene, gce::Vector2f32 pos, gce::Vector2f32 size, gce::Vector3f32 scale, std::string path, D12PipelineObject& texturePso)
+	static gce::GameObject& CreateUIText(gce::Scene& scene)
 	{
 		GameObject& crosshair = GameObject::Create(scene);
 		TextRenderer* uiTexte = crosshair.AddComponent<TextRenderer>();
+
+		return crosshair;
+	}
+
+	static gce::GameObject& CreateUIFix(gce::Scene& scene, gce::Vector2f32 pos, gce::Vector2f32 size, gce::Vector3f32 scale, std::string path, D12PipelineObject& texturePso)
+	{
+		GameObject& crosshair = GameObject::Create(scene);
+		ImageUI* uiImage = crosshair.AddComponent<ImageUI>();
+
+		Vector2f32 posUi = pos - size * 0.5f;
+
+		uiImage->InitializeImage(posUi, size, 1.f);
+
+		uiImage->btmBrush = new BitMapBrush(path);
+		uiImage->btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, scale, 0);
+		uiImage->btmBrush->SetOpacity(1.f);
+		uiImage->SetActive(true);
 
 		return crosshair;
 	}
@@ -561,6 +578,11 @@ public:
 		ScriptUI* ui = uiObject.AddScript<ScriptUI>();
 		ui->SetPlayer(player);
 
+		std::string crooshair = "res/Gameplay/Texture/crosshair.png";
+		std::string amo = "res/Gameplay/Texture/balles.png";
+		ui->AddImageUiFix(amo);
+		ui->AddImageUiFix(amo);
+
 		std::string healthlv1 = "res/Textures/Life/healthlvl1.png";
 		std::string healthlv2 = "res/Textures/Life/healthlvl2.png";
 		std::string healthlv3 = "res/Textures/Life/healthlvl3.png";
@@ -591,8 +613,13 @@ public:
 		ui->AddBoxWeapon(secondWeapon);
 		ui->AddBoxWeapon(thirdWeapon);
 
-		gce::GameObject& textAmo = CreateUIText(scene, { windowParam.width - 430.f,windowParam.height - 275.f }, { 72,72 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, submachineGunPath, texturePso);
+		gce::GameObject& textAmo = CreateUIText(scene);
 		ui->AddTextAmo(textAmo);
+
+		gce::GameObject& UiBall = CreateUIFix(scene, { windowParam.width - 1450.f,windowParam.height - 100.f }, { 65,65 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, amo, texturePso);
+		ui->AddUiFix(UiBall);
+		gce::GameObject& UiCrosshair = CreateUIFix(scene, { windowParam.width *0.5f,windowParam.height *0.5f }, { 65,65 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, crooshair, texturePso);
+		ui->AddUiFix(UiCrosshair);
 
 		gce::Vector3f32 posPlayer = gce::Vector3f32(0.f, 10.f, 0.f);
 		gce::Vector2f32 sizeGrid = gce::Vector2f32(40.f, 80.f);
