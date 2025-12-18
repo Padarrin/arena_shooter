@@ -32,12 +32,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		bool mIsJumping;
 		bool mIsCursorLocked;
-		bool mIsWindowInitialised;
 
 		ScriptWeapons* mCurrentWeapon;
-
-		ScriptSubMachineGun* mSubMachine;
-
 		std::vector<ScriptWeapons*> mAllWeapons;
 
 	public:
@@ -45,9 +41,9 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		ScriptCharacter* mCharacter;
 
 		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); mYaw = 0.f; mPitch = 0.f; mIsCursorLocked = true; mCurrentWeapon = nullptr; mObjectCamera = nullptr; mAllWeapons = std::vector<ScriptWeapons*>(); mMenu = nullptr; }
-		virtual void Start() 
-		{ 
-			mWindow = gce::GameManager::GetWindow(); 
+		virtual void Start()
+		{
+			mWindow = gce::GameManager::GetWindow();
 			mIsJumping = true;
 
 			if (mCurrentWeapon != nullptr)
@@ -58,7 +54,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		}
 
 		virtual void Update()
-		{ 
+		{
 			float deltaTime = gce::GameManager::GameDeltaTime();
 			if (deltaTime > 0.f)
 			{
@@ -90,7 +86,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			{
 				ColliderFloor();
 			}
-			else if(other->GetName() == "StaticObject" || other->GetName() == "OutSide")
+			else if (other->GetName() == "StaticObject" || other->GetName() == "OutSide")
 			{
 				int i = 0;
 			}
@@ -121,8 +117,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			{
 				if (mCurrentWeapon != nullptr)
 				{
-					mSubMachine = mCurrentWeapon->GetChildWeapon<ScriptSubMachineGun>();
-					mSubMachine->Action();
+					ScriptSubMachineGun* weapon = mCurrentWeapon->GetChildWeapon<ScriptSubMachineGun>();
+					weapon->Action();
 				}
 			}
 		}
@@ -137,35 +133,21 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 				gce::ShowMouseCursor();
 			}
 
-			if (mIsWindowInitialised == false)
-			{
-				gce::HideMouseCursor();
-				gce::SetMousePosition(gce::Vector2i32(centerWidth, centerHeight));
-				mIsWindowInitialised = true;
-			}
-
 			if (!mIsCursorLocked)
 				return;
 
 			gce::HideMouseCursor();
 
-			gce::Vector2i32 currentMousePos = gce::GetMousePosition();
-
-			gce::Vector2i32 delta;
-			delta.x = currentMousePos.x - centerWidth;
-			delta.y = currentMousePos.y - centerHeight;
+			gce::Vector2i32 delta = gce::GetMousePosition() - centerSizeWindow;
 
 			// Rotation
-			mYaw += delta.x * sensitivity;
-			mPitch += delta.y * sensitivity;
+			mYaw += delta.x * SENSITIVITY_CAMERA;
+			mPitch += delta.y * SENSITIVITY_CAMERA;
 
-			mPitch = gce::Clamp(mPitch, pitchMin, pitchMax);
-
+			mPitch = gce::Clamp(mPitch, -PITCH, PITCH);
 			m_pOwner->transform.SetWorldRotation(gce::Vector3f32(mPitch, mYaw, 0.f));
-
-			m_pOwner->GetChildren()[0]->transform.SetLocalRotation(gce::Vector3f32(mPitch, 0.f, 0.f));
-
-			gce::SetMousePosition(gce::Vector2i32(centerWidth, centerHeight));
+			mObjectCamera->transform.SetLocalRotation(gce::Vector3f32(mPitch, 0.f, 0.f));
+			gce::SetMousePosition(centerSizeWindow);
 
 		}
 
