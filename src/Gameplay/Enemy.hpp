@@ -63,20 +63,6 @@ public:
 
 		SetIsNoPath(false);
 
-		//mStateMachine = GameManager::GetStatesSystem().CreateStateMachine(m_pOwner);
-
-		// StateMachine
-		/*mStateMachine->AddAction(mIdle, OnBeginIdle, OnUpdateIdle, OnEndIdle);
-		mStateMachine->AddAction(mRunning, OnBeginRunning, OnUpdateRunning, OnEndRunning);
-		mStateMachine->AddAction(mAttack, OnBeginAttack, OnUpdateAttack, OnEndAttack);
-		mStateMachine->AddAction(mHit, OnBeginHit, OnUpdateHit, OnEndHit);
-		mStateMachine->AddAction(mDie, OnBeginDie, OnUpdateDie, OnEndDie);
-
-		mStateMachine->AddTransition(mConditionRun, mIdle, mRunning);
-		mStateMachine->AddTransition(mConditionAttack, mRunning, mIdle);
-		mStateMachine->AddTransition(mConditionHit, mIdle, mHit);
-		mStateMachine->AddTransition(mConditionDie, mIdle, mDie);*/
-
 	}
 	virtual void Update() 
 	{ 

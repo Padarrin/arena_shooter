@@ -284,7 +284,6 @@ public:
 
 		return mAllCells[index.x][index.y];
 	}
-
 	gce::GameObject* GetGameObject() { return m_pOwner; }
 	gce::Scene* GetScene() { return m_pOwner->m_pScene; }
 

@@ -12,10 +12,6 @@
 
 #include "GameObject.h"
 
-#include "../Gameplay/Functions.h"
-
-//#include "Health.hpp"
-
 using json = nlohmann::json;
 using namespace gce;
 
@@ -91,7 +87,7 @@ struct JsonLoader
             {
                 Vector3f32 position;
                 position.x = currObject["position"][0].get<float>();
-                position.y = currObject["position"][2].get<float>() + 7.5f;
+                position.y = currObject["position"][2].get<float>();
                 position.z = currObject["position"][1].get<float>();
                 gameObject.transform.SetLocalPosition(position);
 

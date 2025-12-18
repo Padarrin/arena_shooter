@@ -154,6 +154,7 @@ inline void AddMeshRenderer(gce::GameObject& object, gce::Geometry* geometry, gc
 		{
 			meshRenderer.pMaterial->albedoTextureID = texture->GetTextureID();
 			meshRenderer.pMaterial->useTextureAlbedo = 1;
+			meshRenderer.pMaterial->subsurface = 0.2f;
 		}
 	}
 }
