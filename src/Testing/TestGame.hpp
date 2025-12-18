@@ -442,9 +442,9 @@ public:
 		gce::GameObject& weaponParent = gce::GameObject::Create(scene);
 		cameraObject->AddChild(weaponParent);
 
-		gce::Vector3f32 posPlayer = gce::Vector3f32(0.f, 10.f, 0.f);
+		gce::Vector3f32 posPlayer = gce::Vector3f32(0.f, -15.f, 0.f);
 		gce::Vector2f32 sizeGrid = gce::Vector2f32(40.f, 80.f);
-		gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 15.f), posPlayer.z + 20.f);
+		gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 5.f), posPlayer.z + 20.f);
 
 		ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
