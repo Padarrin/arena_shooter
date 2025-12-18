@@ -221,15 +221,8 @@ public:
 	void UiAmo()
 	{
 		Color colors[] = {
-			Color::Blue,
-			Color::Red,
-			Color::Black,
 			Color::Cyan,
-			Color::Green,
-			Color::Magenta,
-			Color::White,
-			Color::Yellow,
-			Color::Purple
+			Color::Red
 		};
 
 		mTextAmo->GetComponent<TextRenderer>()->pFont = new Font(L"Ashley Crawford");
@@ -241,8 +234,8 @@ public:
 			mTextAmo->GetComponent<TextRenderer>()->text = buffer;
 		}
 		mTextAmo->GetComponent<TextRenderer>()->rectPosF = new RectanglePosF(10.0f, mWindowParam->height - 200.f, 500.0f, 50.0f);
-		//mTextAmo->GetComponent<TextRenderer>()->pBrush = new LinearGradientBrush(*mTextAmo->GetComponent<TextRenderer>()->rectPosF, 9, colors, 1.0f);
-		mTextAmo->GetComponent<TextRenderer>()->pBrush = new ColorBrush(gce::Color::Purple);
+		//mTextAmo->GetComponent<TextRenderer>()->pBrush = new LinearGradientBrush(*mTextAmo->GetComponent<TextRenderer>()->rectPosF, 2, colors, 1.0f);
+		mTextAmo->GetComponent<TextRenderer>()->pBrush = new ColorBrush(gce::Color::Cyan);
 	}
 
 	void SetPlayer(ScriptPlayer* player) { mPlayer = player; }
