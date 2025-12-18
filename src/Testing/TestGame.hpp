@@ -83,11 +83,11 @@ gce::BitMapBrush imageCollideButtonRestart{ "/res/Gameplay/Texture/Recommencer_C
 gce::BitMapBrush imageButtonExit{ "/res/Gameplay/Texture/Quitter.png" };
 gce::BitMapBrush imageCollideButtonExit{ "/res/Gameplay/Texture/Quitter_Cliquer.png" };
 
-gce::Vector3f32 posImagePauseMenu = gce::Vector3f32(600.f, 400.f, 5.f);
-gce::Vector3f32 scaleImagePauseMenu = gce::Vector3f32(1000.f, 1000.f, 1.f);
-gce::BitMapBrush imageBackgroundButtonPauseMenu{ "res/Testing/Button/Button2.png" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
-gce::GameObject& imagePauseMenuObject = gce::GameObject::Create(scene); imagePauseMenuObject.transform.LocalTranslate(posImagePauseMenu); imagePauseMenuObject.transform.SetWorldScale(scaleImagePauseMenu); imagePauseMenuObject.SetName("ImageButton"); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
-gce::UIButton* imagePauseMenu = imagePauseMenuObject.AddComponent<gce::UIButton>(); imagePauseMenu->pBitMapBrush = &imageBackgroundButtonPauseMenu; imagePauseMenu->pHoverBitMapBrush = &imageBackgroundButtonPauseMenu;
+//gce::Vector3f32 posImagePauseMenu = gce::Vector3f32(600.f, 400.f, 5.f);
+//gce::Vector3f32 scaleImagePauseMenu = gce::Vector3f32(1000.f, 1000.f, 1.f);
+//gce::BitMapBrush imageBackgroundButtonPauseMenu{ "res/Testing/Button/Button2.png" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
+//gce::GameObject& imagePauseMenuObject = gce::GameObject::Create(scene); imagePauseMenuObject.transform.LocalTranslate(posImagePauseMenu); imagePauseMenuObject.transform.SetWorldScale(scaleImagePauseMenu); imagePauseMenuObject.SetName("ImageButton"); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
+//gce::UIButton* imagePauseMenu = imagePauseMenuObject.AddComponent<gce::UIButton>(); imagePauseMenu->pBitMapBrush = &imageBackgroundButtonPauseMenu; imagePauseMenu->pHoverBitMapBrush = &imageBackgroundButtonPauseMenu;
 
 //Resume Button
 gce::Vector3f32 posButtonResume = gce::Vector3f32(600.0f, 200.0f, 0.0f);
@@ -142,7 +142,7 @@ menu->AddImage(&imageMainMenuObject, MAIN_MENU);
 menu->AddButton(&buttonStartObject, MAIN_MENU);
 menu->AddButton(&buttonQuitObject, MAIN_MENU);
 
-menu->AddImage(&imagePauseMenuObject, PAUSE_MENU);
+//menu->AddImage(&imagePauseMenuObject, PAUSE_MENU);
 menu->AddButton(&buttonResumeObject, PAUSE_MENU);
 menu->AddButton(&buttonRestartObject, PAUSE_MENU);
 menu->AddButton(&buttonExitObject, PAUSE_MENU);
@@ -612,9 +612,9 @@ public:
 
 		ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-		//gce::Vector3f32 posNail = gce::Vector3f32(5.f, 0.f, 5.f);
-		//CreateNail(scene, player, grid, posNail, RES_PATH"res/Gameplay/Obj/clou.obj");
-		CreateBot(scene, player, grid);
+		gce::Vector3f32 posNail = gce::Vector3f32(-9.f, 1.f, 7.f);
+		CreateNail(scene, player, grid, posNail, RES_PATH"res/Gameplay/Obj/clou.obj");
+		//CreateBot(scene, player, grid);
 
 		CreatStaticWall(scene, grid);
 

@@ -44,6 +44,12 @@ public:
 			return;
 		}
 
+		if (paths->Size() < 2)
+		{
+			paths->Clear();
+			return;
+		}
+
 		Node<Cell>* currentNode = paths->Top();
 		paths->Pop();
 
