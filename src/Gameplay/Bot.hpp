@@ -19,13 +19,12 @@ public:
         float deltaTime = gce::GameManager::GameDeltaTime();
         if (deltaTime > 0.f)
         {
-			mTimeCreate.Update(deltaTime);
-			if (mTimeCreate.IsFinish())
-			{
-			    mTimeCreate.Reset();
-			    gce::Vector3f32 posNail = gce::Vector3f32(5.f, 0.f, 5.f);
-			    CreateNail(*mAgent->mCharacter->mEntity->GetScene(), mPlayer, mAgent->GetPathFinding()->GetGrid(), posNail, RES_PATH"res/Gameplay/Obj/clou.obj");
-			}
+           if (mTimeCreate.IsFinish())
+           {
+               mTimeCreate.Reset();
+               gce::Vector3f32 posNail = gce::Vector3f32(5.f, 0.f, 5.f);
+               CreateNail(*mAgent->mCharacter->mEntity->GetScene(), mPlayer, mAgent->GetPathFinding()->GetGrid(), posNail, RES_PATH"res/Gameplay/Obj/clou.obj");
+           }
         }
     }
     virtual void Destroy() {}

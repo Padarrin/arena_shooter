@@ -228,18 +228,13 @@ public:
 		player->Start();
 	}
 
-	static void CreateBot(gce::Scene& scene,ScriptPlayer* player, ScriptGrid* grid)
+	static void CreateBot(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptPlayer* player, ScriptGrid* grid)
 	{
 		//Life = 20 a 200, Damage = 1 a 5
 		gce::GameObject& botObject = CreateGameObject<ScriptBot>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 		botObject.SetName("Bot");
-		botObject.transform.SetWorldPosition(gce::Vector3f32(-9.f, 1.f, 7.f));
+		botObject.transform.SetWorldPosition(gce::Vector3f32(-7.f, 1.f, 7.f));
 		botObject.transform.SetWorldScale(gce::Vector3f32(1.f, 2.f, 1.f));
-
-
-		ScriptBot* bot = botObject->AddScript<ScriptBot>();
-		bot->SetPlayer(player);
-		bot->mAgent->GetPathFinding()->SetGrid(grid);
 	}
 
 	static void CreateNail(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptPlayer* player, ScriptGrid* grid, gce::Vector3f32 pos, const std::string_view path)
@@ -486,27 +481,10 @@ public:
 		return crosshair;
 	}
 
-	static gce::GameObject& CreateUIText(gce::Scene& scene)
+	static gce::GameObject& CreateUIText(gce::Scene& scene, gce::Vector2f32 pos, gce::Vector2f32 size, gce::Vector3f32 scale, std::string path, D12PipelineObject& texturePso)
 	{
 		GameObject& crosshair = GameObject::Create(scene);
 		TextRenderer* uiTexte = crosshair.AddComponent<TextRenderer>();
-
-		return crosshair;
-	}
-
-	static gce::GameObject& CreateUIFix(gce::Scene& scene, gce::Vector2f32 pos, gce::Vector2f32 size, gce::Vector3f32 scale, std::string path, D12PipelineObject& texturePso)
-	{
-		GameObject& crosshair = GameObject::Create(scene);
-		ImageUI* uiImage = crosshair.AddComponent<ImageUI>();
-
-		Vector2f32 posUi = pos - size * 0.5f;
-
-		uiImage->InitializeImage(posUi, size, 1.f);
-
-		uiImage->btmBrush = new BitMapBrush(path);
-		uiImage->btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, scale, 0);
-		uiImage->btmBrush->SetOpacity(1.f);
-		uiImage->SetActive(true);
 
 		return crosshair;
 	}
@@ -543,11 +521,6 @@ public:
 		ScriptUI* ui = uiObject.AddScript<ScriptUI>();
 		ui->SetPlayer(player);
 
-		std::string crooshair = "res/Gameplay/Texture/crosshair.png";
-		std::string amo = "res/Gameplay/Texture/balles.png";
-		ui->AddImageUiFix(amo);
-		ui->AddImageUiFix(amo);
-		
 		std::string healthlv1 = "res/Gameplay/Texture/Life/healthlvl1.png";
 		std::string healthlv2 = "res/Gameplay/Texture/Life/healthlvl2.png";
 		std::string healthlv3 = "res/Gameplay/Texture/Life/healthlvl3.png";
@@ -578,13 +551,8 @@ public:
 		ui->AddBoxWeapon(secondWeapon);
 		ui->AddBoxWeapon(thirdWeapon);
 
-		gce::GameObject& textAmo = CreateUIText(scene);
+		gce::GameObject& textAmo = CreateUIText(scene, { windowParamUI.width - 430.f,windowParamUI.height - 275.f }, { 72,72 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, submachineGunPath, texturePso);
 		ui->AddTextAmo(textAmo);
-
-		gce::GameObject& UiBall = CreateUIFix(scene, { windowParam.width - 1450.f,windowParam.height - 100.f }, { 65,65 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, amo, texturePso);
-		ui->AddUiFix(UiBall);
-		gce::GameObject& UiCrosshair = CreateUIFix(scene, { windowParam.width *0.5f,windowParam.height *0.5f }, { 65,65 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, crooshair, texturePso);
-		ui->AddUiFix(UiCrosshair);
 
 		gce::Vector3f32 posPlayer = gce::Vector3f32(0.f, 10.f, 0.f);
 		gce::Vector2f32 sizeGrid = gce::Vector2f32(40.f, 80.f);
