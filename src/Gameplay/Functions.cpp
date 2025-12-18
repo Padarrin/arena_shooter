@@ -39,7 +39,7 @@ Entity* GetNearestEntity(gce::Vector3f32 pos)
     return nullptr;
 }
 
-ScriptAgent* GetNearestAgent(gce::Vector3f32 pos, gce::GameObject* menu)
+/*ScriptAgent* GetNearestAgent(gce::Vector3f32 pos, gce::GameObject* menu)
 {
     ScriptAgent* agentNeraest = nullptr;
     gce::Vector3f32 posNeraest = gce::Vector3f32(INT_MAX, INT_MAX, INT_MAX);
@@ -57,7 +57,7 @@ ScriptAgent* GetNearestAgent(gce::Vector3f32 pos, gce::GameObject* menu)
         }
     }
     return agentNeraest;
-}
+}*/
 
 float DisManhattan(gce::Vector3f32 currentPos, gce::Vector3f32 endPos, int sizeCell)
 {

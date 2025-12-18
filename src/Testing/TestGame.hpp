@@ -557,7 +557,7 @@ public:
 
 		ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-		gce::Vector3f32 posNail = gce::Vector3f32(5.f, 0.f, 5.f);
+		gce::Vector3f32 posNail = gce::Vector3f32(posPlayer.x, 2.f, posPlayer.z + 30.f);
 		CreateNail(scene, player, grid, posNail);
 
 		gce::Vector3f32 posCube = gce::Vector3f32(10.f, 10.f, 5.f);

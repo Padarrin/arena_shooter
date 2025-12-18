@@ -75,9 +75,9 @@ float GetDistance(gce::Vector3f32 pos1, gce::Vector3f32 pos2)
 //template<typename T>
 //Node<T>* GetNodeInTab(int row, int col, int length_col, std::vector<Node<T>*>* allNodes);
 
-Entity* GetNearestEntity(gce::Vector3f32 pos);
+//Entity* GetNearestEntity(gce::Vector3f32 pos);
 
-ScriptAgent* GetNearestAgent(gce::Vector3f32 pos, gce::GameObject* menu)
+//ScriptAgent* GetNearestAgent(gce::Vector3f32 pos, gce::GameObject* menu);
 
 //template<typename T>
 //T* GetNearestCell(gce::Vector3f32 pos, std::vector<std::vector<T*>> allCells);
