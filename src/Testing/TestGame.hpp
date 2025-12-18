@@ -516,7 +516,7 @@ public:
 		ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
 		gce::Vector3f32 posNail = gce::Vector3f32(5.f, 0.f, 5.f);
-		CreateNail(scene, player, grid, posNail, RES_PATH"res/Gameplay/Obj/robo.obj");
+		CreateNail(scene, player, grid, posNail, RES_PATH"res/Gameplay/Obj/clou.obj");
 
 		gce::Vector3f32 posCube = gce::Vector3f32(10.f, 10.f, 5.f);
 		gce::Vector3f32 posScale = gce::Vector3f32(10.f, 10.f, 5.f);
