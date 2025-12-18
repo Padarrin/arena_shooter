@@ -324,7 +324,7 @@ public:
 		for (int i = 0; i < lenghtLoad; i++)
 		{
 			gameObjectLoad[i]->SetName(name);
-			SetStaticObject(gameObjectLoad[i], grid, true, true);
+			//SetStaticObject(gameObjectLoad[i], grid, true, true);
 		}
 
 		for (auto& [id, currentGameObject] : *mapGameObject)
