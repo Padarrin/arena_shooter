@@ -370,9 +370,9 @@ public:
 		int lenghtHangar = (int)hangar.size();
 		for (int i = 0; i < lenghtHangar; i++) { gameObjectLoad.push_back(hangar[i]); hangar[i]->transform.WorldTranslate(gce::Vector3f32(0.f, 0.f, 0.f)); }
 		int lenghtOutside = (int)outside.size();
-		for (int i = 0; i < lenghtOutside; i++) { gameObjectLoad.push_back(outside[i]); outside[i]->transform.WorldTranslate(gce::Vector3f32(0.f, 0.5f, 0.f)); }
+		for (int i = 0; i < lenghtOutside; i++) { gameObjectLoad.push_back(outside[i]); outside[i]->transform.WorldTranslate(gce::Vector3f32(0.f, 0.f, 0.f)); }
 		int lenghtAtelier = (int)atelier.size();
-		for (int i = 0; i < lenghtAtelier; i++) { gameObjectLoad.push_back(atelier[i]); atelier[i]->transform.WorldTranslate(gce::Vector3f32(0.f, 0.5f, 0.f)); }
+		for (int i = 0; i < lenghtAtelier; i++) { gameObjectLoad.push_back(atelier[i]); atelier[i]->transform.WorldTranslate(gce::Vector3f32(0.f, 0.f, 0.f)); }
 
 		int lenghtLoad = (int)gameObjectLoad.size();
 		for (int i = 0; i < lenghtLoad; i++)
