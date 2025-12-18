@@ -12,7 +12,7 @@ protected:
 public:
     ScriptAgent* mAgent;
 
-    virtual void Initia() { mAgent = m_pOwner->AddScript<ScriptAgent>(); mAgent->Initia(); mTimeCreate = Time(1.f); }
+    virtual void Initia() { mAgent = m_pOwner->AddScript<ScriptAgent>(); mAgent->Initia(); mTimeCreate = Time(10.f); }
     virtual void Start() {}
     virtual void Update()
     {

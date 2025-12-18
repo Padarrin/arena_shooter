@@ -236,7 +236,7 @@ public:
 		botObject.transform.SetWorldScale(gce::Vector3f32(1.f, 2.f, 1.f));
 
 
-		ScriptBot* bot = botObject->AddScript<ScriptBot>();
+		ScriptBot* bot = botObject.AddScript<ScriptBot>();
 		bot->SetPlayer(player);
 		bot->mAgent->GetPathFinding()->SetGrid(grid);
 	}
@@ -612,7 +612,7 @@ public:
 
 		ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-		gce::Vector3f32 posNail = gce::Vector3f32(5.f, 0.f, 5.f);
+		//gce::Vector3f32 posNail = gce::Vector3f32(5.f, 0.f, 5.f);
 		//CreateNail(scene, player, grid, posNail, RES_PATH"res/Gameplay/Obj/clou.obj");
 		CreateBot(scene, player, grid);
 
