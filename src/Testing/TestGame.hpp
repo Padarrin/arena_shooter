@@ -30,8 +30,8 @@ BEGIN_TEST(Game)
 
 	WindowParam windowParam;
 	windowParam.title = L"Test Light";
-	windowParam.width = 1920;
-	windowParam.height = 1080;
+	windowParam.width = 1700;
+	windowParam.height = 800;
 	windowParam.isFullScreen = true;
 
 	gCameraObject = CreateCamera(scene);
@@ -208,7 +208,7 @@ public:
 
 	static void ResetPlayerEnd(ScriptPlayer* player)
 	{
-		player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
+		player->SetCurrentWeapon(WEAPON_ORDER::ANGLEGRINGER);
 		player->Start();
 	}
 
@@ -363,16 +363,15 @@ public:
 
 	static void CreateAngleGringer(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 	{
-		gce::GameObject& angleGringerObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
+		gce::GameObject& angleGringerObject = CreateGameObject<ScriptAngleGringer>(scene, gce::SHAPES.CUBE);
+		angleGringerObject.AddComponent<gce::BoxCollider>()->SetActive(true);
 		angleGringerObject.SetName("AngleGringer");
 		weaponParent.AddChild(angleGringerObject);
 
-		ScriptSubMachineGun* angleGringer = angleGringerObject.GetScript<ScriptSubMachineGun>();
-		angleGringer->mWeapons->mMagazine->SetMaxBullets(30);
-		angleGringer->mWeapons->mMagazine->SetShootTime(0.1f);
-		angleGringer->mWeapons->mMagazine->SetReloadTime(2.5f);
+		ScriptAngleGringer* angleGringer = angleGringerObject.GetScript<ScriptAngleGringer>();
 		angleGringer->mWeapons->mEntity->SetWorldPosition(gce::Vector3f32(0.f, 0.f, 0.f));
 		angleGringer->mWeapons->mEntity->SetLocalPosition(gce::Vector3f32(2.f, 0.f, 3.f));
+		angleGringer->mWeapons->mEntity->SetLocalScale(gce::Vector3f32(1, 1, 5));
 
 		player->AddWeapon(angleGringer->mWeapons);//1
 	}
@@ -414,24 +413,43 @@ public:
 
 	}
 
-	static gce::GameObject& CreateUI(gce::Scene& scene, gce::Vector2f32 pos, gce::Vector2f32 size, gce::Vector3f32 scale, std::string path, D12PipelineObject& texturePso)
+	static gce::GameObject& CreateUIWeapon(gce::Scene& scene, gce::Vector2f32 pos, gce::Vector2f32 size, gce::Vector3f32 scale, std::string path, D12PipelineObject& texturePso)
 	{
 		GameObject& crosshair = GameObject::Create(scene);
 		ImageUI* uiImage = crosshair.AddComponent<ImageUI>();
 
 		Vector2f32 posUi = pos - size * 0.5f;
 
-		uiImage->InitializeImage(posUi, size, 1.f);
+		uiImage->InitializeImage(posUi, size, 0.f);
 
 		uiImage->btmBrush = new BitMapBrush(path);
 		uiImage->btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, scale, 0);
 		uiImage->SetActive(true);
 
-		/*GameObject& Cube = GameObject::Create(scene);
-		MeshRenderer* meshRenderer = Cube.AddComponent<MeshRenderer>();
-		meshRenderer->pGeometry = SHAPES.CUBE;
-		meshRenderer->pPso = &texturePso;
-		Cube.transform.SetWorldPosition({ 0, 0, 10 });*/
+		return crosshair;
+	}
+
+	static gce::GameObject& CreateUILife(gce::Scene& scene, gce::Vector2f32 pos, gce::Vector2f32 size, gce::Vector3f32 scale, std::string path, D12PipelineObject& texturePso)
+	{
+		GameObject& crosshair = GameObject::Create(scene);
+		ImageUI* uiImage = crosshair.AddComponent<ImageUI>();
+
+		Vector2f32 posUi = pos - size * 0.5f;
+
+		uiImage->InitializeImage(posUi, size, 0.f);
+
+		uiImage->btmBrush = new BitMapBrush(path);
+		uiImage->btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, scale, 0);
+		uiImage->btmBrush->SetOpacity(0.f);
+		uiImage->SetActive(true);
+
+		return crosshair;
+	}
+
+	static gce::GameObject& CreateUIText(gce::Scene& scene, gce::Vector2f32 pos, gce::Vector2f32 size, gce::Vector3f32 scale, std::string path, D12PipelineObject& texturePso)
+	{
+		GameObject& crosshair = GameObject::Create(scene);
+		TextRenderer* uiTexte = crosshair.AddComponent<TextRenderer>();
 
 		return crosshair;
 	}
@@ -469,22 +487,38 @@ public:
 		ScriptUI* ui = uiObject.AddScript<ScriptUI>();
 		ui->SetPlayer(player);
 
+		std::string healthlv1 = "res/Textures/Life/healthlvl1.png";
+		std::string healthlv2 = "res/Textures/Life/healthlvl2.png";
+		std::string healthlv3 = "res/Textures/Life/healthlvl3.png";
+		ui->AddImageLife(healthlv1);
+		ui->AddImageLife(healthlv2);
+		ui->AddImageLife(healthlv3);
+
 		std::string anglegringerPath = "res/Textures/plastic_normal.png";
-		std::string submachineGunPath = "res/Textures/test1.png";
+		std::string submachineGunPath = "res/Textures/Weapon/mitrallette.png";
 		std::string bazookaPath = "res/Textures/plastic_roughness.png";
 
-		ui->AddImage(anglegringerPath);
-		ui->AddImage(submachineGunPath);
-		ui->AddImage(bazookaPath);
+		ui->AddImageWeapon(anglegringerPath);
+		ui->AddImageWeapon(submachineGunPath);
+		ui->AddImageWeapon(bazookaPath);
 
 		gce::WindowParam windowParam = gce::GameManager::GetWindowParam();
 
-		gce::GameObject& mainWeapon = CreateUI(scene, { windowParam.width -430.f,windowParam.height - 275.f }, { 72,72 }, { 1.f / 14.f, 1.f / 14.f, 1.f / 14.f }, submachineGunPath, texturePso);
-		gce::GameObject& secondWeapon = CreateUI(scene, { windowParam.width - 350.f,windowParam.height - 275.f }, { 65,65 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, anglegringerPath, texturePso);
-		gce::GameObject& thirdWeapon = CreateUI(scene, { windowParam.width - 275.f,windowParam.height - 275.f }, { 65,65 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, bazookaPath, texturePso);
-		ui->AddTexture(mainWeapon);
-		ui->AddTexture(secondWeapon);
-		ui->AddTexture(thirdWeapon);
+		gce::GameObject& health = CreateUILife(scene, { (float)windowParam.width / 2, (float)windowParam.height / 2 }, { (float)windowParam.width, (float)windowParam.height}, { 1.f, 1.f, 1.f}, healthlv1, texturePso);
+		ui->AddBoxLife(health);
+
+		gce::GameObject& mainWeapon = CreateUIWeapon(scene, { windowParam.width -430.f,windowParam.height - 275.f }, { 72,72 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, submachineGunPath, texturePso);
+		gce::GameObject& secondWeapon = CreateUIWeapon(scene, { windowParam.width - 350.f,windowParam.height - 275.f }, { 65,65 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, anglegringerPath, texturePso);
+		gce::GameObject& thirdWeapon = CreateUIWeapon(scene, { windowParam.width - 275.f,windowParam.height - 275.f }, { 65,65 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, bazookaPath, texturePso);
+		mainWeapon.GetComponent<ImageUI>()->btmBrush->SetOpacity(1.f);
+		secondWeapon.GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
+		thirdWeapon.GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
+		ui->AddBoxWeapon(mainWeapon);
+		ui->AddBoxWeapon(secondWeapon);
+		ui->AddBoxWeapon(thirdWeapon);
+
+		gce::GameObject& textAmo = CreateUIText(scene, { windowParam.width - 430.f,windowParam.height - 275.f }, { 72,72 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, submachineGunPath, texturePso);
+		ui->AddTextAmo(textAmo);
 
 		gce::Vector3f32 posPlayer = gce::Vector3f32(0.f, 10.f, 0.f);
 		gce::Vector2f32 sizeGrid = gce::Vector2f32(40.f, 80.f);

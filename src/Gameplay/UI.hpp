@@ -59,18 +59,25 @@ private:
 	std::vector<ScriptWeapons*>* mUiWeapon;
 
 	ScriptWeapons* mCurrentWeapon;
-	cstr mName;
+	cstr mNameWeapon;
 
 	ScriptPlayer* mPlayer;
 
 	ScriptPistolMagazine* mSubmachine;
 	ScriptPistolMagazine* mBazooka;
 
-	std::vector<gce::GameObject*> mAllTextures;
+	std::vector<gce::GameObject*> mAllBoxWeapon;
+	gce::GameObject* mBoxLife;
+	gce::GameObject* mTextAmo;
+
 	std::vector<SettingImage*> mSettingsImages;
-	std::vector< std::string> mAllImages;
+
+	std::vector< std::string> mAllImagesWeapon;
+	std::vector< std::string> mAllImagesLife;
 
 	gce::WindowParam* mWindowParam;
+
+	int mMaxLifePlayer;
 
 public:
 	ScriptEntity* mEntity;
@@ -106,82 +113,153 @@ public:
 		mBazooka = (*mUiWeapon)[SUBMACHINEGUN]->mMagazine;
 
 		mBall.SetStockMax(mSubmachine->GetMaxBullets());
-		mBall.SetInStock(mSubmachine->GetCurrentBullets());
 
 		mSeekerBall.SetStockMax(mBazooka->GetMaxBullets());
-		mSeekerBall.SetInStock(mBazooka->GetCurrentBullets());
 
 		mImprPiece.SetStockMax(30);
 		mImprPiece.SetInStock(0);
 
-		mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
+		mNameWeapon = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 
+		mMaxLifePlayer = mPlayer->mCharacter->GetMaxLife();
 	}
 
 	virtual void Update()
 	{
+		mBall.SetInStock(mSubmachine->GetCurrentBullets());
+
+		mSeekerBall.SetInStock(mBazooka->GetCurrentBullets());
+
 		InputWeapon();
+		UiLife();
+		UiAmo();
 	}
 
 	void InputWeapon()
 	{
-		if (gce::GetKeyDown(gce::Keyboard::Key::_1) && mName != "AngleGringer")
+		if (gce::GetKeyDown(gce::Keyboard::Key::_1) && mNameWeapon != "AngleGringer")
 		{
 			mPlayer->SetCurrentWeapon(ANGLEGRINGER);
 			mCurrentWeapon = mPlayer->GetCurrentWeapon();
-			mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
+			mNameWeapon = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 
-			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[0]);
-			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 490.f,mWindowParam->height - 310.f, 0 }, { 1 / 14.f,1 / 14.f,1 / 14.f }, 0.f);
+			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[0]);
+			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 490.f,mWindowParam->height - 310.f, 0 }, { 1 / 14.f,1 / 14.f,1 / 14.f }, 0.f);
+			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush->SetOpacity(1.f);
 
-			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[1]);
-			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 390.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[1]);
+			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 384.f,mWindowParam->height - 310.f, 0 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, 0.f);
+			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
 
-			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[2]);
-			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[2]);
+			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
 
 		}
 
-		else if (gce::GetKeyDown(gce::Keyboard::Key::_2) && mName != "SubmachineGun")
+		else if (gce::GetKeyDown(gce::Keyboard::Key::_2) && mNameWeapon != "SubmachineGun")
 		{
 			mPlayer->SetCurrentWeapon(SUBMACHINEGUN);
 			mCurrentWeapon = mPlayer->GetCurrentWeapon();
-			mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
+			mNameWeapon = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 
-			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[1]);
-			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 490.f,mWindowParam->height - 310.f, 0 }, { 1 / 14.f,1 / 14.f,1 / 14.f }, 0.f);
+			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[1]);
+			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 468.f,mWindowParam->height - 310.f, 0 }, { 1 / 2.f,1 / 2.f,1 / 2.f }, 0.f);
+			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush->SetOpacity(1.f);
 
-			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[0]);
-			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 390.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[0]);
+			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 390.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
 
-			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[2]);
-			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[2]);
+			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
 
 		}
 
-		else if (gce::GetKeyDown(gce::Keyboard::Key::_3) && mName != "Bazooka")
+		else if (gce::GetKeyDown(gce::Keyboard::Key::_3) && mNameWeapon != "Bazooka")
 		{
 			mPlayer->SetCurrentWeapon(BAZOOKA);
 			mCurrentWeapon = mPlayer->GetCurrentWeapon();
-			mName = mCurrentWeapon->mEntity->GetGameObject()->GetName();
+			mNameWeapon = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 
-			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[2]);
-			mAllTextures[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 490.f,mWindowParam->height - 310.f, 0 }, { 1 / 14.f,1 / 14.f,1 / 14.f }, 0.f);
+			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[2]);
+			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 490.f,mWindowParam->height - 310.f, 0 }, { 1 / 14.f,1 / 14.f,1 / 14.f }, 0.f);
+			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush->SetOpacity(1.f);
 
-			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[0]);
-			mAllTextures[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 390.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[0]);
+			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 390.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
 
-			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImages[1]);
-			mAllTextures[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[1]);
+			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, 0.f);
+			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
 
+		}
+	}
+
+	void UiLife()
+	{
+		int currentLife = mPlayer->mCharacter->GetLife();
+
+		if (currentLife <= mMaxLifePlayer * 0.75f && currentLife > mMaxLifePlayer * 0.5f)
+		{
+			mBoxLife->GetComponent<ImageUI>()->btmBrush->SetOpacity(1.f);
+			mBoxLife->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesLife[0]);
+		}
+		else if (currentLife <= mMaxLifePlayer * 0.5f && currentLife > mMaxLifePlayer * 0.25f)
+		{
+			mBoxLife->GetComponent<ImageUI>()->btmBrush->SetOpacity(1.f);
+			mBoxLife->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesLife[1]);
+		}
+		else if (currentLife <= mMaxLifePlayer * 0.25f && currentLife > 0)
+		{
+			mBoxLife->GetComponent<ImageUI>()->btmBrush->SetOpacity(1.f);
+			mBoxLife->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesLife[2]);
+		}
+	}
+
+	void UiAmo()
+	{
+		Color colors[] = {
+			Color::Cyan,
+			Color::Red
+		};
+
+		mTextAmo->GetComponent<TextRenderer>()->pFont = new Font(L"Ashley Crawford");
+
+		mTextAmo->GetComponent<TextRenderer>()->rectPosF = new RectanglePosF(10.0f, mWindowParam->height - 200.f, 500.0f, 50.0f);
+		mTextAmo->GetComponent<TextRenderer>()->pBrush = new ColorBrush(gce::Color::Cyan);
+
+		if (mNameWeapon == "SubmachineGun")
+		{
+			static std::wstring buffer;
+
+			buffer = std::to_wstring(mBall.GetInStock()) + L" / " + std::to_wstring(mBall.GetStockMax());
+			mTextAmo->GetComponent<TextRenderer>()->text = buffer;
+		}
+		else if (mNameWeapon == "Bazooka")
+		{
+			static std::wstring buffer;
+
+			buffer = std::to_wstring(mSeekerBall.GetInStock()) + L" / " + std::to_wstring(mSeekerBall.GetStockMax());
+			mTextAmo->GetComponent<TextRenderer>()->text = buffer;
+		}
+		else if (mNameWeapon == "AngleGringer")
+		{
+			mTextAmo->GetComponent<TextRenderer>()->text = L"0 / 0";
+			mTextAmo->GetComponent<TextRenderer>()->pBrush = new LinearGradientBrush(*mTextAmo->GetComponent<TextRenderer>()->rectPosF, 1, colors, 0.5f);
 		}
 	}
 
 	void SetPlayer(ScriptPlayer* player) { mPlayer = player; }
 	ScriptPlayer* GetPlayer() { return mPlayer; }
 
-	void AddTexture(gce::GameObject& textureObject) { mAllTextures.push_back(&textureObject); }
-	void AddImage(std::string imagePath) { mAllImages.push_back(imagePath); }
+	void AddBoxWeapon(gce::GameObject& boxWeaponObject) { mAllBoxWeapon.push_back(&boxWeaponObject); }
+	void AddBoxLife(gce::GameObject& boxLifeObject) { mBoxLife = &boxLifeObject; }
+	void AddTextAmo(gce::GameObject& textAmoObject) { mTextAmo = &textAmoObject; }
+	void AddImageWeapon(std::string imagePath) { mAllImagesWeapon.push_back(imagePath); }
+	void AddImageLife(std::string imagePath) { mAllImagesLife.push_back(imagePath); }
 
 	void SetWinParam(gce::WindowParam windowPa) { mWindowParam = &windowPa; }
 
