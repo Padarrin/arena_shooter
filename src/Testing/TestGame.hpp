@@ -402,13 +402,14 @@ public:
 		angleGringer->mWeapons->mEntity->SetWorldPosition(gce::Vector3f32(0.f, 0.f, 0.f));
 		angleGringer->mWeapons->mEntity->SetLocalPosition(gce::Vector3f32(2.f, 0.f, 3.f));
 		angleGringer->mWeapons->mEntity->SetLocalScale(gce::Vector3f32(1, 1, 5));
-
 		player->AddWeapon(angleGringer->mWeapons);//1
 	}
 
 	static ScriptSubMachineGun* CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 	{
-		gce::GameObject& subMachineGunObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
+		gce::GameObject& subMachineGunObject = *JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/smg.json", &scene)[0];
+		subMachineGunObject.Create(scene);
+		subMachineGunObject.AddScript<ScriptSubMachineGun>();
 		subMachineGunObject.SetName("SubmachineGun");
 		weaponParent.AddChild(subMachineGunObject);
 
