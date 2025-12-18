@@ -316,6 +316,8 @@ public:
 		std::vector<gce::GameObject*> hangar = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/Hangar.json", &scene);
 		std::vector<gce::GameObject*> outside = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/Outside.json", &scene);
 
+		hangar[0]->transform.SetWorldPosition({ hangar[0]->transform.GetWorldPosition().x, hangar[0]->transform.GetWorldPosition().y - 0.2f, hangar[0]->transform.GetWorldPosition().z });
+
 		std::vector<std::vector<gce::GameObject*>> gameObjectLoad;
 		gameObjectLoad.push_back(hangar);
 		gameObjectLoad.push_back(outside);
@@ -555,7 +557,7 @@ public:
 
 		gce::Vector3f32 posPlayer = gce::Vector3f32(0.f, 10.f, 0.f);
 		gce::Vector2f32 sizeGrid = gce::Vector2f32(40.f, 80.f);
-		gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, 0.4f, posPlayer.z + 20.f);
+		gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, 0.f, posPlayer.z + 20.f);
 
 		ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
