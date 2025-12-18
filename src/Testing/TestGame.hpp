@@ -354,12 +354,6 @@ public:
 		gce::Vector3f32 pos7 = gce::Vector3f32(11.2f, 1.f, -9.1f);
 		gce::Vector3f32 scale7 = gce::Vector3f32(0.1f, 3.f, 18.f);
 		CreateStaticObject(scene, grid, true, true, pos7, scale7);
-
-
-
-		//gce::Vector3f32 pos8 = gce::Vector3f32(-5.f, h, 10.f);
-		//gce::Vector3f32 scale8 = gce::Vector3f32(s, h * 2, 25.f);
-		//CreateStaticObject(scene, grid, true, true, pos8, scale8);
 	}
 
 	static void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid, cstr name)
