@@ -4,6 +4,8 @@
 #include "SubMachineGun.hpp"
 #include "AngleGringer.hpp"
 #include "Menu.hpp"
+#include "Functions.h"
+#include "Agent.hpp"
 
 enum WEAPON_ORDER
 {
@@ -89,13 +91,26 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		virtual void CollisionEnter(gce::GameObject* other) 
 		{ 
+			if (other->GetName() == "Enemy")
+			{
+				if (mCurrentWeapon->mEntity->GetGameObject()->GetName() == "AngleGringer")
+				{
+					if (other->HasScript<ScriptCharacter>())
+					{
+						mCurrentWeapon->GetChildWeapon<ScriptAngleGringer>()->Action(other->GetScript<ScriptCharacter>());
+						return;
+					}
+				}
+			}
 			if (other->GetName() == "Floor")
 			{
 				ColliderFloor();
+				return;
 			}
-			else if(other->GetName() == "StaticObject" || other->GetName() == "OutSide")
+			if(other->GetName() == "StaticObject" || other->GetName() == "OutSide")
 			{
 				int i = 0;
+				return;
 			}
 		}
 		virtual void CollisionStay(gce::GameObject* other) {}
@@ -129,11 +144,15 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 						mSubMachine = mCurrentWeapon->GetChildWeapon<ScriptSubMachineGun>();
 						mSubMachine->Action();
 					}
-					else if (mCurrentWeapon->mEntity->GetGameObject()->GetName() == "AngleGringer")
+					/* else if (mCurrentWeapon->mEntity->GetGameObject()->GetName() == "AngleGringer")
 					{
 						mAngleGringer = mCurrentWeapon->GetChildWeapon<ScriptAngleGringer>();
-					}
-				
+						ScriptAgent* agent = GetNearestAgent(GetWorldPosition(), mMenu);
+						if (agent != nullptr)
+						{
+							mAngleGringer->Action(agent->mCharacter);
+						}
+					}*/
 				}
 			}
 		}

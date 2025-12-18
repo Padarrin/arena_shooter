@@ -77,7 +77,7 @@ float GetDistance(gce::Vector3f32 pos1, gce::Vector3f32 pos2)
 
 Entity* GetNearestEntity(gce::Vector3f32 pos);
 
-Entity* GetNearestAgent(gce::Vector3f32 pos);
+ScriptAgent* GetNearestAgent(gce::Vector3f32 pos, gce::GameObject* menu)
 
 //template<typename T>
 //T* GetNearestCell(gce::Vector3f32 pos, std::vector<std::vector<T*>> allCells);
