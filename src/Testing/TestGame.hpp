@@ -9,6 +9,7 @@
 
 #include "../Gameplay/UI.hpp"
 #include "../Gameplay/Enemy.hpp"
+#include "../Gameplay/Bot.hpp"
 #include "../Gameplay/StaticGeometry.hpp"
 #include "../Gameplay/Grid.hpp"
 #include "../Gameplay/SubMachineGun.hpp"
@@ -226,6 +227,15 @@ public:
 		player->Start();
 	}
 
+	static void CreateBot(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptPlayer* player, ScriptGrid* grid)
+	{
+		//Life = 20 a 200, Damage = 1 a 5
+		gce::GameObject& botObject = CreateGameObject<ScriptBot>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+		botObject.SetName("Bot");
+		botObject.transform.SetWorldPosition(gce::Vector3f32(-7.f, 1.f, 7.f));
+		botObject.transform.SetWorldScale(gce::Vector3f32(1.f, 2.f, 1.f));
+	}
+
 	static void CreateNail(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptPlayer* player, ScriptGrid* grid, gce::Vector3f32 pos, const std::string_view path)
 	{
 		//Life = 20 a 200, Damage = 1 a 5
@@ -335,8 +345,8 @@ public:
 		gce::Vector3f32 scale6 = gce::Vector3f32(s, h * 2, 30.f);
 		CreateStaticObject(scene, grid, true, true, pos6, scale6);
 
-		gce::Vector3f32 pos7 = gce::Vector3f32(10.5f, 1.f, -12.5f);
-		gce::Vector3f32 scale7 = gce::Vector3f32(s, 0.2f, 15.f);
+		gce::Vector3f32 pos7 = gce::Vector3f32(11.2f, 1.f, -9.1f);
+		gce::Vector3f32 scale7 = gce::Vector3f32(0.1f, 3.f, 18.f);
 		CreateStaticObject(scene, grid, true, true, pos7, scale7);
 
 
@@ -599,6 +609,7 @@ public:
 
 		gce::Vector3f32 posNail = gce::Vector3f32(5.f, 0.f, 5.f);
 		//CreateNail(scene, player, grid, posNail, RES_PATH"res/Gameplay/Obj/clou.obj");
+		CreateBot(scene, player, grid);
 
 		CreatStaticWall(scene, grid);
 
