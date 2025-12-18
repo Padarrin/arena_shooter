@@ -158,7 +158,7 @@ menu->ShowMenu(MAIN_MENU);
 gMenuObject = &menuObject;
 //	//	//	//	 Menu Fin   //	//	//	//
 
-gce::WindowParam windowParam;
+//gce::WindowParam windowParam;
 gce::GameManager::Run(windowParam);
 
 gce::GameManager::Destroy();
@@ -399,7 +399,6 @@ public:
 	static void CreateAngleGringer(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 	{
 		gce::GameObject& angleGringerObject = CreateGameObject<ScriptAngleGringer>(scene, gce::SHAPES.CUBE);
-		//angleGringerObject.AddComponent<gce::BoxCollider>()->SetActive(true);
 		angleGringerObject.SetName("AngleGringer");
 		weaponParent.AddChild(angleGringerObject);
 
@@ -416,8 +415,12 @@ public:
 	static ScriptSubMachineGun* CreateSubmachineGun(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 	{
 		gce::GameObject& subMachineGunObject = *JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/smg.json", &scene)[0];
-		subMachineGunObject.Create(scene);
 		subMachineGunObject.AddScript<ScriptSubMachineGun>();
+		subMachineGunObject.GetScript<ScriptSubMachineGun>()->Initia();
+		static gce::D12PipelineObject defaultPso(gce::SHADERS.VERTEX, gce::SHADERS.PIXEL, gce::SHADERS.HULL, gce::SHADERS.DOMAIN_, gce::SHADERS.ROOT_SIGNATURE);
+		gce::MeshRenderer& meshRenderer = *subMachineGunObject.AddComponent<gce::MeshRenderer>();
+		meshRenderer.pPso = &defaultPso;
+		gce::Light* light = subMachineGunObject.AddComponent<gce::Light>();
 		subMachineGunObject.SetName("SubmachineGun");
 		weaponParent.AddChild(subMachineGunObject);
 
