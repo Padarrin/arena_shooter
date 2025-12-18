@@ -227,13 +227,18 @@ public:
 		player->Start();
 	}
 
-	static void CreateBot(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptPlayer* player, ScriptGrid* grid)
+	static void CreateBot(gce::Scene& scene,ScriptPlayer* player, ScriptGrid* grid)
 	{
 		//Life = 20 a 200, Damage = 1 a 5
 		gce::GameObject& botObject = CreateGameObject<ScriptBot>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 		botObject.SetName("Bot");
-		botObject.transform.SetWorldPosition(gce::Vector3f32(-7.f, 1.f, 7.f));
+		botObject.transform.SetWorldPosition(gce::Vector3f32(-9.f, 1.f, 7.f));
 		botObject.transform.SetWorldScale(gce::Vector3f32(1.f, 2.f, 1.f));
+
+
+		ScriptBot* bot = botObject->AddScript<ScriptBot>();
+		bot->SetPlayer(player);
+		bot->mAgent->GetPathFinding()->SetGrid(grid);
 	}
 
 	static void CreateNail(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptPlayer* player, ScriptGrid* grid, gce::Vector3f32 pos, const std::string_view path)
