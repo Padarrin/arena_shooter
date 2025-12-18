@@ -67,6 +67,7 @@ private:
 	ScriptPistolMagazine* mBazooka;
 
 	std::vector<gce::GameObject*> mAllBoxWeapon;
+	std::vector<gce::GameObject*> mAllUiFix;
 	gce::GameObject* mBoxLife;
 	gce::GameObject* mTextAmo;
 
@@ -74,6 +75,7 @@ private:
 
 	std::vector< std::string> mAllImagesWeapon;
 	std::vector< std::string> mAllImagesLife;
+	std::vector< std::string> mAllImagesUiFix;
 
 	gce::WindowParam* mWindowParam;
 
@@ -266,14 +268,22 @@ public:
 		}
 	}
 
+	void UiFix()
+	{
+		
+	}
+
 	void SetPlayer(ScriptPlayer* player) { mPlayer = player; }
 	ScriptPlayer* GetPlayer() { return mPlayer; }
 
 	void AddBoxWeapon(gce::GameObject& boxWeaponObject) { mAllBoxWeapon.push_back(&boxWeaponObject); }
+	void AddUiFix(gce::GameObject& boxWeaponObject) { mAllUiFix.push_back(&boxWeaponObject); }
 	void AddBoxLife(gce::GameObject& boxLifeObject) { mBoxLife = &boxLifeObject; }
 	void AddTextAmo(gce::GameObject& textAmoObject) { mTextAmo = &textAmoObject; }
+
 	void AddImageWeapon(std::string imagePath) { mAllImagesWeapon.push_back(imagePath); }
 	void AddImageLife(std::string imagePath) { mAllImagesLife.push_back(imagePath); }
+	void AddImageUiFix(std::string imagePath) { mAllImagesUiFix.push_back(imagePath); }
 
 	void SetWinParam(gce::WindowParam windowPa) { mWindowParam = &windowPa; }
 
