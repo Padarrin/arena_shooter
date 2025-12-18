@@ -115,7 +115,6 @@ public:
 		mBall.SetStockMax(mSubmachine->GetMaxBullets());
 
 		mSeekerBall.SetStockMax(mBazooka->GetMaxBullets());
-		mSeekerBall.SetInStock(mBazooka->GetCurrentBullets());
 
 		mImprPiece.SetStockMax(30);
 		mImprPiece.SetInStock(0);
@@ -128,6 +127,8 @@ public:
 	virtual void Update()
 	{
 		mBall.SetInStock(mSubmachine->GetCurrentBullets());
+
+		mSeekerBall.SetInStock(mBazooka->GetCurrentBullets());
 
 		InputWeapon();
 		UiLife();
@@ -226,6 +227,10 @@ public:
 		};
 
 		mTextAmo->GetComponent<TextRenderer>()->pFont = new Font(L"Ashley Crawford");
+
+		mTextAmo->GetComponent<TextRenderer>()->rectPosF = new RectanglePosF(10.0f, mWindowParam->height - 200.f, 500.0f, 50.0f);
+		mTextAmo->GetComponent<TextRenderer>()->pBrush = new ColorBrush(gce::Color::Cyan);
+
 		if (mNameWeapon == "SubmachineGun")
 		{
 			static std::wstring buffer;
@@ -233,9 +238,18 @@ public:
 			buffer = std::to_wstring(mBall.GetInStock()) + L" / " + std::to_wstring(mBall.GetStockMax());
 			mTextAmo->GetComponent<TextRenderer>()->text = buffer;
 		}
-		mTextAmo->GetComponent<TextRenderer>()->rectPosF = new RectanglePosF(10.0f, mWindowParam->height - 200.f, 500.0f, 50.0f);
-		//mTextAmo->GetComponent<TextRenderer>()->pBrush = new LinearGradientBrush(*mTextAmo->GetComponent<TextRenderer>()->rectPosF, 2, colors, 1.0f);
-		mTextAmo->GetComponent<TextRenderer>()->pBrush = new ColorBrush(gce::Color::Cyan);
+		else if (mNameWeapon == "Bazooka")
+		{
+			static std::wstring buffer;
+
+			buffer = std::to_wstring(mSeekerBall.GetInStock()) + L" / " + std::to_wstring(mSeekerBall.GetStockMax());
+			mTextAmo->GetComponent<TextRenderer>()->text = buffer;
+		}
+		else if (mNameWeapon == "AngleGringer")
+		{
+			mTextAmo->GetComponent<TextRenderer>()->text = L"0 / 0";
+			mTextAmo->GetComponent<TextRenderer>()->pBrush = new LinearGradientBrush(*mTextAmo->GetComponent<TextRenderer>()->rectPosF, 1, colors, 0.5f);
+		}
 	}
 
 	void SetPlayer(ScriptPlayer* player) { mPlayer = player; }

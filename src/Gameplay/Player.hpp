@@ -2,6 +2,7 @@
 #include "../Engine/GameManager.h"
 #include "Character.hpp"
 #include "SubMachineGun.hpp"
+#include "AngleGringer.hpp"
 
 enum WEAPON_ORDER
 {
@@ -36,6 +37,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		ScriptWeapons* mCurrentWeapon;
 
 		ScriptSubMachineGun* mSubMachine;
+		ScriptAngleGringer* mAngleGringer;
 
 		std::vector<ScriptWeapons*> mAllWeapons;
 
@@ -109,8 +111,16 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 			{
 				if (mCurrentWeapon != nullptr)
 				{
-					mSubMachine = mCurrentWeapon->GetChildWeapon<ScriptSubMachineGun>();
-					mSubMachine->Action();
+					if(mCurrentWeapon->mEntity->GetGameObject()->GetName() == "SubmachineGun")
+					{
+						mSubMachine = mCurrentWeapon->GetChildWeapon<ScriptSubMachineGun>();
+						mSubMachine->Action();
+					}
+					else if (mCurrentWeapon->mEntity->GetGameObject()->GetName() == "AngleGringer")
+					{
+						mAngleGringer = mCurrentWeapon->GetChildWeapon<ScriptAngleGringer>();
+					}
+				
 				}
 			}
 		}

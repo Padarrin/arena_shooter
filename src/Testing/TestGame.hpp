@@ -208,7 +208,7 @@ public:
 
 	static void ResetPlayerEnd(ScriptPlayer* player)
 	{
-		player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
+		player->SetCurrentWeapon(WEAPON_ORDER::ANGLEGRINGER);
 		player->Start();
 	}
 
@@ -363,16 +363,15 @@ public:
 
 	static void CreateAngleGringer(gce::Scene& scene, ScriptPlayer* player, gce::GameObject& weaponParent)
 	{
-		gce::GameObject& angleGringerObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
+		gce::GameObject& angleGringerObject = CreateGameObject<ScriptAngleGringer>(scene, gce::SHAPES.CUBE);
+		angleGringerObject.AddComponent<gce::BoxCollider>()->SetActive(true);
 		angleGringerObject.SetName("AngleGringer");
 		weaponParent.AddChild(angleGringerObject);
 
-		ScriptSubMachineGun* angleGringer = angleGringerObject.GetScript<ScriptSubMachineGun>();
-		angleGringer->mWeapons->mMagazine->SetMaxBullets(30);
-		angleGringer->mWeapons->mMagazine->SetShootTime(0.1f);
-		angleGringer->mWeapons->mMagazine->SetReloadTime(2.5f);
+		ScriptAngleGringer* angleGringer = angleGringerObject.GetScript<ScriptAngleGringer>();
 		angleGringer->mWeapons->mEntity->SetWorldPosition(gce::Vector3f32(0.f, 0.f, 0.f));
 		angleGringer->mWeapons->mEntity->SetLocalPosition(gce::Vector3f32(2.f, 0.f, 3.f));
+		angleGringer->mWeapons->mEntity->SetLocalScale(gce::Vector3f32(1, 1, 5));
 
 		player->AddWeapon(angleGringer->mWeapons);//1
 	}
