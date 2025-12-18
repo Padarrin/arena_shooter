@@ -11,7 +11,14 @@ public:
 
     virtual void Initia() { mWeapons = m_pOwner->AddScript<ScriptWeapons>(); mWeapons->Initia(); mWeapons->mMagazine->SetShootTime(0.5f); mWeapons->mMagazine->SetReloadTime(2.5f); mIndex = mBalls.size(); }
     virtual void Start() {}
-    virtual void Update() {}
+    virtual void Update() 
+    {
+        /*float deltaTime = gce::GameManager::GameDeltaTime();
+        if (deltaTime > 0.f)
+        {
+
+        }*/
+    }
     virtual void Destroy() {}
 
     virtual void CollisionEnter() {}

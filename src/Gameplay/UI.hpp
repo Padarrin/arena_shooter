@@ -130,9 +130,14 @@ public:
 
 		mSeekerBall.SetInStock(mBazooka->GetCurrentBullets());
 
-		InputWeapon();
 		UiLife();
 		UiAmo();
+
+		float deltaTime = gce::GameManager::GameDeltaTime();
+		if (deltaTime > 0.f)
+		{
+			InputWeapon();
+		}
 	}
 
 	void InputWeapon()

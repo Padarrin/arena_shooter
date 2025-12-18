@@ -17,7 +17,14 @@ public:
 
 	virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); SetPathFinding(PathFinding<Cell>()); mPathFinding.SetGrid(nullptr); SetOffsetOfGrid(gce::Vector3f32(0.f, 1.f, 0.f)); }
 	virtual void Start() { SetPaths(Queue_<Cell, ComparePath<Cell>>());  }
-	virtual void Update() { UpdatePath(); }
+	virtual void Update()
+	{
+		float deltaTime = gce::GameManager::GameDeltaTime();
+		if (deltaTime > 0.f)
+		{
+			UpdatePath();
+		}
+	}
 	virtual void Destroy() {}
 
 	virtual void CollisionEnter(gce::GameObject* other) {}
@@ -42,8 +49,6 @@ public:
 
 		gce::Vector3f32 positionCurrenteCell = mPathFinding.GetGrid()->GetPosOfCell(currentNode->GetData());
 		mCharacter->GoToPosition(gce::Vector3f32(positionCurrenteCell.x, positionCurrenteCell.y + GetOffsetOfGrid().y, positionCurrenteCell.z), mCharacter->GetSpeed());
-
-
 	}
 
 	bool GoToCell(Cell* cellEnd)

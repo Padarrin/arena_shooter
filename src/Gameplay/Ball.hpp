@@ -13,7 +13,14 @@ public:
 
 	virtual void Initia() { mShootable = m_pOwner->AddScript<ScriptShootable>(); mShootable->Initia(); }
 	virtual void Start() { mName = mShootable->mObject->mEntity->GetGameObject()->GetName(); }
-	virtual void Update() {}
+	virtual void Update() 
+	{
+		/*float deltaTime = gce::GameManager::GameDeltaTime();
+		if (deltaTime > 0.f)
+		{
+
+		}*/
+	}
 	virtual void Destroy() { m_pOwner->RemoveComponent< gce::BoxCollider >();  m_pOwner->RemoveComponent< gce::PhysicComponent >(); }
 
 	virtual void CollisionEnter(gce::GameObject* other) 
@@ -24,6 +31,7 @@ public:
 			if ((mName == "EnemyBall" && other->GetName() == "Player") || (mName == "PlayerBall" && other->GetName() == "Enemy"))
 			{
 				character->Damage(mShootable->GetDamage());
+				
 				mShootable->mObject->mEntity->DestroyEntity();
 			}
 			else if (mName == "EnemyBall" && other->GetName() == "PlayerBall")
@@ -31,8 +39,10 @@ public:
 				mShootable->mObject->mEntity->DestroyEntity();
 				other->GetScript<ScriptEntity>()->DestroyEntity();
 			}
-			if(other->GetName() == "Floor")
+			if (other->GetName() == "Floor")
+			{
 				mShootable->mObject->mEntity->DestroyEntity();
+			}
 		}
 	}
 	virtual void CollisionStay(GameObject* other) {}

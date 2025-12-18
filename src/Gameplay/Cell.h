@@ -25,7 +25,7 @@ public:
 
     void Start() { SetConfigHeight(1);  SetRowCol(-1, -1); SetIsInaccessible(false, false); SetHaveObject(nullptr); }
     
-    void OnUpdate() {}
+    void Update() {}
 
     void ChangeHeight(int newHeight)
     {

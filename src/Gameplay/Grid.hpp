@@ -44,7 +44,11 @@ public:
 	}
 	virtual void Update() 
 	{
-		UpdateInacessibleCell();
+		float deltaTime = gce::GameManager::GameDeltaTime();
+		if (deltaTime > 0.f)
+		{
+			UpdateInacessibleCell();
+		}
 	}
 	virtual void Destroy() {}
 

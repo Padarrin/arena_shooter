@@ -13,7 +13,7 @@ public:
 	void Update(float deltatime) 
 	{ 
 		mCurrenteTime -= deltatime;
-		if (mCurrenteTime > 0)
+		if (mCurrenteTime > 0.f)
 		{
 			mPhaseFinish = 0;
 		}

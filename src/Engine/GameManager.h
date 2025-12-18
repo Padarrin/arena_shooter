@@ -44,6 +44,7 @@ public:
     [[nodiscard]] static ScriptSystem& GetScriptSystem();
 	[[nodiscard]] static PhysicSystem& GetPhysicSystem();
 	[[nodiscard]] static UiSystem& GetUiSystem();
+    [[nodiscard]] static StatesSystem& GetStatesSystem();
     [[nodiscard]] static Vector<Camera*>& GetMainCameras();
     [[nodiscard]] static Vector<Scene*>& GetScenes();
 
@@ -75,6 +76,7 @@ public: // Temporary (should be named and used as private)
     PhysicSystem m_physicSystem;
     ScriptSystem m_scriptSystem;
     UiSystem m_uiSystem;
+    StatesSystem m_statesSystem;
     
     Vector<Scene*> m_scenes;
     Vector<Camera*> m_mainCameras;

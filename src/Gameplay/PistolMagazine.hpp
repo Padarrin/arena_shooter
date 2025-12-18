@@ -21,16 +21,19 @@ public:
     virtual void Start() {}
     virtual void Update() 
     {
-        IsEmpty();
-
-        float deltatime = gce::GameManager::GameDeltaTime();
-        mShootTime.Update(deltatime);
-        mReloadTime.Update(deltatime);
-
-        if (mReloadTime.GetIsFinishNow())
+        float deltaTime = gce::GameManager::GameDeltaTime();
+        if (deltaTime > 0.f)
         {
-            PutMaxCurrentBullets();
-            mIsNotEmpty = true;
+            IsEmpty();
+
+            mShootTime.Update(deltaTime);
+            mReloadTime.Update(deltaTime);
+
+            if (mReloadTime.GetIsFinishNow())
+            {
+                PutMaxCurrentBullets();
+                mIsNotEmpty = true;
+            }
         }
     }
     virtual void Destroy() {}

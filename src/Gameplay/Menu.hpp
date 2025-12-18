@@ -7,7 +7,8 @@ enum INTERFACE_SHOW
     NOTHING,
     MAIN_MENU,
     PAUSE_MENU,
-    WINLOSE_MENU,
+    WIN_MENU,
+    LOSE_MENU,
     SETTING_MENU,
     LOAD_MENU,
 
@@ -54,28 +55,40 @@ protected:
     std::vector<Image*> mAllImages;
     INTERFACE_SHOW mInterfaceShow;
     bool mShowMenu;
+
+    int delai;
 public:
 
     virtual void Initia() { mAllButtons = std::vector<Button*>(); mAllImages = std::vector<Image*>(); mInterfaceShow = NOTHING; mShowMenu = false; }
     virtual void Start() { }
     virtual void Update()
     {
-        float32 &deltatime = gce::GameManager::s_pInstance->m_gameDeltaTime;
-
-        if (gce::GetKey(gce::Keyboard::ENTER) || gce::GetKey(gce::Keyboard::ESCAPE))
+        float32 &deltaTime = gce::GameManager::s_pInstance->m_gameDeltaTime;
+        if (deltaTime > 0.f)
         {
-            ShowMenu(PAUSE_MENU);
+            if (gce::GetKeyDown(gce::Keyboard::ENTER) || gce::GetKeyDown(gce::Keyboard::ESCAPE))
+            {
+                ShowMenu(PAUSE_MENU);
+            }
+        }
+        else
+        {
+            if ((gce::GetKeyDown(gce::Keyboard::ENTER) || gce::GetKeyDown(gce::Keyboard::ESCAPE)) && GetInterfaceShow() == PAUSE_MENU)
+            {
+                HideMenu();
+                SetInterfaceShow(NOTHING);
+            }
         }
 
         if (mShowMenu)
         {
-            deltatime = -1.f;
+            deltaTime = -1.f;
         }
         else
         {
-            if (deltatime == -1.f)
+            if (deltaTime == -1.f)
             {
-                deltatime = 0.f;
+                deltaTime = 0.f;
             }
         }
     }

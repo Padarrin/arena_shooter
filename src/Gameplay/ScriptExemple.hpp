@@ -11,7 +11,14 @@ public:
 
     virtual void Initia() { mY = m_pOwner->AddScript<ScriptY>(); mY->Initia();}
     virtual void Start() { }
-    virtual void Update() {}
+    virtual void Update() 
+    {
+        //float deltaTime = gce::GameManager::GameDeltaTime();
+		//if (deltaTime > 0.f)
+		//{
+        //  
+        //}
+    }
     virtual void Destroy() {}
 
     virtual void CollisionEnter() {}

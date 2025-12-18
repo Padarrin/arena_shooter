@@ -20,8 +20,10 @@ inline LifespanSystem& GameManager::GetLifespanSystem() { return s_pInstance->m_
 inline ScriptSystem& GameManager::GetScriptSystem() { return s_pInstance->m_scriptSystem; }
 inline PhysicSystem& GameManager::GetPhysicSystem() { return s_pInstance->m_physicSystem; }
 inline UiSystem& GameManager::GetUiSystem() { return s_pInstance->m_uiSystem; }
+inline StatesSystem& GameManager::GetStatesSystem() { return s_pInstance->m_statesSystem; }
 inline Vector<Camera*>& GameManager::GetMainCameras() { return s_pInstance->m_mainCameras; }
 inline Vector<Scene*>& GameManager::GetScenes() { return s_pInstance->m_scenes; }
+
 
 
 }
