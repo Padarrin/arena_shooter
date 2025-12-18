@@ -555,7 +555,7 @@ public:
 
 		gce::Vector3f32 posPlayer = gce::Vector3f32(0.f, 10.f, 0.f);
 		gce::Vector2f32 sizeGrid = gce::Vector2f32(40.f, 80.f);
-		gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, 0.f, posPlayer.z + 20.f);
+		gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, 0.4f, posPlayer.z + 20.f);
 
 		ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
