@@ -146,8 +146,6 @@ gMenuObject = &menuObject;
 //	//	//	//	 Menu Fin   //	//	//	//
 
 gce::WindowParam windowParam;
-/*windowParam.height = 992;
-windowParam.width = 1768;*/
 gce::GameManager::Run(windowParam);
 
 gce::GameManager::Destroy();
@@ -214,7 +212,7 @@ public:
 		player->Start();
 	}
 
-	static void CreateNail(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptPlayer* player, ScriptGrid* grid)
+	static void CreateNail(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
 	{
 		//Life = 20 a 200, Damage = 1 a 5
 		gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -224,13 +222,11 @@ public:
 
 	}
 
-	static void SetNail(/*gce::Scene& scene,*/gce::GameObject*/*&*/ enemyObject, ScriptPlayer* player, ScriptGrid* grid)
+	static void SetNail(gce::GameObject* enemyObject, ScriptPlayer* player, ScriptGrid* grid)
 	{
 		//Life = 20 a 200, Damage = 1 a 5
-		//gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE);
 		enemyObject->AddComponent<gce::BoxCollider>()->SetActive(true);
 		enemyObject->AddComponent<gce::PhysicComponent>()->SetActive(false);
-		//enemyObject.SetName("Enemy");
 
 		ScriptEnemy* enemy = nullptr;
 		if (enemyObject->HasScript<ScriptEnemy>())
@@ -241,7 +237,6 @@ public:
 		{
 			enemy = enemyObject->AddScript<ScriptEnemy>();
 		}
-		//ScriptEnemy* enemy = enemyObject->GetScript<ScriptEnemy>();
 		enemy->SetWorldPosition({ 10,-8,10 });
 		enemy->SetPlayer(player);
 		enemy->SetMaxLife(20);
@@ -253,7 +248,7 @@ public:
 
 	}
 
-	static void CreateStaticObject(gce::Scene& scene,/*gce::GameObject& enemyObject,*/ ScriptGrid* grid, bool isFix, bool isObstacle)
+	static void CreateStaticObject(gce::Scene& scene, ScriptGrid* grid, bool isFix, bool isObstacle)
 	{
 		gce::GameObject& staticObject = CreateGameObject<ScriptStaticGeometry>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 		staticObject.SetName("StaticObject");
@@ -262,11 +257,9 @@ public:
 
 	}
 
-	static void SetStaticObject(/*gce::Scene& scene,*/gce::GameObject* staticObject, ScriptGrid* grid, bool isFix, bool isObstacle)
+	static void SetStaticObject(gce::GameObject* staticObject, ScriptGrid* grid, bool isFix, bool isObstacle)
 	{
-		//gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, gce::SHAPES.CUBE);
 		staticObject->AddComponent<gce::BoxCollider>()->SetActive(true);
-		//enemyObject.SetName("Enemy");
 
 		ScriptStaticGeometry* staticGeometry = nullptr;
 		if (staticObject->HasScript<ScriptStaticGeometry>())
@@ -451,7 +444,7 @@ public:
 
 		gce::Vector3f32 posPlayer = gce::Vector3f32(0.f, 10.f, 0.f);
 		gce::Vector2f32 sizeGrid = gce::Vector2f32(40.f, 80.f);
-		gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 10.f), posPlayer.z + 20.f);
+		gce::Vector3f32 posGrid = gce::Vector3f32(posPlayer.x, posPlayer.y - (player->mCharacter->mEntity->GetWorldScale().y * 15.f), posPlayer.z + 20.f);
 
 		ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
@@ -491,19 +484,6 @@ public:
 		menu->ShowMenu(MAIN_MENU);
 	}
 
-	/*using Function = void(*)();
-	static gce::GameObject& CreateButton(gce::Scene& scene, gce::Vector3f32 pos, gce::Vector3f32 scale, gce::BitMapBrush imageButton, gce::BitMapBrush imageButtonCollide, Function fonctionUse)
-	{
-		gce::GameObject& buttonObject = gce::GameObject::Create(scene);
-		buttonObject.transform.LocalTranslate(pos);
-		buttonObject.transform.LocalScale(scale);
-
-		gce::UIButton* button = buttonObject.AddComponent<gce::UIButton>();
-		button->AddListener(fonctionUse);
-		button->pBitMapBrush = &imageButton;
-		button->pHoverBitMapBrush = &imageButtonCollide;
-		return buttonObject;
-	}*/
 	static void DeleteGameObject()
 	{
 		auto* mapGameObject = gMenuObject->m_pScene->GetGameObject();
@@ -515,30 +495,6 @@ public:
 				gameObject->SetActive(false);
 			}
 		}
-		/*gCameraObject->RemoveParent();
-		for (auto it = mapGameObject->begin(); it != mapGameObject->end(); )
-		{
-			gce::GameObject* gameObject = it->second;
-			if (gameObject->GetScript<ScriptEntity>() != nullptr || gameObject->GetScript<ScriptGrid>() != nullptr)
-			{
-				if (gameObject->HasChildren())
-				{
-					gce::Vector<gce::GameObject*> child = gameObject->GetChildren();
-					int lenght = (int)child.Size() - 1;
-					for (int i = lenght; i > -1; i--)
-					{
-						gameObject->RemoveChild(*child[i]);
-					}
-				}
-				gameObject->Destroy();
-				it = mapGameObject->erase(it);
-			}
-			else
-			{
-				++it;
-			}
-
-		}*/
 	}
 
 
