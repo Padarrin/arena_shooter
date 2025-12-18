@@ -149,7 +149,7 @@ public:
 			mNameWeapon = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 
 			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[0]);
-			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 490.f,mWindowParam->height - 310.f, 0 }, { 1 / 14.f,1 / 14.f,1 / 14.f }, 0.f);
+			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 473.f,mWindowParam->height - 310.f, 0 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, 0.f);
 			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush->SetOpacity(1.f);
 
 			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[1]);
@@ -157,7 +157,7 @@ public:
 			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
 
 			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[2]);
-			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 3.5f, 1.f / 2.f, 1.f / 2.f }, 0.f);
 			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
 
 		}
@@ -169,15 +169,15 @@ public:
 			mNameWeapon = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 
 			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[1]);
-			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 468.f,mWindowParam->height - 310.f, 0 }, { 1 / 2.f,1 / 2.f,1 / 2.f }, 0.f);
+			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 468.f,mWindowParam->height - 310.f, 0 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, 0.f);
 			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush->SetOpacity(1.f);
 
 			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[0]);
-			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 390.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 388.f,mWindowParam->height - 310.f, 0 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, 0.f);
 			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
 
 			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[2]);
-			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 310.f,mWindowParam->height - 310.f, 0 }, { 1.f / 3.5f, 1.f / 2.f, 1.f / 2.f }, 0.f);
 			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
 
 		}
@@ -189,11 +189,11 @@ public:
 			mNameWeapon = mCurrentWeapon->mEntity->GetGameObject()->GetName();
 
 			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[2]);
-			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 490.f,mWindowParam->height - 310.f, 0 }, { 1 / 14.f,1 / 14.f,1 / 14.f }, 0.f);
+			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 470.f,mWindowParam->height - 300.f, 0 }, { 1.f / 3.5f, 1.f / 2.f, 1.f / 2.f }, 0.f);
 			mAllBoxWeapon[0]->GetComponent<ImageUI>()->btmBrush->SetOpacity(1.f);
 
 			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[0]);
-			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 390.f,mWindowParam->height - 310.f, 0 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, 0.f);
+			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush->SetTransformMatrix({ mWindowParam->width - 388.f,mWindowParam->height - 310.f, 0 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, 0.f);
 			mAllBoxWeapon[1]->GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
 
 			mAllBoxWeapon[2]->GetComponent<ImageUI>()->btmBrush = new BitMapBrush(mAllImagesWeapon[1]);

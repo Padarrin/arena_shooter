@@ -568,9 +568,9 @@ public:
 		ui->AddImageLife(healthlv2);
 		ui->AddImageLife(healthlv3);
 
-		std::string anglegringerPath = "res/Textures/plastic_normal.png";
+		std::string anglegringerPath = "res/Textures/Weapon/disqueuse.png";
 		std::string submachineGunPath = "res/Textures/Weapon/mitrallette.png";
-		std::string bazookaPath = "res/Textures/plastic_roughness.png";
+		std::string bazookaPath = "res/Textures/Weapon/bazooka.png";
 
 		ui->AddImageWeapon(anglegringerPath);
 		ui->AddImageWeapon(submachineGunPath);
@@ -581,9 +581,9 @@ public:
 		gce::GameObject& health = CreateUILife(scene, { (float)windowParam.width / 2, (float)windowParam.height / 2 }, { (float)windowParam.width, (float)windowParam.height}, { 1.f, 1.f, 1.f}, healthlv1, texturePso);
 		ui->AddBoxLife(health);
 
-		gce::GameObject& mainWeapon = CreateUIWeapon(scene, { windowParam.width -430.f,windowParam.height - 275.f }, { 72,72 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, submachineGunPath, texturePso);
-		gce::GameObject& secondWeapon = CreateUIWeapon(scene, { windowParam.width - 350.f,windowParam.height - 275.f }, { 65,65 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, anglegringerPath, texturePso);
-		gce::GameObject& thirdWeapon = CreateUIWeapon(scene, { windowParam.width - 275.f,windowParam.height - 275.f }, { 65,65 }, { 1.f / 15.f, 1.f / 15.f, 1.f / 15.f }, bazookaPath, texturePso);
+		gce::GameObject& mainWeapon = CreateUIWeapon(scene, { windowParam.width -430.f,windowParam.height - 275.f }, { 72,72 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, anglegringerPath, texturePso);
+		gce::GameObject& secondWeapon = CreateUIWeapon(scene, { windowParam.width - 350.f,windowParam.height - 275.f }, { 65,65 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, submachineGunPath, texturePso);
+		gce::GameObject& thirdWeapon = CreateUIWeapon(scene, { windowParam.width - 275.f,windowParam.height - 275.f }, { 72,65 }, { 1.f / 3.5f, 1.f / 2.f, 1.f / 2.f }, bazookaPath, texturePso);
 		mainWeapon.GetComponent<ImageUI>()->btmBrush->SetOpacity(1.f);
 		secondWeapon.GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
 		thirdWeapon.GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
