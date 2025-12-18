@@ -7,22 +7,38 @@ protected:
 public:
     ScriptWeapons* mWeapons;
 
-    virtual void Initia() { mWeapons = m_pOwner->AddScript<ScriptWeapons>(); mWeapons->Initia(); }
+    virtual void Initia() { mWeapons = m_pOwner->AddScript<ScriptWeapons>(); mWeapons->Initia(); mWeapons->mMagazine->SetShootTime(0.1f); mWeapons->mMagazine->SetReloadTime(0.5f); }
     virtual void Start() {}
     virtual void Update() {}
     virtual void Destroy() {}
 
-    virtual void CollisionEnter(gce::GameObject* other) 
-    {
-        if (other->GetName() == "Enemy")
-            Action(other);
-    }
+    virtual void CollisionEnter(gce::GameObject* other) {}
     virtual void CollisionStay(gce::GameObject* other) {}
     virtual void CollisionExit(gce::GameObject* other) {}
 
-    void Action(gce::GameObject* other)
+    void Action(ScriptCharacter* other)
     {
-        other->GetScript<ScriptCharacter>()->Damage(5);
+        if (GetPistolMagazine()->IsEmpty() == true)
+        {
+            GetPistolMagazine()->CanReload();
+        }
+        else
+        {
+            bool isExecute = GetPistolMagazine()->CanShoot();
+            //si une ball a été utiliser
+            if (isExecute)
+            {
+                //attaque
+                other->Damage(5);
+            }
+            
+        }
     }
+
+    ScriptPistolMagazine* GetPistolMagazine()
+    {
+        return mWeapons->mMagazine;
+    }
+
 
 END_SCRIPT
