@@ -307,7 +307,46 @@ public:
 		staticGeometry->SetAll(grid, isFix, isObstacle);
 	}
 
-	static void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid, cstr name, const String& path)
+	static void CreatStaticWall(gce::Scene& scene, ScriptGrid* grid)
+	{
+		float s = 1.f;
+		float h = 5.f;
+		gce::Vector3f32 pos1 = gce::Vector3f32(35.f, h, -17.f);
+		gce::Vector3f32 scale1 = gce::Vector3f32(47.f, h*2, s);
+		CreateStaticObject(scene, grid, true, true, pos1, scale1);
+
+		gce::Vector3f32 pos2 = gce::Vector3f32(54.f, h, -40.f);
+		gce::Vector3f32 scale2 = gce::Vector3f32(s, h*2, 45.f);
+		CreateStaticObject(scene, grid, true, true, pos2, scale2);
+
+		gce::Vector3f32 pos3 = gce::Vector3f32(42.f, h, -60.f);
+		gce::Vector3f32 scale3 = gce::Vector3f32(35.f, h*2, s);
+		CreateStaticObject(scene, grid, true, true, pos3, scale3);
+
+		gce::Vector3f32 pos4 = gce::Vector3f32(25.f, h, -45.f);
+		gce::Vector3f32 scale4 = gce::Vector3f32(s, h*2, 38.f);
+		CreateStaticObject(scene, grid, true, true, pos4, scale4);
+
+		gce::Vector3f32 pos5 = gce::Vector3f32(10.f, h, -27.f);
+		gce::Vector3f32 scale5 = gce::Vector3f32(30.f, h * 2, s);
+		CreateStaticObject(scene, grid, true, true, pos5, scale5);
+
+		gce::Vector3f32 pos6 = gce::Vector3f32(-4.f, h, -15.f);
+		gce::Vector3f32 scale6 = gce::Vector3f32(s, h * 2, 30.f);
+		CreateStaticObject(scene, grid, true, true, pos6, scale6);
+
+		gce::Vector3f32 pos7 = gce::Vector3f32(10.5f, 1.f, -12.5f);
+		gce::Vector3f32 scale7 = gce::Vector3f32(s, 0.2f, 15.f);
+		CreateStaticObject(scene, grid, true, true, pos7, scale7);
+
+
+
+		//gce::Vector3f32 pos8 = gce::Vector3f32(-5.f, h, 10.f);
+		//gce::Vector3f32 scale8 = gce::Vector3f32(s, h * 2, 25.f);
+		//CreateStaticObject(scene, grid, true, true, pos8, scale8);
+	}
+
+	static void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid, cstr name)
 	{
 
 		///////////////////////////////////////////////////////////
@@ -316,21 +355,20 @@ public:
 		std::vector<gce::GameObject*> hangar = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/Hangar.json", &scene);
 		std::vector<gce::GameObject*> outside = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/Outside.json", &scene);
 
-		std::vector<std::vector<gce::GameObject*>> gameObjectLoad;
-		gameObjectLoad.push_back(hangar);
-		gameObjectLoad.push_back(outside);
-		gameObjectLoad.push_back(atelier);
+		std::vector<gce::GameObject*> gameObjectLoad;
+		int lenghtHangar = (int)hangar.size();
+		for (int i = 0; i < lenghtHangar; i++) { gameObjectLoad.push_back(hangar[i]); hangar[i]->transform.WorldTranslate(gce::Vector3f32(0.f, 0.f, 0.f)); }
+		int lenghtOutside = (int)outside.size();
+		for (int i = 0; i < lenghtOutside; i++) { gameObjectLoad.push_back(outside[i]); outside[i]->transform.WorldTranslate(gce::Vector3f32(0.f, 0.5f, 0.f)); }
+		int lenghtAtelier = (int)atelier.size();
+		for (int i = 0; i < lenghtAtelier; i++) { gameObjectLoad.push_back(atelier[i]); atelier[i]->transform.WorldTranslate(gce::Vector3f32(0.f, 0.5f, 0.f)); }
 
 		int lenghtLoad = (int)gameObjectLoad.size();
 		for (int i = 0; i < lenghtLoad; i++)
 		{
-			int geoLoad = (int)gameObjectLoad[i].size();
-			for (int j = 0; j < geoLoad; j++)
-			{
-				gameObjectLoad[i][j]->SetName(name);
-			}
+			gameObjectLoad[i]->SetName(name);
 		}
-		auto* mapGameObject = gMenuObject->m_pScene->GetGameObject();
+		/*auto* mapGameObject = gMenuObject->m_pScene->GetGameObject();
 
 		for (auto& [id, currentGameObject] : *mapGameObject)
 		{
@@ -375,7 +413,7 @@ public:
 					currentGameObject->SetName("StaticObject");
 				}
 			}
-		}
+		}*/
 	}
 	
 
@@ -560,13 +598,11 @@ public:
 		ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
 		gce::Vector3f32 posNail = gce::Vector3f32(5.f, 0.f, 5.f);
-		CreateNail(scene, player, grid, posNail, RES_PATH"res/Gameplay/Obj/clou.obj");
+		//CreateNail(scene, player, grid, posNail, RES_PATH"res/Gameplay/Obj/clou.obj");
 
-		//gce::Vector3f32 posCube = gce::Vector3f32(10.f, 10.f, 5.f);
-		//gce::Vector3f32 posScale = gce::Vector3f32(10.f, 10.f, 5.f);
-		//CreateStaticObject(scene, grid, true, true, posCube, posScale);
+		CreatStaticWall(scene, grid);
 
-		CreateMap(scene, player, grid, "OutSide", RES_PATH"res/Gameplay/Json/outside.json");
+		CreateMap(scene, player, grid, "Map");
 
 		CreateAngleGringer(scene, player, weaponParent);
 		CreateSubmachineGun(scene, player, weaponParent);
