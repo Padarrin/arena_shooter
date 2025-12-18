@@ -516,29 +516,29 @@ public:
 		ScriptUI* ui = uiObject.AddScript<ScriptUI>();
 		ui->SetPlayer(player);
 
-		std::string healthlv1 = "res/Textures/Life/healthlvl1.png";
-		std::string healthlv2 = "res/Textures/Life/healthlvl2.png";
-		std::string healthlv3 = "res/Textures/Life/healthlvl3.png";
+		std::string healthlv1 = "res/Gameplay/Texture/Life/healthlvl1.png";
+		std::string healthlv2 = "res/Gameplay/Texture/Life/healthlvl2.png";
+		std::string healthlv3 = "res/Gameplay/Texture/Life/healthlvl3.png";
 		ui->AddImageLife(healthlv1);
 		ui->AddImageLife(healthlv2);
 		ui->AddImageLife(healthlv3);
 
-		std::string anglegringerPath = "res/Textures/Weapon/disqueuse.png";
-		std::string submachineGunPath = "res/Textures/Weapon/mitrallette.png";
-		std::string bazookaPath = "res/Textures/Weapon/bazooka.png";
+		std::string anglegringerPath = "res/Gameplay/Texture/Weapon/disqueuse.png";
+		std::string submachineGunPath = "res/Gameplay/Texture/Weapon/mitrallette.png";
+		std::string bazookaPath = "res/Gameplay/Texture/Weapon/bazooka.png";
 
 		ui->AddImageWeapon(anglegringerPath);
 		ui->AddImageWeapon(submachineGunPath);
 		ui->AddImageWeapon(bazookaPath);
 
-		gce::WindowParam windowParam = gce::GameManager::GetWindowParam();
+		gce::WindowParam windowParamUI = gce::GameManager::GetWindowParam();
 
-		gce::GameObject& health = CreateUILife(scene, { (float)windowParam.width / 2, (float)windowParam.height / 2 }, { (float)windowParam.width, (float)windowParam.height}, { 1.f, 1.f, 1.f}, healthlv1, texturePso);
+		gce::GameObject& health = CreateUILife(scene, { (float)windowParamUI.width / 2, (float)windowParamUI.height / 2 }, { (float)windowParamUI.width, (float)windowParamUI.height}, { 1.f, 1.f, 1.f}, healthlv1, texturePso);
 		ui->AddBoxLife(health);
 
-		gce::GameObject& mainWeapon = CreateUIWeapon(scene, { windowParam.width -430.f,windowParam.height - 275.f }, { 72,72 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, anglegringerPath, texturePso);
-		gce::GameObject& secondWeapon = CreateUIWeapon(scene, { windowParam.width - 350.f,windowParam.height - 275.f }, { 65,65 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, submachineGunPath, texturePso);
-		gce::GameObject& thirdWeapon = CreateUIWeapon(scene, { windowParam.width - 275.f,windowParam.height - 275.f }, { 72,65 }, { 1.f / 3.5f, 1.f / 2.f, 1.f / 2.f }, bazookaPath, texturePso);
+		gce::GameObject& mainWeapon = CreateUIWeapon(scene, { windowParamUI.width -430.f,windowParamUI.height - 275.f }, { 72,72 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, anglegringerPath, texturePso);
+		gce::GameObject& secondWeapon = CreateUIWeapon(scene, { windowParamUI.width - 350.f,windowParamUI.height - 275.f }, { 65,65 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, submachineGunPath, texturePso);
+		gce::GameObject& thirdWeapon = CreateUIWeapon(scene, { windowParamUI.width - 275.f,windowParamUI.height - 275.f }, { 72,65 }, { 1.f / 3.5f, 1.f / 2.f, 1.f / 2.f }, bazookaPath, texturePso);
 		mainWeapon.GetComponent<ImageUI>()->btmBrush->SetOpacity(1.f);
 		secondWeapon.GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
 		thirdWeapon.GetComponent<ImageUI>()->btmBrush->SetOpacity(0.5f);
@@ -546,7 +546,7 @@ public:
 		ui->AddBoxWeapon(secondWeapon);
 		ui->AddBoxWeapon(thirdWeapon);
 
-		gce::GameObject& textAmo = CreateUIText(scene, { windowParam.width - 430.f,windowParam.height - 275.f }, { 72,72 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, submachineGunPath, texturePso);
+		gce::GameObject& textAmo = CreateUIText(scene, { windowParamUI.width - 430.f,windowParamUI.height - 275.f }, { 72,72 }, { 1.f / 2.f, 1.f / 2.f, 1.f / 2.f }, submachineGunPath, texturePso);
 		ui->AddTextAmo(textAmo);
 
 		gce::Vector3f32 posPlayer = gce::Vector3f32(0.f, 10.f, 0.f);
