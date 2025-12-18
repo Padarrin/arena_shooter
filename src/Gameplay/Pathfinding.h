@@ -68,20 +68,6 @@ protected:
 
 			T* currentNodeData = nodeCurrent->GetData();
 
-			/*ScriptAgent* currentNodeAgent = currentNodeData->GetHaveObject();
-
-			if (currentNodeData->HasAgent() == true && currentNodeAgent != owner) // Ignore if agent and not owner
-			{
-				if (owner->IsGhost() && currentNodeAgent->IsGhost() == false)
-				{
-					// Allowed to pass through it
-				}
-				else
-				{
-					continue;
-				}
-			}*/
-
 			if (nodeCurrent->GetVisited() == true)
 			{
 				continue;
