@@ -40,25 +40,28 @@ public:
 	}
 	virtual void Update() 
 	{
-		float dt = gce::GameManager::GameDeltaTime();
-		float distance = dt * mSpeed;
-
-		if (mTarget.isSet) 
+		float deltaTime = gce::GameManager::GameDeltaTime();
+		if (deltaTime > 0.f)
 		{
-			gce::Vector3f32 pos = mEntity->GetWorldPosition();
-			gce::Vector3f32 otherPosition = mTarget.position;
+			float distance = deltaTime * mSpeed;
 
-			gce::Vector3f32 direction = otherPosition - pos;
-			direction = direction.Normalize();
-			
-			mTarget.distance -= distance;
-			gce::Vector3f32 translate = direction * distance;
-			mEntity->WorldTranslate(translate);
-
-			if (mTarget.distance <= 0.f)
+			if (mTarget.isSet)
 			{
-				mEntity->SetWorldPosition(otherPosition);
-				mTarget.isSet = false;
+				gce::Vector3f32 pos = mEntity->GetWorldPosition();
+				gce::Vector3f32 otherPosition = mTarget.position;
+
+				gce::Vector3f32 direction = otherPosition - pos;
+				direction = direction.Normalize();
+
+				mTarget.distance -= distance;
+				gce::Vector3f32 translate = direction * distance;
+				mEntity->WorldTranslate(translate);
+
+				if (mTarget.distance <= 0.f)
+				{
+					mEntity->SetWorldPosition(otherPosition);
+					mTarget.isSet = false;
+				}
 			}
 		}
 	}
@@ -77,11 +80,10 @@ public:
 		mTarget.isSet = true;
 	}
 
-	bool Damage(int damage) 
+	void Damage(int damage) 
 	{ 
 		mLife -= damage; 
 		if (mLife < 1) { mEntity->DestroyCharacter(); }
-		return true;
 	}
 	void Heal(int heal) 
 	{ 

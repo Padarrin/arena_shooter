@@ -35,67 +35,106 @@ gce::Scene& scene = gce::Scene::Create();
 
 gCameraObject = CreateCamera(scene);
 
-gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
-gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
-directionalLight.color = { 0.0f, 0.0f, 0.0f, 1.0f };
-directionalLight.DefaultDirectionLight();
+	gce::GameObject& directionalLightObject = gce::GameObject::Create(scene);
+	gce::Light& directionalLight = *directionalLightObject.AddComponent<gce::Light>();
+	directionalLight.color = { 0.0f, 0.0f, 0.0f, 1.0f };
+	directionalLight.DefaultDirectionLight();
+	
+	//	//	//	//	 Menu   //	//	//	//
+	gce::GameObject& menuObject = CreateGameObject<ScriptMenu>(scene);
+	menuObject.SetName("Menu");
+	ScriptMenu* menu = menuObject.GetScript<ScriptMenu>();
 
-//	//	//	//	 Menu   //	//	//	//
-gce::GameObject& menuObject = CreateGameObject<ScriptMenu>(scene);
-ScriptMenu* menu = menuObject.GetScript<ScriptMenu>();
+	gPlayerObject = &CreatePlayer(scene, gCameraObject, &menuObject);
 
-gPlayerObject = &CreatePlayer(scene, gCameraObject);
+	////Main Menu////
+	//Image
+	gce::BitMapBrush imageButtonStart{ "/res/Gameplay/Texture/Jouer.png" };
+	gce::BitMapBrush imageCollideButtonStart{ "/res/Gameplay/Texture/Jouer_Cliquer.png" };
+	gce::BitMapBrush imageButtonQuit{ "/res/Gameplay/Texture/Quitter.png" };
+	gce::BitMapBrush imageCollideButtonQuit{ "/res/Gameplay/Texture/Jouer_Cliquer.png" };
 
-////Main Menu////
-//Image
-gce::BitMapBrush imageButtonStart{ "res/Testing/Button/Button.png" };
-gce::BitMapBrush imageCollideButtonStart{ "res/Testing/Button/Button2.png" };
-gce::BitMapBrush imageButtonQuit{ "res/Testing/Button/Button.png" };
-gce::BitMapBrush imageCollideButtonQuit{ "res/Testing/Button/Button2.png" };
+	gce::Vector3f32 posImageMainMenu = gce::Vector3f32(675.f, 325.f, 5.f);
+	gce::Vector3f32 scaleImageMainMenu = gce::Vector3f32(1400.f, 800.f, 1.f);
+	gce::BitMapBrush imageBackgroundButtonMainMenu{ "/res/Gameplay/Texture/Menu_Princiapal.png" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
+	gce::GameObject& imageMainMenuObject = gce::GameObject::Create(scene); imageMainMenuObject.transform.LocalTranslate(posImageMainMenu); imageMainMenuObject.transform.SetWorldScale(scaleImageMainMenu); imageMainMenuObject.SetName("ImageButton"); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
+	gce::UIButton* imageMainMenu = imageMainMenuObject.AddComponent<gce::UIButton>(); imageMainMenu->pBitMapBrush = &imageBackgroundButtonMainMenu; imageMainMenu->pHoverBitMapBrush = &imageBackgroundButtonMainMenu; 
 
-gce::Vector3f32 posImageMainMenu = gce::Vector3f32(600.f, 400.f, 5.f)/* + posCameraInMenu*/;
-gce::Vector3f32 scaleImageMainMenu = gce::Vector3f32(1000.f, 1000.f, 1.f);
-gce::BitMapBrush imageBackgroundButtonMainMenu{ "res/Testing/Button/Button2.png" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
-gce::GameObject& imageMainMenuObject = gce::GameObject::Create(scene); imageMainMenuObject.transform.LocalTranslate(posImageMainMenu); imageMainMenuObject.transform.SetWorldScale(scaleImageMainMenu); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
-gce::UIButton* imageMainMenu = imageMainMenuObject.AddComponent<gce::UIButton>(); imageMainMenu->pBitMapBrush = &imageBackgroundButtonMainMenu; imageMainMenu->pHoverBitMapBrush = &imageBackgroundButtonMainMenu;
+	//Start Button
+	gce::Vector3f32 posButtonStart = gce::Vector3f32(310.0f, 310.0f, 0.0f);
+	gce::Vector3f32 scaleButtonStart = gce::Vector3f32(200.0f, 100.0f, 1.0f);
+	gce::GameObject& buttonStartObject = gce::GameObject::Create(scene); buttonStartObject.transform.LocalTranslate(posButtonStart); buttonStartObject.transform.LocalScale(scaleButtonStart); buttonStartObject.SetName("Button");
+	gce::UIButton* buttonStart = buttonStartObject.AddComponent<gce::UIButton>(); buttonStart->AddListener(TestGame::Start); buttonStart->pBitMapBrush = &imageButtonStart; buttonStart->pHoverBitMapBrush = &imageCollideButtonStart;
 
-//Start Button
-gce::Vector3f32 posButtonStart = gce::Vector3f32(600.0f, 300.0f, 0.0f);
-gce::Vector3f32 scaleButtonStart = gce::Vector3f32(216.0f, 69.0f, 1.0f);
-gce::GameObject& buttonStartObject = gce::GameObject::Create(scene); buttonStartObject.transform.LocalTranslate(posButtonStart); buttonStartObject.transform.LocalScale(scaleButtonStart);
-gce::UIButton* buttonStart = buttonStartObject.AddComponent<gce::UIButton>(); buttonStart->AddListener(TestGame::Start); buttonStart->pBitMapBrush = &imageButtonStart; buttonStart->pHoverBitMapBrush = &imageCollideButtonStart;
+	//Quit Button
+	gce::Vector3f32 posButtonQuit = gce::Vector3f32(310.0f, 460.0f, 0.0f);
+	gce::Vector3f32 scaleButtonQuit = gce::Vector3f32(200.0f, 100.0f, 1.0f);
+	gce::GameObject& buttonQuitObject = gce::GameObject::Create(scene); buttonQuitObject.transform.LocalTranslate(posButtonQuit); buttonQuitObject.transform.LocalScale(scaleButtonQuit); buttonQuitObject.SetName("Button");
+	gce::UIButton* buttonQuit = buttonQuitObject.AddComponent<gce::UIButton>(); buttonQuit->AddListener(TestGame::Quit); buttonQuit->pBitMapBrush = &imageButtonQuit; buttonQuit->pHoverBitMapBrush = &imageCollideButtonQuit;
+	////Pause Menu////
+	//Image
+	gce::BitMapBrush imageButtonResume{ "/res/Gameplay/Texture/Reprendre.png" };
+	gce::BitMapBrush imageCollideButtonResume{ "/res/Gameplay/Texture/Reprendre_Cliquer.png" };
+	gce::BitMapBrush imageButtonRestart{ "/res/Gameplay/Texture/Recommencer.png" };
+	gce::BitMapBrush imageCollideButtonRestart{ "/res/Gameplay/Texture/Reprendre_Cliquer.png" };
+	gce::BitMapBrush imageButtonExit{ "/res/Gameplay/Texture/Quitter.png" };
+	gce::BitMapBrush imageCollideButtonExit{ "/res/Gameplay/Texture/Jouer_Cliquer.png" };
 
-//Quit Button
-gce::Vector3f32 posButtonQuit = gce::Vector3f32(600.0f, 500.0f, 0.0f);
-gce::Vector3f32 scaleButtonQuit = gce::Vector3f32(216.0f, 69.0f, 1.0f);
-gce::GameObject& buttonQuitObject = gce::GameObject::Create(scene); buttonQuitObject.transform.LocalTranslate(posButtonQuit); buttonQuitObject.transform.LocalScale(scaleButtonQuit);
-gce::UIButton* buttonQuit = buttonQuitObject.AddComponent<gce::UIButton>(); buttonQuit->AddListener(TestGame::Quit); buttonQuit->pBitMapBrush = &imageButtonQuit; buttonQuit->pHoverBitMapBrush = &imageCollideButtonQuit;
-////Pause Menu////
-//Image
-gce::BitMapBrush imageButtonResume{ "res/Testing/Button/Button.png" };
-gce::BitMapBrush imageCollideButtonResume{ "res/Testing/Button/Button2.png" };
-gce::BitMapBrush imageButtonRestart{ "res/Testing/Button/Button.png" };
-gce::BitMapBrush imageCollideButtonRestart{ "res/Testing/Button/Button2.png" };
-gce::BitMapBrush imageButtonExit{ "res/Testing/Button/Button.png" };
-gce::BitMapBrush imageCollideButtonExit{ "res/Testing/Button/Button2.png" };
+	//gce::Vector3f32 posImagePauseMenu = gce::Vector3f32(600.f, 400.f, 5.f);
+	//gce::Vector3f32 scaleImagePauseMenu = gce::Vector3f32(1000.f, 1000.f, 1.f);
+	//gce::BitMapBrush imageBackgroundButtonPauseMenu{ "res/Testing/Button/Button2.png" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
+	//gce::GameObject& imagePauseMenuObject = gce::GameObject::Create(scene); imagePauseMenuObject.transform.LocalTranslate(posImagePauseMenu); imagePauseMenuObject.transform.SetWorldScale(scaleImagePauseMenu); imagePauseMenuObject.SetName("ImageButton"); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
+	//gce::UIButton* imagePauseMenu = imagePauseMenuObject.AddComponent<gce::UIButton>(); imagePauseMenu->pBitMapBrush = &imageBackgroundButtonPauseMenu; imagePauseMenu->pHoverBitMapBrush = &imageBackgroundButtonPauseMenu;
+	
+	//Resume Button
+	gce::Vector3f32 posButtonResume = gce::Vector3f32(600.0f, 200.0f, 0.0f);
+	gce::Vector3f32 scaleButtonResume = gce::Vector3f32(200.0f, 100.0f, 1.0f);
+	gce::GameObject& buttonResumeObject = gce::GameObject::Create(scene); buttonResumeObject.transform.LocalTranslate(posButtonResume); buttonResumeObject.transform.LocalScale(scaleButtonResume); buttonResumeObject.SetName("Button");
+	gce::UIButton* buttonResume = buttonResumeObject.AddComponent<gce::UIButton>(); buttonResume->AddListener(TestGame::Resume); buttonResume->pBitMapBrush = &imageButtonResume; buttonResume->pHoverBitMapBrush = &imageCollideButtonResume;
+	
+	//Restart Button
+	gce::Vector3f32 posButtonRestart = gce::Vector3f32(600.0f, 400.0f, 0.0f);
+	gce::Vector3f32 scaleButtonRestart = gce::Vector3f32(200.0f, 100.0f, 1.0f);
+	gce::GameObject& buttonRestartObject = gce::GameObject::Create(scene); buttonRestartObject.transform.LocalTranslate(posButtonRestart); buttonRestartObject.transform.LocalScale(scaleButtonRestart); buttonRestartObject.SetName("Button");
+	gce::UIButton* buttonRestart = buttonRestartObject.AddComponent<gce::UIButton>(); buttonRestart->AddListener(TestGame::Restart); buttonRestart->pBitMapBrush = &imageButtonRestart; buttonRestart->pHoverBitMapBrush = &imageCollideButtonRestart;
+	
+	//Exit Button
+	gce::Vector3f32 posButtonExit = gce::Vector3f32(600.0f, 600.0f, 0.0f);
+	gce::Vector3f32 scaleButtonExit = gce::Vector3f32(200.0f, 100.0f, 1.0f);
+	gce::GameObject& buttonExitObject = gce::GameObject::Create(scene); buttonExitObject.transform.LocalTranslate(posButtonExit); buttonExitObject.transform.LocalScale(scaleButtonExit); buttonExitObject.SetName("Button");
+	gce::UIButton* buttonExit = buttonExitObject.AddComponent<gce::UIButton>(); buttonExit->AddListener(TestGame::Exit); buttonExit->pBitMapBrush = &imageButtonExit; buttonExit->pHoverBitMapBrush = &imageCollideButtonExit;
+	
+	//// WinLose Menu ////
+	//Image
+	gce::BitMapBrush imageButtonReplay{ "/res/Gameplay/Texture/Recommencer.png" };
+	gce::BitMapBrush imageCollideButtonReplay{ "/res/Gameplay/Texture/Reprendre_Cliquer.png" };
+	gce::BitMapBrush imageButtonEnd{ "/res/Gameplay/Texture/Quitter.png" };
+	gce::BitMapBrush imageCollideButtonEnd{ "/res/Gameplay/Texture/Jouer_Cliquer.png" };
 
-gce::Vector3f32 posImagePauseMenu = gce::Vector3f32(600.f, 400.f, 5.f);
-gce::Vector3f32 scaleImagePauseMenu = gce::Vector3f32(1000.f, 1000.f, 1.f);
-gce::BitMapBrush imageBackgroundButtonPauseMenu{ "res/Testing/Button/Button2.png" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
-gce::GameObject& imagePauseMenuObject = gce::GameObject::Create(scene); imagePauseMenuObject.transform.LocalTranslate(posImagePauseMenu); imagePauseMenuObject.transform.SetWorldScale(scaleImagePauseMenu); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
-gce::UIButton* imagePauseMenu = imagePauseMenuObject.AddComponent<gce::UIButton>(); imagePauseMenu->pBitMapBrush = &imageBackgroundButtonPauseMenu; imagePauseMenu->pHoverBitMapBrush = &imageBackgroundButtonPauseMenu;
+	gce::Vector3f32 posImageWinMenu = gce::Vector3f32(700.f, 400.f, 5.f);
+	gce::Vector3f32 scaleImageWinMenu = gce::Vector3f32(1400.f, 800.f, 1.f);
+	gce::BitMapBrush imageBackgroundButtonWinMenu{ "/res/Gameplay/Texture/Winner.jpg" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
+	gce::GameObject& imageWinMenuObject = gce::GameObject::Create(scene); imageWinMenuObject.transform.LocalTranslate(posImageWinMenu); imageWinMenuObject.transform.SetWorldScale(scaleImageWinMenu); imageWinMenuObject.SetName("ImageButton"); //AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
+	gce::UIButton* imageWinMenu = imageWinMenuObject.AddComponent<gce::UIButton>(); imageWinMenu->pBitMapBrush = &imageBackgroundButtonWinMenu; imageWinMenu->pHoverBitMapBrush = &imageBackgroundButtonWinMenu;
 
-//Resume Button
-gce::Vector3f32 posButtonResume = gce::Vector3f32(600.0f, 200.0f, 0.0f);
-gce::Vector3f32 scaleButtonResume = gce::Vector3f32(216.0f, 69.0f, 1.0f);
-gce::GameObject& buttonResumeObject = gce::GameObject::Create(scene); buttonResumeObject.transform.LocalTranslate(posButtonResume); buttonResumeObject.transform.LocalScale(scaleButtonResume);
-gce::UIButton* buttonResume = buttonResumeObject.AddComponent<gce::UIButton>(); buttonResume->AddListener(TestGame::Resume); buttonResume->pBitMapBrush = &imageButtonResume; buttonResume->pHoverBitMapBrush = &imageCollideButtonResume;
+	gce::Vector3f32 posImageLoseMenu = gce::Vector3f32(700.f, 400.f, 5.f);
+	gce::Vector3f32 scaleImageLoseMenu = gce::Vector3f32(1400.f, 800.f, 1.f);
+	gce::BitMapBrush imageBackgroundButtonLoseMenu{ "/res/Gameplay/Texture/Loser.jpg" };//gce::Texture imageBackgroundButtonQuit = ImageLoader::LoadTexture(String(RES_PATH) + "res/Testing/Button/Button2.png");
+	gce::GameObject& imageLoseMenuObject = gce::GameObject::Create(scene); imageLoseMenuObject.transform.LocalTranslate(posImageLoseMenu); imageLoseMenuObject.transform.SetWorldScale(scaleImageLoseMenu); imageLoseMenuObject.SetName("ImageButton");//AddMeshRenderer(imageMainMenuObject, gce::SHAPES.CUBE/*, (gce::Texture*)&imageBackgroundButtonStart*/);
+	gce::UIButton* imageLoseMenu = imageLoseMenuObject.AddComponent<gce::UIButton>(); imageLoseMenu->pBitMapBrush = &imageBackgroundButtonLoseMenu; imageLoseMenu->pHoverBitMapBrush = &imageBackgroundButtonLoseMenu;
 
-//Restart Button
-gce::Vector3f32 posButtonRestart = gce::Vector3f32(600.0f, 400.0f, 0.0f);
-gce::Vector3f32 scaleButtonRestart = gce::Vector3f32(216.0f, 69.0f, 1.0f);
-gce::GameObject& buttonRestartObject = gce::GameObject::Create(scene); buttonRestartObject.transform.LocalTranslate(posButtonRestart); buttonRestartObject.transform.LocalScale(scaleButtonRestart);
-gce::UIButton* buttonRestart = buttonRestartObject.AddComponent<gce::UIButton>(); buttonRestart->AddListener(TestGame::Restart); buttonRestart->pBitMapBrush = &imageButtonRestart; buttonRestart->pHoverBitMapBrush = &imageCollideButtonRestart;
+
+	//Replay Button
+	gce::Vector3f32 posButtonReplay = gce::Vector3f32(600.0f, 200.0f, 0.0f);
+	gce::Vector3f32 scaleButtonReplay = gce::Vector3f32(200.0f, 100.0f, 1.0f);
+	gce::GameObject& buttonReplayObject = gce::GameObject::Create(scene); buttonReplayObject.transform.LocalTranslate(posButtonReplay); buttonReplayObject.transform.LocalScale(scaleButtonReplay); buttonReplayObject.SetName("Button");
+	gce::UIButton* buttonReplay = buttonReplayObject.AddComponent<gce::UIButton>(); buttonReplay->AddListener(TestGame::Restart); buttonReplay->pBitMapBrush = &imageButtonReplay; buttonReplay->pHoverBitMapBrush = &imageCollideButtonReplay;
+
+	//End Button
+	gce::Vector3f32 posButtonEnd = gce::Vector3f32(600.0f, 800.0f, 0.0f);
+	gce::Vector3f32 scaleButtonEnd = gce::Vector3f32(200.0f, 100.0f, 1.0f);
+	gce::GameObject& buttonEndObject = gce::GameObject::Create(scene); buttonEndObject.transform.LocalTranslate(posButtonEnd); buttonEndObject.transform.LocalScale(scaleButtonEnd); buttonEndObject.SetName("Button");
+	gce::UIButton* buttonEnd = buttonEndObject.AddComponent<gce::UIButton>(); buttonEnd->AddListener(TestGame::Quit); buttonEnd->pBitMapBrush = &imageButtonEnd; buttonEnd->pHoverBitMapBrush = &imageCollideButtonEnd;
 
 //Exit Button
 gce::Vector3f32 posButtonExit = gce::Vector3f32(600.0f, 600.0f, 0.0f);
@@ -184,7 +223,7 @@ public:
 		camera.perspective.up = { 0.0f, 1.0f, 0.0f };
 	}
 
-	static gce::GameObject& CreatePlayer(gce::Scene& scene, gce::GameObject* cameraObject)
+	static gce::GameObject& CreatePlayer(gce::Scene& scene, gce::GameObject* cameraObject, gce::GameObject* menuObject)
 	{
 		gce::GameObject& playerObject = CreateGameObject<ScriptPlayer>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 		playerObject.AddComponent<gce::BoxCollider>()->SetActive(true);
@@ -193,36 +232,38 @@ public:
 		playerObject.AddChild(*cameraObject);
 
 		ScriptPlayer* player = playerObject.GetScript<ScriptPlayer>();
-		ResetPlayerBegin(player, cameraObject);
+		ResetPlayerBegin(player, cameraObject, menuObject);
 		return playerObject;
 	}
 
-	static void ResetPlayerBegin(ScriptPlayer* player, gce::GameObject* cameraObject)
+	static void ResetPlayerBegin(ScriptPlayer* player, gce::GameObject* cameraObject, gce::GameObject* menuObject)
 	{
 		player->Initia();
 		player->SetCamera(cameraObject);
+		player->SetMenu(menuObject);
 		player->SetWorldPosition(gce::Vector3f32(0.f, 10.f, 0.f));
 		player->mCharacter->SetSpeed(9.f);
 		player->SetJump(6.f);
+		player->mCharacter->SetMaxLife(100);
 	}
-
+	
 	static void ResetPlayerEnd(ScriptPlayer* player)
 	{
 		player->SetCurrentWeapon(WEAPON_ORDER::SUBMACHINEGUN);
 		player->Start();
 	}
 
-	static void CreateNail(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
+	static void CreateNail(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid, gce::Vector3f32 pos)
 	{
 		//Life = 20 a 200, Damage = 1 a 5
 		gce::GameObject& enemyObject = CreateGameObject<ScriptEnemy>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 		enemyObject.SetName("Enemy");
 
-		SetNail(&enemyObject, player, grid);
+		SetNail(&enemyObject, player, grid, pos);
 
 	}
 
-	static void SetNail(gce::GameObject* enemyObject, ScriptPlayer* player, ScriptGrid* grid)
+	static void SetNail(gce::GameObject* enemyObject, ScriptPlayer* player, ScriptGrid* grid, gce::Vector3f32 pos)
 	{
 		//Life = 20 a 200, Damage = 1 a 5
 		enemyObject->AddComponent<gce::BoxCollider>()->SetActive(true);
@@ -237,24 +278,43 @@ public:
 		{
 			enemy = enemyObject->AddScript<ScriptEnemy>();
 		}
-		enemy->SetWorldPosition({ 10,-8,10 });
 		enemy->SetPlayer(player);
 		enemy->SetMaxLife(20);
-		enemy->SetDamage(10);
+		enemy->SetDamage(2);
 		enemy->mAgent->mCharacter->SetSpeed(5.f);
 		enemy->mAgent->GetPathFinding()->SetGrid(grid);
 		enemy->SetCellTarget(grid->GetNearestCell(player->GetWorldPosition()));
-		enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(0.f, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, 0.f));
-
+		enemy->mAgent->SetOffsetOfGrid(gce::Vector3f32(pos.x, enemy->mAgent->mCharacter->mEntity->GetGameObject()->transform.GetWorldScale().y * 0.5f, pos.z));
+		
 	}
 
-	static void CreateStaticObject(gce::Scene& scene, ScriptGrid* grid, bool isFix, bool isObstacle)
+	static void CreateStaticObject(gce::Scene& scene, ScriptGrid* grid, bool isFix, bool isObstacle, gce::Vector3f32 pos, gce::Vector3f32 scale)
 	{
 		gce::GameObject& staticObject = CreateGameObject<ScriptStaticGeometry>(scene, gce::SHAPES.CUBE, gce::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 		staticObject.SetName("StaticObject");
 
-		SetStaticObject(&staticObject, grid, isFix, isObstacle);
+		SetStaticObject(&staticObject, grid, isFix, isObstacle, pos, scale);
 
+	}
+
+	static void SetStaticObject(gce::GameObject* staticObject, ScriptGrid* grid, bool isFix, bool isObstacle, gce::Vector3f32 pos, gce::Vector3f32 scale)
+	{
+		//gce::GameObject& floorObject = CreateGameObject<ScriptEntity>(scene, gce::SHAPES.CUBE);
+		staticObject->AddComponent<gce::BoxCollider>()->SetActive(true);
+		//enemyObject.SetName("Enemy");
+
+		ScriptStaticGeometry* staticGeometry = nullptr;
+		if (staticObject->HasScript<ScriptStaticGeometry>())
+		{
+			staticGeometry = staticObject->GetScript<ScriptStaticGeometry>();
+		}
+		else
+		{
+			staticGeometry = staticObject->AddScript<ScriptStaticGeometry>();
+		}
+		staticGeometry->SetAll(grid, isFix, isObstacle);
+		staticGeometry->mEntity->SetWorldPosition(pos);
+		staticGeometry->mEntity->SetWorldScale(pos);
 	}
 
 	static void SetStaticObject(gce::GameObject* staticObject, ScriptGrid* grid, bool isFix, bool isObstacle)
@@ -273,50 +333,51 @@ public:
 		staticGeometry->SetAll(grid, isFix, isObstacle);
 	}
 
-
-	static void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid)
+	static void CreateMap(gce::Scene& scene, ScriptPlayer* player, ScriptGrid* grid, cstr name, const String& path)
 	{
 
 		///////////////////////////////////////////////////////////
 		// Map json
-		std::vector<gce::GameObject*> atelier = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/Atelier.json", &scene);
-		std::vector<gce::GameObject*> hangar = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/Hangar.json", &scene);
-		std::vector<gce::GameObject*> outside = JsonLoader::LoadMap(RES_PATH"res/Gameplay/Json/Outside.json", &scene);
-
-		std::vector<std::vector<gce::GameObject*>> gameObjectLoad;
-		gameObjectLoad.push_back(hangar);
-		gameObjectLoad.push_back(outside);
-		gameObjectLoad.push_back(atelier);
+		std::vector<gce::GameObject*> gameObjectLoad = JsonLoader::LoadMap(path, &scene);
+		auto* mapGameObject = gMenuObject->m_pScene->GetGameObject();
 
 		int lenghtLoad = (int)gameObjectLoad.size();
 		for (int i = 0; i < lenghtLoad; i++)
 		{
-			int geoLoad = (int)gameObjectLoad[i].size();
-			for (int j = 0; j < geoLoad; j++)
-			{
-				gce::GameObject* currentGameObject = gameObjectLoad[i][j];
+			gameObjectLoad[i]->SetName(name);
+			//SetStaticObject(gameObjectLoad[i], grid, true, true);
+		}
 
+		for (auto& [id, currentGameObject] : *mapGameObject)
+		{
+			//gce::GameObject* currentGameObject= gameObjectLoad[i];
+			if (currentGameObject->GetName() == "GameObject")
+			{
+				//if (currentGameObject->HasParent())
+				//{
+					//currentGameObject->RemoveParent();
+				//}
 				//////////////////////Enemy///////////////////////
-				if (currentGameObject->GetName() == "Nail")
+				/*if ()//currentGameObject->GetName() == "Nail"
 				{
 					currentGameObject->SetName("Enemy");
 					SetNail(currentGameObject, player, grid);
 				}
-				else if (currentGameObject->GetName() == "Bot")
+				else if ()//currentGameObject->GetName() == "Bot"
 				{
 					currentGameObject->SetName("Bot");
 					//SetNail(currentGameObject, player, grid);
 				}
 				//////////////////////Enemy Fin///////////////////////
 				//////////////////////Item///////////////////////
-				else if (currentGameObject->GetName() == "Item")
+				else if ()//currentGameObject->GetName() == "Item"
 				{
 					currentGameObject->SetName("Item");
 					//SetNail(currentGameObject, player, grid);
 				}
 				//////////////////////Item Fin///////////////////////
 				//////////////////////Furniture///////////////////////
-				else if (currentGameObject->GetName() == "Box")
+				else if ()//currentGameObject->GetName() == "Box"
 				{
 					currentGameObject->SetName("Box");
 					//SetNail(currentGameObject, player, grid);
@@ -324,32 +385,62 @@ public:
 				//////////////////////Furniture Fin///////////////////////
 				//////////////////////Floor///////////////////////
 				else
+				{*/
+				auto isCube = [](Vector3f32 scale, float tolerance = 0.25f) -> bool
+					{
+						float minV = min(scale.x, min(scale.y, scale.z));
+						float maxV = max(scale.x, max(scale.y, scale.z));
+						return (maxV / minV) < (1.0f + tolerance);
+					};
+				auto isFloor = [](Vector3f32 scale, float ratio = 0.35f) -> bool
+					{
+						return scale.y < scale.x * ratio && scale.y < scale.z * ratio;
+					};
+				auto isWall = [](Vector3f32 scale, float ratio = 2.0f) -> bool
+					{
+						return scale.y > scale.x * ratio || scale.y > scale.z * ratio;
+					};
+				
+
+				gce::Vector3f32 scale = currentGameObject->transform.GetWorldPosition();
+				if (isWall(scale) && !isCube(scale))//currentGameObject->GetName() == "Wall"
 				{
-					if (currentGameObject->GetName() == "Wall")
-					{
-						bool isFix = false;
-						bool isObstacle = false;
-						SetStaticObject(currentGameObject, grid, isFix, isObstacle);
-						currentGameObject->SetName("StaticObject");
-					}
-					else if (currentGameObject->GetName() == "Floor" || currentGameObject->GetName() == "Roof")
-					{
-						bool isFix = false;
-						bool isObstacle = false;
-						SetStaticObject(currentGameObject, grid, isFix, isObstacle);
-						currentGameObject->SetName("StaticObject");
-					}
-					else if (currentGameObject->GetName() == "Door")
-					{
-						bool isFix = false;
-						bool isObstacle = false;
-						SetStaticObject(currentGameObject, grid, isFix, isObstacle);
-						currentGameObject->SetName("StaticObject");
-					}
+					bool isFix = false;
+					bool isObstacle = false;
+					SetStaticObject(currentGameObject, grid, isFix, isObstacle);
+					currentGameObject->SetName("StaticObject");
 				}
+				else if (isFloor(scale) && !isCube(scale))//currentGameObject->GetName() == "Floor" || currentGameObject->GetName() == "Roof"
+				{
+					bool isFix = false;
+					bool isObstacle = false;
+					SetStaticObject(currentGameObject, grid, isFix, isObstacle);
+					currentGameObject->SetName("StaticObject");
+				}
+				//else if ()//currentGameObject->GetName() == "Door"
+				//{
+					//bool isFix = false;
+					//bool isObstacle = false;
+					//SetStaticObject(currentGameObject, grid, isFix, isObstacle);
+					//currentGameObject->SetName("StaticObject");
+				//}
+				else //if ()//currentGameObject->GetName() == "GameObject"
+				{
+					bool isFix = false;
+					bool isObstacle = false;
+					SetStaticObject(currentGameObject, grid, isFix, isObstacle);
+					currentGameObject->SetName("StaticObject");
+				}
+				//////////////////////Autre///////////////////////
+				/*else
+				{
+					auto n = currentGameObject->GetName();
+					n = n;
+				}*/
+				//////////////////////Autre Fin///////////////////////
+				//}
 				//////////////////////Floor Fin///////////////////////
 			}
-			///////////////////////////////////////////////////////////
 		}
 	}
 
@@ -388,7 +479,6 @@ public:
 	{
 		gce::GameObject& subMachineGunObject = CreateGameObject<ScriptSubMachineGun>(scene, gce::SHAPES.CUBE);
 		subMachineGunObject.SetName("SubmachineGun");
-
 		weaponParent.AddChild(subMachineGunObject);
 
 		ScriptSubMachineGun* subMachineGun = subMachineGunObject.GetScript<ScriptSubMachineGun>();
@@ -435,9 +525,8 @@ public:
 		ResetCamera(cameraObject);
 
 		//ImageData data = ImageLoader::LoadTexture(String(RES_PATH) + path);
-
 		ScriptPlayer* player = playerObject->GetScript<ScriptPlayer>();
-		ResetPlayerBegin(player, cameraObject);
+		ResetPlayerBegin(player, cameraObject, menuObject);
 
 		gce::GameObject& weaponParent = gce::GameObject::Create(scene);
 		cameraObject->AddChild(weaponParent);
@@ -448,9 +537,14 @@ public:
 
 		ScriptGrid* grid = CreateGrid(scene, sizeGrid, posGrid, 5);
 
-		//CreateNail(scene, player, grid);
+		gce::Vector3f32 posNail = gce::Vector3f32(5.f, 0.f, 5.f);
+		// CreateNail(scene, player, grid, posNail);
 
-		CreateMap(scene, player, grid);
+		gce::Vector3f32 posCube = gce::Vector3f32(10.f, 10.f, 5.f);
+		gce::Vector3f32 posScale = gce::Vector3f32(10.f, 2.f, 5.f);
+		CreateStaticObject(scene, grid, true, true, posCube, posScale);
+
+		CreateMap(scene, player, grid, "OutSide", RES_PATH"res/Gameplay/Json/outside.json");
 
 		CreateAngleGringer(scene, player, weaponParent);
 		CreateSubmachineGun(scene, player, weaponParent);
@@ -490,7 +584,10 @@ public:
 		//gCameraObject->RemoveParent();
 		for (auto& [id, gameObject] : *mapGameObject)
 		{
-			if ((gameObject->GetScript<ScriptEntity>() != nullptr && gameObject->GetScript<ScriptPlayer>() == nullptr) || gameObject->GetScript<ScriptGrid>() != nullptr)
+			bool scriptE = gameObject->GetScript<ScriptEntity>() != nullptr;
+			bool scriptP = gameObject->GetScript<ScriptPlayer>() == nullptr;
+			bool scriptG = gameObject->GetScript<ScriptGrid>() != nullptr;
+			if ((scriptE && scriptP) || scriptG)
 			{
 				gameObject->SetActive(false);
 			}

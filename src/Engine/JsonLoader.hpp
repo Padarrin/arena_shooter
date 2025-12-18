@@ -47,18 +47,31 @@ struct JsonLoader
                 std::string texturePath = "res/Textures/";
                 texturePath.append(currObject["texture"].get<std::string>());
                 texture = new Texture(texturePath);
-                //mesh.pMaterial->albedoTextureID = texture->GetTextureID();
-                //mesh.pMaterial->useTextureAlbedo = true;
-                //mesh.pMaterial->subsurface = 0.2f;
             }
-
             GameObject& gameObject = GameObject::Create(*pScene);
             AddMeshRenderer(gameObject, GeometryFactory::LoadJsonGeometry(currObject), texture);
+            gameObject.SetName(currObject["name"].get<String>().c_str());
+
+            //create object
+            //static gce::D12PipelineObject defaultPso(gce::SHADERS.VERTEX, gce::SHADERS.PIXEL, gce::SHADERS.HULL, gce::SHADERS.DOMAIN_, gce::SHADERS.ROOT_SIGNATURE);
+            //GameObject& gameObject = GameObject::Create(*pScene);
             //GameObject& gameObject = GameObject::Create(*pScene);
             //MeshRenderer& mesh = *gameObject.AddComponent<MeshRenderer>();
             //mesh.pGeometry = GeometryFactory::LoadJsonGeometry(currObject);
-            //mesh.pPso = pso;
-            gameObject.SetName(currObject["name"].get<String>().c_str());
+            //mesh.pPso = &defaultPso;
+            //gameObject.SetName(currObject["name"].get<String>().c_str());
+
+            //create texture
+            //if (currObject.contains("texture") && currObject["texture"].is_string())
+            //{
+            //    std::string texturePath = "res/Textures/";
+            //    texturePath.append(currObject["texture"].get<std::string>());
+            //    texture = new Texture(texturePath);
+            //    mesh.pMaterial->albedoTextureID = texture->GetTextureID();
+            //    mesh.pMaterial->useTextureAlbedo = true;
+            //    mesh.pMaterial->subsurface = 0.2f;
+            //}
+
 
             //if (currObject["has_collider"].get<bool>() == true)
             //{

@@ -2,6 +2,7 @@
 #include "../Engine/GameManager.h"
 #include "Character.hpp"
 #include "SubMachineGun.hpp"
+#include "Menu.hpp"
 
 enum WEAPON_ORDER
 {
@@ -15,7 +16,7 @@ enum WEAPON_ORDER
 #define PI  3.14159265359f
 #define SENSITIVITY_CAMERA 0.001f
 
-#define DEGREE_TO_RADIAN PI / 180.0f
+#define DEGREE_TO_RADIAN PI / 360.0f
 #define PITCH 89.0f * DEGREE_TO_RADIAN
 
 DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::Destroy | ScriptFlag::CollisionEnter | ScriptFlag::CollisionStay | ScriptFlag::CollisionExit)
@@ -23,6 +24,7 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 	protected:
 		gce::GameObject* mObjectCamera;
 		gce::Window* mWindow;
+		gce::GameObject* mMenu;
 
 		float mJump;
 		float mYaw;
@@ -42,10 +44,10 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		ScriptCharacter* mCharacter;
 
-		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); mYaw = 0.f; mPitch = 0.f; mIsCursorLocked = true; mCurrentWeapon = nullptr; mObjectCamera = nullptr; mAllWeapons = std::vector<ScriptWeapons*>(); mIsWindowInitialised = false; }
-		virtual void Start()
-		{
-			mWindow = gce::GameManager::GetWindow();
+		virtual void Initia() { mCharacter = m_pOwner->AddScript<ScriptCharacter>(); mCharacter->Initia(); mJump = 6.f; mCharacter->SetMaxLife(100); mCharacter->SetDamage(5); mYaw = 0.f; mPitch = 0.f; mIsCursorLocked = true; mCurrentWeapon = nullptr; mObjectCamera = nullptr; mAllWeapons = std::vector<ScriptWeapons*>(); mMenu = nullptr; }
+		virtual void Start() 
+		{ 
+			mWindow = gce::GameManager::GetWindow(); 
 			mIsJumping = true;
 
 			if (mCurrentWeapon != nullptr)
@@ -56,25 +58,28 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		}
 
 		virtual void Update()
-		{
-			//std::cout << "xP : " << GetWorldPosition().x << std::endl;
-			//std::cout << "zP : " << GetWorldPosition().z << std::endl;
+		{ 
 			float deltaTime = gce::GameManager::GameDeltaTime();
-
-			if (deltaTime > 0.f && mCurrentWeapon != nullptr)
+			if (deltaTime > 0.f)
 			{
-				gce::HideMouseCursor();
-				InputMove(deltaTime);
-				InputShoot(deltaTime);
-				TurnCamera();
+				if (mCurrentWeapon != nullptr)
+				{
+					gce::HideMouseCursor();
+					InputMove(deltaTime);
+					InputShoot(deltaTime);
+					TurnCamera();
+				}
+
+				if (mCharacter->GetLife() <= 0)
+				{
+					mMenu->GetScript<ScriptMenu>()->ShowMenu(LOSE_MENU);
+					mCharacter->mEntity->DestroyCharacter();
+				}
 			}
 			else
 			{
 				gce::ShowMouseCursor();
 			}
-
-			if (mCharacter->GetLife() <= 0)
-				mCharacter->mEntity->DestroyEntity();
 		}
 
 		virtual void Destroy() {}
@@ -82,7 +87,13 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		virtual void CollisionEnter(gce::GameObject* other)
 		{
 			if (other->GetName() == "Floor")
+			{
 				ColliderFloor();
+			}
+			else if(other->GetName() == "StaticObject" || other->GetName() == "OutSide")
+			{
+				int i = 0;
+			}
 		}
 		virtual void CollisionStay(gce::GameObject* other) {}
 		virtual void CollisionExit(gce::GameObject* other) {}
@@ -90,9 +101,11 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		void InputMove(float deltaTime)
 		{
 			float horizontalInput = gce::GetKey(gce::Keyboard::Key::D) - gce::GetKey(gce::Keyboard::Key::Q);
-			float verticalInput = gce::GetKey(gce::Keyboard::Key::Z) - gce::GetKey(gce::Keyboard::Key::S);
+			float deepInput = gce::GetKey(gce::Keyboard::Key::Z) - gce::GetKey(gce::Keyboard::Key::S);
+			float verticalInput = (float)(horizontalInput > 0.f || deepInput > 0.f);
 
-			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * verticalInput;
+			gce::Vector3f32 direction = m_pOwner->transform.GetWorldRight() * horizontalInput + m_pOwner->transform.GetWorldForward() * deepInput;
+			direction.y += verticalInput * 0.20f;
 			WorldTranslate(direction * mCharacter->GetSpeed() * deltaTime);
 
 			if (gce::GetKeyDown(gce::Keyboard::Key::SPACE))
@@ -116,16 +129,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 
 		void TurnCamera()
 		{
-			const float sensitivity = 0.001f;
-
-			const int centerHeight = (int)(gce::GameManager::GetWindowParam().height * 0.5f);
-			const int centerWidth = (int)(gce::GameManager::GetWindowParam().width * 0.5f);
-
-			const float degToRad = PI / 360.0f;
-
-			// limites en radians
-			const float pitchMin = -89.0f * degToRad;
-			const float pitchMax = 89.0f * degToRad;
+			gce::WindowParam param = gce::GameManager::GetWindowParam();
+			gce::Vector2i32 centerSizeWindow = gce::Vector2i32((int)(param.width * 0.5f), (int)(param.height * 0.5f));
 
 			if (gce::GetKeyDown(gce::Keyboard::LSHIFT)) {
 				mIsCursorLocked = !mIsCursorLocked;
@@ -187,6 +192,8 @@ DECLARE_SCRIPT(ScriptPlayer, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag
 		}
 
 		void SetCamera(gce::GameObject* cameraObject) { mObjectCamera = cameraObject; }
+		void SetMenu(gce::GameObject* menuObject) { mMenu = menuObject; }
+		gce::GameObject* GetMenu() { return mMenu; }
 
 		void SetWorldPosition(gce::Vector3f32 position) { mCharacter->mEntity->SetWorldPosition(position); }
 		gce::Vector3f32 GetWorldPosition() { return mCharacter->mEntity->GetWorldPosition(); }

@@ -12,7 +12,15 @@ public:
 
 	virtual void Initia() { mShootable = m_pOwner->AddScript<ScriptShootable>(); mShootable->Initia(); }
 	virtual void Start() {}
-	virtual void Update() {}
+	virtual void Update() 
+	{
+		/*float deltaTime = gce::GameManager::GameDeltaTime();
+		if (deltaTime > 0.f)
+		{
+
+		}
+		*/
+	}
 	virtual void Destroy() {}
 
 	virtual void CollisionEnter(gce::GameObject* other) 

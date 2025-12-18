@@ -3,6 +3,7 @@
 #include "Ball.hpp"
 #include "Player.hpp"
 #include "Grid.hpp"
+#include "Time.h"
 #include <chrono>
 #include <Engine.h>
 #include <Render.h>
@@ -17,38 +18,39 @@ protected:
 	Cell* mCellTarget;
 	bool mIsNoPath;
 
-	//using mClock = std::chrono::steady_clock;
-	//mClock::time_point mPreviousTime = mClock::now();
+	using mClock = std::chrono::steady_clock;
+	mClock::time_point mPreviousTime = mClock::now();
 
 	// StateMachine
-	StateMachine* mStateMachine;
+	Time mTimerStateMachine;
+	//StateMachine* mStateMachine;
 
-	String idle = "Idle";
-	String running = "Running";
-	String attack = "Attack";
-	String hit = "Hit";
-	String die = "Die";
+	/*String mIdle = "Idle";
+	String mRunning = "Running";
+	String mAttack = "Attack";
+	String mHit = "Hit";
+	String mDie = "Die";*/
 
-	inline static bool isIdle = false;
-	inline static bool isChasingPlayer = false;
-	inline static bool isAttacking = false;
-	inline static bool tookDamage = false;
-	inline static bool isDead = false;
+	inline static bool mIsIdle = false;
+	inline static bool mIsChasingPlayer = false;
+	inline static bool mIsAttacking = false;
+	inline static bool mTookDamage = false;
+	inline static bool mIsDead = false;
 
-	StateMachine::Condition conditions{ [this] {return this->Conditions(); } };
+	//StateMachine::Condition mConditions{ [this] { return this->Conditions(); } };
 
-	Vector<StateMachine::Condition> conditionIdle{ conditions };
-	Vector<StateMachine::Condition> conditionRun{ conditions };
-	Vector<StateMachine::Condition> condittionAttack{ conditions };
-	Vector<StateMachine::Condition> conditionHit{ conditions };
-	Vector<StateMachine::Condition> conditionDie{ conditions };
+	/*Vector<StateMachine::Condition> mConditionIdle{mConditions};
+	Vector<StateMachine::Condition> mConditionRun{ mConditions };
+	Vector<StateMachine::Condition> mConditionAttack{ mConditions };
+	Vector<StateMachine::Condition> mConditionHit{ mConditions };
+	Vector<StateMachine::Condition> mConditionDie{ mConditions };*/
 
 
 public:
 	ScriptAgent* mAgent;
 
 	// Fonctions
-	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); mAgent->mCharacter->SetMaxLife(100); mAgent->mCharacter->SetDamage(5); }
+	virtual void Initia() { mAgent = m_pOwner->AddScript <ScriptAgent>(); mAgent->Initia(); SetPlayer(nullptr); SetCellTarget(nullptr); mAgent->mCharacter->SetMaxLife(100); mAgent->mCharacter->SetDamage(5); mTimerStateMachine = Time(1.f); }
 	virtual void Start()
 	{
 		ScriptGrid* grid = GetGrid();
@@ -61,44 +63,38 @@ public:
 
 		SetIsNoPath(false);
 
-		// StateMachine
-		mStateMachine = GameManager::GetStatesSystem().CreateStateMachine(m_pOwner);
-
-		mStateMachine->AddAction(idle, OnBeginIdle, OnUpdateIdle, OnEndIdle);
-		mStateMachine->AddAction(running, OnBeginRunning, OnUpdateRunning, OnEndRunning);
-		mStateMachine->AddAction(attack, OnBeginAttack, OnUpdateAttack, OnEndAttack);
-		mStateMachine->AddAction(hit, OnBeginHit, OnUpdateHit, OnEndHit);
-		mStateMachine->AddAction(die, OnBeginDie, OnUpdateDie, OnEndDie);
-
-		mStateMachine->AddTransition(conditionRun, idle, running);
-		mStateMachine->AddTransition(condittionAttack, running, idle);
-		mStateMachine->AddTransition(conditionHit, idle, hit);
-		mStateMachine->AddTransition(conditionDie, idle, die);
-
 	}
 	virtual void Update() 
 	{ 
-		ScriptEntity* myParentEntity = mAgent->mCharacter->mEntity;
-		if (mPlayer != nullptr)
+		float deltaTime = gce::GameManager::GameDeltaTime();
+		if (deltaTime > 0.f)
 		{
-			myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
-		}
-		
-		mCellTarget = mAgent->GetPathFinding()->GetGrid()->GetNearestCell(mPlayer->GetWorldPosition());
-		
-		if (mAgent->GetPaths()->Size() < 1)
-		{
-			mIsNoPath = true;
-			if (mCellTarget != nullptr)
+			ScriptEntity* myParentEntity = mAgent->mCharacter->mEntity;
+			if (mPlayer != nullptr)
 			{
-				mAgent->GoToCell(mCellTarget);
-				SetCellTarget(nullptr);
-				isChasingPlayer = true;
+				myParentEntity->FocusEntity(myParentEntity, mPlayer->mCharacter->mEntity); // temp rotation
 			}
+
+			if (mAgent->GetPaths()->Size() < 1)
+			{
+				mIsNoPath = true;
+				PathIsFinish();
+			}
+			else
+			{
+				mIsNoPath = false;
+			}
+
+			mTimerStateMachine.Update(deltaTime);
+			ChangeState();
 		}
-		else
+	}
+	virtual void PathIsFinish()
+	{
+		if (mCellTarget != nullptr)
 		{
-			mIsNoPath = false;
+			mAgent->GoToCell(mCellTarget);
+			SetCellTarget(nullptr);
 		}
 	}
 	virtual void Destroy() {}
@@ -120,28 +116,16 @@ public:
 	void SetPlayer(ScriptPlayer* player) { mPlayer = player; }
 	ScriptPlayer* GetPlayer() { return mPlayer; }
 
-	void SetMaxLife(int life)
-	{
-		mAgent->mCharacter->SetMaxLife(life);
-	}
-	int GetMaxLife()
-	{
-		return mAgent->mCharacter->GetMaxLife();
-	}
+	void SetMaxLife(int life) { mAgent->mCharacter->SetMaxLife(life); }
+	int GetMaxLife() { return mAgent->mCharacter->GetMaxLife(); }
 
-	void SetDamage(int damage)
-	{
-		mAgent->mCharacter->SetDamage(damage);
-	}
-	int GetDamage()
-	{
-		return mAgent->mCharacter->GetDamage();
-	}
+	void SetDamage(int damage) { mAgent->mCharacter->SetDamage(damage); }
+	int GetDamage() { return mAgent->mCharacter->GetDamage(); }
 	
 	ScriptGrid* GetGrid() { return mAgent->GetPathFinding()->GetGrid(); }
 
 	// === Idle State Functions ===
-	static void OnBeginIdle() { Console::Log("[Idle] Begin"); }
+	/*static void OnBeginIdle() { Console::Log("[Idle] Begin"); }
 	static void OnUpdateIdle() { Console::Log("[Idle] Updating... Waiting for start request."); }
 	static void OnEndIdle() { Console::Log("[Idle] End"); }
 
@@ -163,58 +147,115 @@ public:
 	// === Die State Functions ===
 	static void OnBeginDie() { Console::Log("[Die] Begin"); }
 	static void OnUpdateDie() { Console::Log("[Die] Updating... Has no life."); }
-	static void OnEndDie() { Console::Log("[Die] End"); }
+	static void OnEndDie() { Console::Log("[Die] End"); }*/
 
-	bool Conditions()
+	/*bool Conditions()
 	{
-		Vector3f32 posPlayer = mPlayer->GetWorldPosition();
-		Vector3f32 posThis = this->GetWorldPosition();
-
-		float dist = abs((posPlayer.x - posThis.x) + (posPlayer.y - posThis.y) + (posPlayer.z - posThis.z));
-
-		if (dist <= 0.5f)
+		if (mTimerStateMachine.IsFinish())
 		{
-			isIdle = true;
-			isAttacking = true;
+			mTimerStateMachine.SetTime(0.f);
+			mIsIdle = false;
+			//mTookDamage = false;
+			mIsChasingPlayer = false;
+			mIsAttacking = false;
+			mIsDead = false;
 
-			if (this->mAgent->GetLife() == 0)
+			ScriptCharacter* targetCharacter = mPlayer->mCharacter;
+			ScriptCharacter* myCharacter = mPlayer->mCharacter;
+
+			Vector3f32 playerPos = mPlayer->GetWorldPosition();
+			Vector3f32 myPos = GetWorldPosition();
+			float dist = abs((playerPos.x - myPos.x) + (playerPos.y - myPos.y) + (playerPos.z - myPos.z));
+			if (mAgent->mCharacter->GetLife() == 0)
 			{
-				isIdle = false;
-				isChasingPlayer = false;
-				isAttacking = false;
-				tookDamage = false;
-				isDead = true;
+				mIsDead = true;
+				mTimerStateMachine.SetTime(100.f);
 			}
-			else
+			else if (dist <= 0.5f)
 			{
-				isDead = false;
+				targetCharacter->Damage(myCharacter->GetDamage()); //mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage()); //mTookDamage = true;
+				mIsAttacking = true;
+				mTimerStateMachine.SetTime(0.5f);
 			}
-			if (this->mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage()))
+			else //if (dist > 0.5f)
 			{
-				tookDamage = true;
+				mCellTarget = mAgent->GetPathFinding()->GetGrid()->GetNearestCell(targetCharacter->mEntity->GetWorldPosition());
+				mIsChasingPlayer = true;
+				mTimerStateMachine.SetTime(2.f);
 			}
-			else
-			{
-				tookDamage = false;
-			}
+
+			//if (dist <= 0.5f)
+			//{
+			//	mIsIdle = false;mIsAttacking = true;
+			//	if (this->mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage())){mTookDamage = true;}
+			//	else{mTookDamage = false;}
+			//	if (this->mAgent->mCharacter->GetLife() == 0){mIsIdle = false;mIsChasingPlayer = false;mIsAttacking = false;mTookDamage = false;mIsDead = true;}
+			//	else{mIsDead = false;}
+			//}
+			//else if (dist > 0.5f){mIsChasingPlayer = true;mIsIdle = false;}
+			//else{mIsIdle = true;}
+			//return true;
 		}
-		else if (dist > 0.5f)
+		return false;
+	}*/
+
+	bool ChangeState()
+	{
+		if (mTimerStateMachine.IsFinish())
 		{
-			isChasingPlayer = true;
-			isIdle = false;
+			mTimerStateMachine.SetTime(0.f);
+			mIsIdle = false;
+			//mTookDamage = false;
+			mIsChasingPlayer = false;
+			mIsAttacking = false;
+			mIsDead = false;
+
+			ScriptCharacter* targetCharacter = mPlayer->mCharacter;
+			ScriptCharacter* myCharacter = mAgent->mCharacter;
+			ScriptGrid* grid = mAgent->GetPathFinding()->GetGrid();
+
+			Vector3f32 playerPos = mPlayer->GetWorldPosition();
+			Vector3f32 myPos = GetWorldPosition();
+			float dist = abs((playerPos.x - myPos.x) + (playerPos.y - myPos.y) + (playerPos.z - myPos.z));
+			if (myCharacter->GetLife() == 0)
+			{
+				myCharacter->mEntity->DestroyEntity();
+				mIsDead = true;
+				mTimerStateMachine.SetTime(100.f);
+			}
+			else if (dist <= ((float)grid->GetCellSize()) * 0.5f)
+			{
+				targetCharacter->Damage(myCharacter->GetDamage()); /*mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage()); mTookDamage = true;*/
+				mIsAttacking = true;
+				mTimerStateMachine.SetTime(0.5f);
+			}
+			else /*if (dist > ((float)grid->GetCellSize()) * 0.5f)*/
+			{
+				mCellTarget = grid->GetNearestCell(targetCharacter->mEntity->GetWorldPosition());
+				mIsChasingPlayer = true;
+				mTimerStateMachine.SetTime(2.f);
+			}
+
+			/*if (dist <= 0.5f)
+			{
+				mIsIdle = false;mIsAttacking = true;
+				if (this->mPlayer->mCharacter->Damage(mPlayer->mCharacter->GetDamage())){mTookDamage = true;}
+				else{mTookDamage = false;}
+				if (this->mAgent->mCharacter->GetLife() == 0){mIsIdle = false;mIsChasingPlayer = false;mIsAttacking = false;mTookDamage = false;mIsDead = true;}
+				else{mIsDead = false;}
+			}
+			else if (dist > 0.5f){mIsChasingPlayer = true;mIsIdle = false;}
+			else{mIsIdle = true;}*/
+			return true;
 		}
-		else
-		{
-			isIdle = true;
-		}
-		return true;
+		return false;
 	}
 
-	bool IsIdle() { return isIdle; }
-	bool IsChasingPlayer() { return isChasingPlayer; }
-	bool IsAttacking() { return isAttacking; }
-	bool TookDamage() { return tookDamage; }
-	bool IsDead() { return isDead; }
+	bool IsIdle() { return mIsIdle; }
+	bool IsChasingPlayer() { return mIsChasingPlayer; }
+	bool IsAttacking() { return mIsAttacking; }
+	bool TookDamage() { return mTookDamage; }
+	bool IsDead() { return mIsDead; }
 
 
 END_SCRIPT
