@@ -22,6 +22,9 @@ struct Color
 	static Color Yellow;
 	static Color Magenta;
 	static Color Cyan;
+	static Color Purple;
+	static Color Brown;
+	static Color LightPurple;
 
 	void Set(Color newColor);
 	void Set(uint8 r, uint8 g, uint8 b, uint8 a);
